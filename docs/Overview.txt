@@ -1,0 +1,9 @@
+% Overview
+
+This WebSharper™ Extension provides a set of classes almost identical
+to the ones documented in the [Google Maps API v3][gmap-api].  When used
+in WebSharper™ projects, these stub classes delegate the work to the
+actual classes implemented in Google Maps API. 
+
+[gmap-api]: http://code.google.com/apis/maps/documentation/javascript
+

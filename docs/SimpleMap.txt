@@ -1,0 +1,52 @@
+% A Simple Map
+
+Creating a map typically involves 3 steps:
+
+  * Create a container, an `Html` element that will hold the map
+    object.
+
+  * Initialize the map and attaching it to the container.
+
+  * Set properties, wire events, add overlays or controls to the
+    attached map.
+
+The first two steps are independent of the functionality.  For this
+you can create a simple helper function that receives a function that
+takes as a parameter the initialized map:
+
+    #fsharp
+    [<JavaScript>]
+    let Sample buildMap =     
+        Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
+        |>! OnAfterRender (fun mapElement ->
+            let center = new LatLng(37.4419, -122.1419)
+            let options = new MapOptions(8, center, MapTypeId.ROADMAP)
+            let map = new Google.Maps.Map(mapElement.Dom, options)
+            buildMap map)
+    
+
+A `<div>` element is created at line 3.  The size of the `<div>` will
+determine the size of the map.  You can set all the style properties
+you want in this step, including padding or margins.
+
+It is necessary to initialize the map using the `OnAfterRender` method
+(line 4).  The Maps API requires that the element is already attached
+to the DOM before initializing the map.  Doing the Map initialization
+after the widget rendering makes sure that this condition holds.
+
+It is necessary to set a position and a zoom before building the map. 
+You could get the map centered in the position used in the initialization 
+just by passing the identity function.
+
+    #fsharp
+    [<JavaScript>]
+    let SimpleMap () = Sample id
+        
+You can, of course, override the options by using the SetOptions method:
+
+    [<JavaScript>]
+    let SimpleMap() =
+        Sample <| fun (map: Map) ->
+            let latLng = new LatLng(-34.397, 150.644)
+            let options = new MapOptions(8, latLng, MapTypeId.ROADMAP)
+            map.SetOptions options   

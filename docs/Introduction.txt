@@ -1,0 +1,14 @@
+% Introduction
+
+**Add interactive maps to your web applications! ...Without a single
+line of JavaScript.**
+
+The Google Map API enables you to create rich, interactive maps,
+street views, route planning, and much more.  Go and check out their
+[homepage][gmaps] to learn more.
+
+With the Google Maps WebSharper™ Extension you can develop WebSharper™
+applications that use the Google Maps API using nothing but F# code.
+
+[gmaps]: http://code.google.com/apis/maps/documentation/javascript
+
