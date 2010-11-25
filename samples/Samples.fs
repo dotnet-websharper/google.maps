@@ -19,7 +19,7 @@
         <h2>Source Code Explained</h2>
      ]*)
 
-namespace IntelliFactory.WebSharper.Google.Samples
+namespace IntelliFactory.WebSharper.Google.Maps.Samples
 
 module Util =
     open IntelliFactory.WebSharper

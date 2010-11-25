@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Module.fs" />
     <Compile Include="Main.fs" />
+    <None Include="Annotations.cs" />
+    <None Include="Dependencies.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" />
