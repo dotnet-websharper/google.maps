@@ -544,7 +544,7 @@ module MapsSpecification =
                     // Alt text to display when this MapType's button is hovered over in the MapTypeControl.
                     "alt", T<string>
                     // Returns a string (URL) for given tile coordinate (x, y) and zoom level. This function should have a signature of: getTileUrl(Point, number):string
-                    "getTileUrl", Point * T<int> ^-> T<string>
+                    "getTileUrl", T<obj> -* Point * T<int> ^-> T<string>
                     // Is the image a PNG? This is needed by some old browsers.
                     "isPng", T<bool>
                     // The maximum zoom level for the map when displaying this MapType.
