@@ -187,7 +187,7 @@ module SamplesInternals =
             let itOptions = new ImageMapTypeOptions()
                 
             itOptions.GetTileUrl <-
-                (fun (coord, zoom) -> 
+                (fun _ coord zoom -> 
                     getHorizontallyRepeatingTileUrl (coord, zoom, 
                         (fun (coord, zoom) ->
                             let bound = Math.Pow(float 2, float zoom)

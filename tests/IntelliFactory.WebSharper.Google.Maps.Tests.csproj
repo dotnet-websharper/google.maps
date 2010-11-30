@@ -49,6 +49,9 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="IntelliFactory.WebSharper.Core" />
+    <Reference Include="IntelliFactory.WebSharper.Html" />
+    <Reference Include="IntelliFactory.Html" />
+
   </ItemGroup>
   <ItemGroup>
     <Content Include="Test.aspx" />

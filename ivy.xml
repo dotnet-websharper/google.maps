@@ -14,14 +14,15 @@
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="pdb" type="debug" conf="default" />
   </publications>
   <dependencies>
-    <dependency name="if-ws" rev="latest.integration" conf="build->compiler" />
+    <dependency name="if-ws" rev="2.0.42" conf="build->compiler" />
     
-    <dependency name="if-ws" rev="latest.integration" conf="default->default" />
+    <dependency name="if-ws" rev="2.0.42" conf="default->default" />
     <dependency name="if-ws-ig" rev="latest.integration" conf="build->default" />
     <dependency name="if-ws-html" rev="latest.integration" conf="build->default" />
     <dependency name="if-ws-ecma" rev="latest.integration" conf="build->default" />
     <dependency name="if-ws-dom" rev="latest.integration" conf="default" />
-    <dependency name="if-ws-proxy-core" rev="latest.integration" conf="default" />
+    <dependency name="if-js" rev="latest.integration" conf="default" />
+    <dependency name="if-ws-proxy-core" rev="2.0.0" conf="default" />
     <dependency name="if-ws-jquery" rev="latest.integration" conf="build->default" />
     <dependency name="if-ws-web" rev="latest.integration" conf="build->default" />
   </dependencies>
