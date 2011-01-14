@@ -12,7 +12,9 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.G
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.Google.Maps.Samples", "samples\IntelliFactory.WebSharper.Google.Maps.Samples.fsproj", "{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntellliFactory.WebSharper.Google.Maps.Tests", "tests\IntelliFactory.WebSharper.Google.Maps.Tests.csproj", "{F453CB86-F138-4F1B-A87B-93E1B587E16F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelliFactory.WebSharper.Google.Maps.Tests", "tests\IntelliFactory.WebSharper.Google.Maps.Tests.csproj", "{F453CB86-F138-4F1B-A87B-93E1B587E16F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{2A37E748-DE04-445E-8009-37F98B47D434}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,12 @@ Global
 		{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F453CB86-F138-4F1B-A87B-93E1B587E16F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F453CB86-F138-4F1B-A87B-93E1B587E16F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A37E748-DE04-445E-8009-37F98B47D434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A37E748-DE04-445E-8009-37F98B47D434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A37E748-DE04-445E-8009-37F98B47D434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A37E748-DE04-445E-8009-37F98B47D434}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

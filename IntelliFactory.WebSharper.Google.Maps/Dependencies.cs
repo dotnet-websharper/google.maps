@@ -8,26 +8,32 @@ using IntelliFactory.WebSharper;
 namespace IntelliFactory.WebSharper.Google.Maps.Dependencies
 {
 
-    public class GoogleMaps : Resources.IResource
+    public class GoogleMaps : Resources.IResourceDefinition
     {
-        public IEnumerable<Resources.IResource> Dependencies
+        public Resources.Resource Resource
         {
-            get { return new Resources.IResource[] { }; }
-        }
-
-        public string Id
-        {
-            get { return "google.maps"; }
-        }
-
-        public FSharpList<Markup.Node> Render(Resources.IResourceContext value)
-        {
-            string sensor = ConfigurationManager.AppSettings["google.maps.sensor"];
-            if (sensor == null)
+            get
             {
-                return Resources.RenderJavaScript("http://maps.google.com/maps/api/js?sensor=false");
+                return new Resources.Resource(
+                    "google.maps",
+                    Resources.Body.NewScriptBody(
+                        Resources.Location.NewExternalLocation(
+                            List<Resources.Part>(
+                                Resources.Part.NewConfigurablePart("google.maps", "http://maps.google.com/maps/api/js"),
+                                Resources.Part.NewFixedPart("?sensor="),
+                                Resources.Part.NewConfigurablePart("google.maps.sensor", "false")
+                            )
+                        )
+                    ),
+                    FSharpList<Resources.Resource>.Empty
+                );
             }
-            return Resources.RenderJavaScript("http://maps.google.com/maps/api/js?sensor=" + sensor);
+        }
+
+        static FSharpList<T> List<T>(params T[] arguments)
+        {
+            return ListModule.OfArray(arguments);
         }
     }
+
 }

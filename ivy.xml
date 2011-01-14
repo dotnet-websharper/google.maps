@@ -8,7 +8,6 @@
   <publications>
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll" type="bin" conf="default"/>
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="xml" type="doc" conf="default" />
-    <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll.js" type="bin" conf="default" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll.dep" type="bin" conf="default" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="Documentation.zip" type="doc" conf="default" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="pdb" type="debug" conf="default" />
