@@ -35,8 +35,8 @@
   </PropertyGroup>
   <Import Project="$(INTELLIFACTORY)/build/IntelliFactory.FSharp.targets" />
   <PropertyGroup>
-    <WEBSHARPER_HOME>$(IfIvyLibDir)</WEBSHARPER_HOME>
-    <WEBSHARPER_IG_HOME>$(IfIvyLibDir)</WEBSHARPER_IG_HOME>
+    <WEBSHARPER_HOME>$(MSBuildProjectDirectory)/../.build/lib</WEBSHARPER_HOME>
+    <WEBSHARPER_IG_HOME>$(WEBSHARPER_HOME)</WEBSHARPER_IG_HOME>
   </PropertyGroup>
   <Import Project="$(WEBSHARPER_HOME)/IntelliFactory.WebSharper.targets" />
   <Import Project="$(WEBSHARPER_IG_HOME)/IntelliFactory.WebSharper.InterfaceGenerator.targets" />

@@ -9,8 +9,8 @@
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll" type="bin" conf="default"/>
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="xml" type="doc" conf="default" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll.dep" type="bin" conf="default" />
-    <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="Documentation.zip" type="doc" conf="default" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="pdb" type="debug" conf="default" />
+    <artifact name="if-ws-google-maps-docs" ext="zip" type="doc" conf="default" />
   </publications>
   <dependencies>
     <dependency name="if-ws" rev="latest.integration" conf="build->compiler" />
