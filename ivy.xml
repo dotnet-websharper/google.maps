@@ -1,6 +1,6 @@
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://doiop.com/ivy-2.1.0.xsd">
-  <info organisation="IntelliFactory" module="if-ws-google-maps" revision="2.2" />
+  <info organisation="IntelliFactory" module="if-ws-google-maps" revision="2.3" />
   <configurations>
     <conf name="build" />
     <conf name="default" />
@@ -8,7 +8,6 @@
   <publications>
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll" type="bin" conf="default"/>
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="xml" type="doc" conf="default" />
-    <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll.dep" type="bin" conf="default" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="pdb" type="debug" conf="default" />
     <artifact name="if-ws-google-maps-docs" ext="zip" type="doc" conf="default" />
   </publications>
