@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\$(Name).XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="$(INTELLIFACTORY)/build/IntelliFactory.WebSharper-2.3.targets" />
+  <Import Project="$(INTELLIFACTORY)/build/IntelliFactory.WebSharper.InterfaceGenerator-2.3.targets" />
   <ItemGroup>
     <Compile Include="Module.fs" />
     <Compile Include="Main.fs" />
