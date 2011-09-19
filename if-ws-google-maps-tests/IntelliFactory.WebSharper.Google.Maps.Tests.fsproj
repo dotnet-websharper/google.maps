@@ -7,10 +7,10 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{00c2e4ed-8e71-40f9-acbe-260bdde45944}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <Name>IntelliFactory.WebSharper.Google.Maps.Samples</Name>
+    <Name>IntelliFactory.WebSharper.Google.Maps.Tests</Name>
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,11 +31,7 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\$(Name).XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="$(INTELLIFACTORY)/build/IntelliFactory.FSharp.targets" />
-  <PropertyGroup>
-    <WEBSHARPER_HOME>$(IfIvyLibDir)</WEBSHARPER_HOME>
-  </PropertyGroup>
-  <Import Project="$(WEBSHARPER_HOME)/IntelliFactory.WebSharper.targets" Condition="Exists('$(WEBSHARPER_HOME)/IntelliFactory.WebSharper.targets')" />
+  <Import Project="..\.build\lib\IntelliFactory.WebSharper.targets" />
   <ItemGroup>
     <Compile Include="Samples.fs" />
   </ItemGroup>
@@ -44,20 +40,17 @@
     <Reference Include="FSharp.Core" />
     <Reference Include="System" />
     <Reference Include="System.Web" />
-    <Reference Include="IntelliFactory.Json" />
     <Reference Include="IntelliFactory.Html" />
     <Reference Include="IntelliFactory.WebSharper" />
-    <Reference Include="IntelliFactory.WebSharper.Json" />
     <Reference Include="IntelliFactory.WebSharper.Core" />
     <Reference Include="IntelliFactory.WebSharper.Html" />
     <Reference Include="IntelliFactory.WebSharper.Ecma" />
     <Reference Include="IntelliFactory.WebSharper.Dom" />
     <Reference Include="IntelliFactory.WebSharper.JQuery" />
     <Reference Include="IntelliFactory.WebSharper.Web" />
-
- </ItemGroup>
+  </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IntelliFactory.WebSharper.Google.Maps\IntelliFactory.WebSharper.Google.Maps.fsproj">
+    <ProjectReference Include="..\if-ws-google-maps\IntelliFactory.WebSharper.Google.Maps.fsproj">
       <Name>IntelliFactory.WebSharper.Google.Maps</Name>
       <Project>{b22461d0-20e8-4a65-9ead-7f482fd3303a}</Project>
       <Private>True</Private>

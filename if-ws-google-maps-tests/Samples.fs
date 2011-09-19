@@ -2,7 +2,7 @@
 //
 // This file is confidential and proprietary.
 //
-// Copyright (c) IntelliFactory, 2004-2010.
+// Copyright (c) IntelliFactory, 2004-2011.
 //
 // All rights reserved.  Reproduction or use in whole or in part is
 // prohibited without the written consent of the copyright holder.
@@ -19,7 +19,7 @@
         <h2>Source Code Explained</h2>
      ]*)
 
-namespace IntelliFactory.WebSharper.Google.Maps.Samples
+namespace IntelliFactory.WebSharper.Google.Maps.Tests
 
 module Util =
     open IntelliFactory.WebSharper
@@ -28,49 +28,49 @@ module Util =
 
     [<Inline "setTimeout($f, $ms)">]
     let SetTimeout (f: unit -> unit) (ms: int) = X
-    
+
 module SamplesInternals =
-    
+
     open IntelliFactory.WebSharper
     open IntelliFactory.WebSharper.Google.Maps
     open IntelliFactory.WebSharper.Html
     open IntelliFactory.WebSharper.EcmaScript
-    
+
     [<JavaScript>]
-    let Sample buildMap =     
+    let Sample buildMap =
         Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
         |>! OnAfterRender (fun mapElement ->
             let center = new LatLng(37.4419, -122.1419)
             let options = new MapOptions(8, center, MapTypeId.ROADMAP)
             let map = new Google.Maps.Map(mapElement.Body, options)
             buildMap map)
-    
+
     [<JavaScript>]
     let SimpleMap() =
         Sample <| fun (map: Map) ->
             let latLng = new LatLng(-34.397, 150.644)
             let options = new MapOptions(8, latLng, MapTypeId.ROADMAP)
-            map.SetOptions options   
+            map.SetOptions options
 
     [<JavaScript>]
     let PanTo() =
         Sample <| fun map ->
-            
+
             let center = new LatLng(37.4419, -122.1419)
             let options = new MapOptions(8, center, MapTypeId.ROADMAP)
             map.SetOptions options
             let move () = map.PanTo(new LatLng(37.4569, -122.1569))
             // Window.SetTimeout(move, 5000)
             Util.SetTimeout move 5000
-    
+
     [<JavaScript>]
     let RandomMarkers() =
         Sample <| fun map ->
-            
+
             let addMarkers (_:obj) =
                 // bounds is only available in the "bounds_changed" event.
                 let bounds = map.GetBounds()
-            
+
                 let sw = bounds.GetSouthWest()
                 let ne = bounds.GetNorthEast()
                 let lngSpan = ne.Lng() - sw.Lng()
@@ -82,9 +82,9 @@ module SamplesInternals =
                     let markerOptions = new MarkerOptions(point)
                     markerOptions.Map <- map
                     new Marker(markerOptions) |> ignore
-            
+
             Event.AddListener(map, "bounds_changed", addMarkers) |> ignore
-    
+
     [<JavaScript>]
     let InfoWindow() =
         Sample <| fun map ->
@@ -107,7 +107,7 @@ module SamplesInternals =
             options.NavigationControlOptions <- ncOptions
             options.NavigationControl <- true
             map.SetOptions options
-            
+
     [<JavaScript>]
     let SimpleDirections() =
         Sample <| fun map ->
@@ -123,7 +123,7 @@ module SamplesInternals =
             let j = IntelliFactory.WebSharper.JQuery.JQuery.Of(mapDiv)
             j.After(dirPanel.Body).Ignore
             directionsDisplay.SetPanel dirPanel.Body
-            let calcRoute () = 
+            let calcRoute () =
                 let start = "chicago, il"
                 let destination  = "st louis, mo"
                 let request = new DirectionsRequest(start, destination, DirectionsTravelMode.DRIVING)
@@ -147,19 +147,19 @@ module SamplesInternals =
             let j = JQuery.JQuery.Of mapDiv
             j.After(dirPanel.Body).Ignore
             directionsDisplay.SetPanel dirPanel.Body
-            let calcRoute () = 
+            let calcRoute () =
                 let start = "chicago, il"
                 let destination  = "st louis, mo"
-                
+
                 let request = new DirectionsRequest(start, destination, DirectionsTravelMode.DRIVING)
-                let waypoints = 
+                let waypoints =
                     [|"champaign, il"
                       "decatur, il"  |]
-                    |> Array.map (fun x -> 
+                    |> Array.map (fun x ->
                                     let wp = new DirectionsWaypoint()
                                     wp.Location <- x
                                     wp)
-                
+
                 request.Waypoints <- waypoints
                 directionsService.Route(request, fun (result, status) ->
                     if status = DirectionsStatus.OK then
@@ -177,34 +177,34 @@ module SamplesInternals =
                 let mutable x = coord.X
                 let y = coord.Y
                 let tileRange = float (1 <<< zoom)
-                if (y < 0. || y >= tileRange) 
+                if (y < 0. || y >= tileRange)
                 then null
                 else
                     if x < 0. || x >= tileRange
                     then x <- (x % tileRange + tileRange) % tileRange
                     urlfunc(new Point(x, y), zoom)
-            
+
             let itOptions = new ImageMapTypeOptions()
-                
+
             itOptions.GetTileUrl <-
-                (fun _ coord zoom -> 
-                    getHorizontallyRepeatingTileUrl (coord, zoom, 
+                (fun _ coord zoom ->
+                    getHorizontallyRepeatingTileUrl (coord, zoom,
                         (fun (coord, zoom) ->
                             let bound = Math.Pow(float 2, float zoom)
-                            ("http://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw/" 
+                            ("http://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw/"
                               + (string zoom) + "/" + (string coord.X) + "/" + (string (bound - coord.Y - 1.) + ".jpg")))))
-                
+
             itOptions.TileSize <- new Size(256., 256.)
             itOptions.IsPng <- false
             itOptions.MaxZoom <- 9
             itOptions.MinZoom <- 0
             itOptions.Name <- "Moon"
-                
+
             let it = new ImageMapType(itOptions)
             it.Radius <- 1738000.
             let center = new LatLng(0., 0.)
             let mapIds = [| box "Moon" |> unbox |]
-            let mapControlOptions = 
+            let mapControlOptions =
                 let mco = new MapTypeControlOptions()
                 mco.Style <- MapTypeControlStyle.DROPDOWN_MENU
                 mco.MapTypeIds <- mapIds
@@ -227,7 +227,7 @@ module SamplesInternals =
                 let icon = new MarkerImage("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
                                             + images.[i] + ".png")
                 icon
-            
+
             let addMarkers (_:obj) =
                 let bounds = map.GetBounds()
                 let sw = bounds.GetSouthWest()
@@ -246,11 +246,11 @@ module SamplesInternals =
             Event.AddListener(map, "bounds_changed", addMarkers) |> ignore
 
 // Not supported in v3.
-//     
+//
 //    [<JavaScript>]
 //    let IconSize() =
 //        Sample <| fun map ->
-//            
+//
 //            let addMarkers (_:obj) =
 //                let bounds = map.GetBounds()
 //                let sw = bounds.GetSouthWest()
@@ -279,7 +279,7 @@ module SamplesInternals =
                             new LatLng(37.4419, -122.1419) |]
             polygon.SetPath coords
             polygon.SetMap map
-            
+
     [<JavaScript>]
     let StreetView() =
         Sample <| fun map ->
@@ -292,10 +292,10 @@ module SamplesInternals =
             let options = new MapOptions(14, fenwayPark, MapTypeId.ROADMAP)
             options.StreetViewControl <- true
             map.SetOptions options
-            
+
     [<JavaScript>]
     let PrimitiveEvent () =
-        Sample <| fun map ->   
+        Sample <| fun map ->
             let clickAction (_:obj) = Util.Alert "Map Clicked!" // Window.Alert "Map Clicked!"
             Event.AddListener(map, "click", clickAction)
             |> ignore
@@ -310,10 +310,10 @@ module SamplesInternals =
             polylineOptions.Path <- coords
             polylineOptions.Map <- map
             new Polyline(polylineOptions)
-            |> ignore    
+            |> ignore
 
     [<JavaScript>]
-    let Samples () =       
+    let Samples () =
         Div [H1 [Text "Google Maps Samples"]
              SimpleMap ()
              PanTo ()
@@ -332,10 +332,10 @@ module SamplesInternals =
 
 open IntelliFactory.WebSharper
 
-type Samples() = 
+[<Sealed>]
+type Samples() =
     inherit Web.Control()
 
     [<JavaScript>]
     override this.Body = SamplesInternals.Samples () :> Html.IPagelet
 
-    
