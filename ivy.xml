@@ -1,6 +1,5 @@
-<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:noNamespaceSchemaLocation="http://doiop.com/ivy-2.1.0.xsd">
-  <info organisation="IntelliFactory" module="if-ws-google-maps-2.4" revision="2.4" />
+<ivy-module version="2.0">
+  <info organisation="IntelliFactory" module="if-ws-google-maps" revision="2.4" />
   <publications>
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll" type="bin" />
     <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="xml" type="doc" />
@@ -8,7 +7,7 @@
     <artifact name="if-ws-google-maps-docs" ext="zip" type="doc" />
   </publications>
   <dependencies>
-    <dependency name="if-ws-2.4" rev="latest.integration" branch="2.4" />
-    <dependency name="if-ws-ecma-2.4" rev="latest.integration" branch="2.4" />
+    <dependency name="if-ws" rev="latest.integration" />
+    <dependency name="if-ws-ecma" rev="latest.integration" />
   </dependencies>
 </ivy-module>
