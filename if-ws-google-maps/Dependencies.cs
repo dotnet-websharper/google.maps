@@ -7,9 +7,10 @@ using IntelliFactory.WebSharper.Core;
 
 namespace IntelliFactory.WebSharper.Google.Maps.Dependencies
 {
-    public class GoogleMaps : Resources.IResource
+    public class GoogleMaps : IntelliFactory.WebSharper.Core.Resources.IResource
     {
-        public void Render(Resources.Context context, System.Web.UI.HtmlTextWriter html)
+        public void Render(IntelliFactory.WebSharper.Core.Resources.Context context,
+            System.Web.UI.HtmlTextWriter html)
         {
             var url = ConfigurationManager.AppSettings["google.maps"];
             if (url == null) {
