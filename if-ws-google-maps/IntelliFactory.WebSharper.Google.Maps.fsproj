@@ -33,7 +33,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\$(Name).XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="..\.build\lib\IntelliFactory.WebSharper.InterfaceGenerator.targets" />
+  <Import Project="..\.build\lib\IntelliFactory.WebSharper.InterfaceGenerator.targets"
+          Condition="Exists('..\.build\lib')" />
+  <Import Project="$(WEBSHARPER_HOME)\IntelliFactory.WebSharper.InterfaceGenerator.targets"
+          Condition="!Exists('..\.build\lib')" />
   <ItemGroup>
     <Compile Include="Module.fs" />
     <Compile Include="Main.fs" />
