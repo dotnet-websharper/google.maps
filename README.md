@@ -29,7 +29,7 @@ The source code for the extension is available on both Bitbucket
 (Mercurial) or GitHub (Git):
 
 * [WebSharper.Google.Maps at Bitbucket](http://bitbucket.org/IntelliFactory/websharper.google.maps)
-* [WebSharper.Google.Maps at GitHub](http://bitbucket.org/intellifactory/Websharper.Google.Maps)
+* [WebSharper.Google.Maps at GitHub](http://github.com/intellifactory/Websharper.Google.Maps)
 
 ## Configuration
 
