@@ -41,7 +41,7 @@ module SamplesInternals =
         Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
         |>! OnAfterRender (fun mapElement ->
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(8, center, MapTypeId.ROADMAP)
+            let options = new MapOptions(center, MapTypeId.ROADMAP, 8)
             let map = new Google.Maps.Map(mapElement.Body, options)
             buildMap map)
 
@@ -49,7 +49,7 @@ module SamplesInternals =
     let SimpleMap() =
         Sample <| fun (map: Map) ->
             let latLng = new LatLng(-34.397, 150.644)
-            let options = new MapOptions(8, latLng, MapTypeId.ROADMAP)
+            let options = new MapOptions(latLng, MapTypeId.ROADMAP, 8)
             map.SetOptions options
 
     [<JavaScript>]
@@ -57,7 +57,7 @@ module SamplesInternals =
         Sample <| fun map ->
 
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(8, center, MapTypeId.ROADMAP)
+            let options = new MapOptions(center, MapTypeId.ROADMAP, 8)
             map.SetOptions options
             let move () = map.PanTo(new LatLng(37.4569, -122.1569))
             // Window.SetTimeout(move, 5000)
@@ -100,12 +100,12 @@ module SamplesInternals =
     let Controls() =
         Sample <| fun map ->
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(8, center, MapTypeId.ROADMAP)
+            let options = new MapOptions(center, MapTypeId.ROADMAP, 8)
             options.DisableDefaultUI <- true
             let ncOptions = new NavigationControlOptions()
             ncOptions.Style <- NavigationControlStyle.ZOOM_PAN
-            options.NavigationControlOptions <- ncOptions
-            options.NavigationControl <- true
+//            options.NavigationControlOptions <- ncOptions
+//            options.NavigationControl <- true
             map.SetOptions options
 
     [<JavaScript>]
@@ -195,13 +195,11 @@ module SamplesInternals =
                               + (string zoom) + "/" + (string coord.X) + "/" + (string (bound - coord.Y - 1.) + ".jpg")))))
 
             itOptions.TileSize <- new Size(256., 256.)
-            itOptions.IsPng <- false
             itOptions.MaxZoom <- 9
             itOptions.MinZoom <- 0
             itOptions.Name <- "Moon"
 
             let it = new ImageMapType(itOptions)
-            it.Radius <- 1738000.
             let center = new LatLng(0., 0.)
             let mapIds = [| box "Moon" |> unbox |]
             let mapControlOptions =
@@ -210,7 +208,7 @@ module SamplesInternals =
                 mco.MapTypeIds <- mapIds
                 mco
 
-            let options = new MapOptions(0, center, mapIds.[0])
+            let options = new MapOptions(center, mapIds.[0], 0)
             options.MapTypeControlOptions <- mapControlOptions
             map.SetOptions options
             // FIXME
@@ -289,7 +287,7 @@ module SamplesInternals =
             let marker = new Marker()
             marker.SetPosition fenwayPark
             marker.SetMap map
-            let options = new MapOptions(14, fenwayPark, MapTypeId.ROADMAP)
+            let options = new MapOptions(fenwayPark, MapTypeId.ROADMAP, 14)
             options.StreetViewControl <- true
             map.SetOptions options
 
@@ -314,21 +312,25 @@ module SamplesInternals =
 
     [<JavaScript>]
     let Samples () =
-        Div [H1 [Text "Google Maps Samples"]
-             SimpleMap ()
-             PanTo ()
-             RandomMarkers ()
-             InfoWindow ()
-             Controls ()
-             SimpleDirections ()
-             DirectionsWithWaypoints ()
-             Moon ()
-             Weather ()
-             SimplePolygon ()
-             StreetView ()
-             PrimitiveEvent ()
-             SimplePolyline ()
-             ]
+        Div [
+            H1 [Text "HeatMaps"]
+            Div [HeatMapSample.Sample()]
+
+            H1 [Text "Google Maps Samples"]
+            SimpleMap ()
+            PanTo ()
+            RandomMarkers ()
+            InfoWindow ()
+            Controls ()
+            SimpleDirections ()
+            DirectionsWithWaypoints ()
+            Moon ()
+            Weather ()
+            SimplePolygon ()
+            StreetView ()
+            PrimitiveEvent ()
+            SimplePolyline ()
+        ]
 
 open IntelliFactory.WebSharper
 

@@ -27,13 +27,13 @@ defined above.
                     let markerOptions = new MarkerOptions(point)
                     markerOptions.Map <- map
                     new Marker(markerOptions) |> ignore
-            
+
             Event.AddListener(map, "bounds_changed", addMarkers) |> ignore
-    
+
 
 The first thing you do is creating a new function on which the markers are going to be placed in the map.
 This is necessary since the bounds property (necessary for calculating the random positions) will be only
-available after the "bounds_changed" event. Using `GetBounds` you can get coordinates of each of the 
+available after the "bounds_changed" event. Using `GetBounds` you can get coordinates of each of the
 corners of the map.  This allows you to calculate the latitude and longitude spans on which the map is
 currently set.
 
@@ -49,7 +49,7 @@ You can change the `Marker` appearance by changing the options of the `MarkerOpt
 
 There is a bunch of properties to play with in the `MarkerOptions` class.  Is
 possible to change completely the appearance of the `MarkerOptions` by setting
-different images. The next example simulates a simple map that "displays 
+different images. The next example simulates a simple map that "displays
 the weather."
 
     [<JavaScript>]
@@ -61,7 +61,7 @@ the weather."
                 let icon = new MarkerImage("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
                                             + images.[i] + ".png")
                 icon
-            
+
             let addMarkers (_:obj) =
                 let bounds = map.GetBounds()
                 let sw = bounds.GetSouthWest()
@@ -81,7 +81,7 @@ the weather."
 
 
 You start with a simple function that creates random weather icons. It
-uses some images from the Google Maps utility library. Then it takes these images 
-and set them as the "Icon" property in the `MarkerOptions` object. Is necessary to set the 
-Map property to the map on which you want to display the marker. Then, just call the Map 
+uses some images from the Google Maps utility library. Then it takes these images
+and set them as the "Icon" property in the `MarkerOptions` object. Is necessary to set the
+Map property to the map on which you want to display the marker. Then, just call the Map
 constructor with the already built `MarkerOptions` instance.

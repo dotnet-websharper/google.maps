@@ -21,7 +21,7 @@ namespace IntelliFactory.WebSharper.Google.Maps.Dependencies
                 sensor = "false";
             }
             html.AddAttribute("type", "text/javascript");
-            html.AddAttribute("src", url + "?sensor=" + Uri.EscapeDataString(sensor));
+            html.AddAttribute("src", url + "?libraries=visualization&sensor=" + Uri.EscapeDataString(sensor), true);
             html.RenderBeginTag("script");
             html.RenderEndTag();
         }

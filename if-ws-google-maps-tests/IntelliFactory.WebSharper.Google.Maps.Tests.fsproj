@@ -31,11 +31,10 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\$(Name).XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="..\.build\lib\IntelliFactory.WebSharper.targets"
-          Condition="Exists('..\.build\lib')" />
-  <Import Project="$(WEBSHARPER_HOME)\IntelliFactory.WebSharper.targets"
-          Condition="!Exists('..\.build\lib')" />
+  <Import Project="..\.build\lib\IntelliFactory.WebSharper.targets" Condition="Exists('..\.build\lib')" />
+  <Import Project="$(WEBSHARPER_HOME)\IntelliFactory.WebSharper.targets" Condition="!Exists('..\.build\lib')" />
   <ItemGroup>
+    <Compile Include="HeatMaps.fs" />
     <Compile Include="Samples.fs" />
   </ItemGroup>
   <ItemGroup>

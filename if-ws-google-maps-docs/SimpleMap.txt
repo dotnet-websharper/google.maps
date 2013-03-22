@@ -16,14 +16,14 @@ takes as a parameter the initialized map:
 
     #fsharp
     [<JavaScript>]
-    let Sample buildMap =     
+    let Sample buildMap =
         Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
         |>! OnAfterRender (fun mapElement ->
             let center = new LatLng(37.4419, -122.1419)
             let options = new MapOptions(8, center, MapTypeId.ROADMAP)
             let map = new Google.Maps.Map(mapElement.Dom, options)
             buildMap map)
-    
+
 
 A `<div>` element is created at line 3.  The size of the `<div>` will
 determine the size of the map.  You can set all the style properties
@@ -34,14 +34,14 @@ It is necessary to initialize the map using the `OnAfterRender` method
 to the DOM before initializing the map.  Doing the Map initialization
 after the widget rendering makes sure that this condition holds.
 
-It is necessary to set a position and a zoom before building the map. 
-You could get the map centered in the position used in the initialization 
+It is necessary to set a position and a zoom before building the map.
+You could get the map centered in the position used in the initialization
 just by passing the identity function.
 
     #fsharp
     [<JavaScript>]
     let SimpleMap () = Sample id
-        
+
 You can, of course, override the options by using the SetOptions method:
 
     [<JavaScript>]
@@ -49,4 +49,4 @@ You can, of course, override the options by using the SetOptions method:
         Sample <| fun (map: Map) ->
             let latLng = new LatLng(-34.397, 150.644)
             let options = new MapOptions(8, latLng, MapTypeId.ROADMAP)
-            map.SetOptions options   
+            map.SetOptions options

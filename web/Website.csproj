@@ -64,11 +64,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
-  <Import Project="..\.build\lib\IntelliFactory.WebSharper.Web.targets"
-          Condition="Exists('..\.build\lib')" />
-  <Import Project="$(WEBSHARPER_HOME)\IntelliFactory.WebSharper.Web.targets"
-          Condition="!Exists('..\.build\lib')" />
-  <ItemGroup />
+  <Import Project="..\.build\lib\IntelliFactory.WebSharper.Web.targets" Condition="Exists('..\.build\lib')" />
+  <Import Project="$(WEBSHARPER_HOME)\IntelliFactory.WebSharper.Web.targets" Condition="!Exists('..\.build\lib')" />
+  <ItemGroup>
+    <None Include="taxi.json" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\if-ws-google-maps-tests\IntelliFactory.WebSharper.Google.Maps.Tests.fsproj">
       <Project>{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}</Project>
