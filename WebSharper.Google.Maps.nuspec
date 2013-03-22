@@ -1,0 +1,18 @@
+<package>
+ <metadata>
+  <id>WebSharper.Google.Maps</id>
+  <version>2.4.53-alpha</version>
+  <authors>IntelliFactory</authors>
+  <owners>IntelliFactory</owners>
+  <licenseUrl>http://websharper.com/licensing</licenseUrl>
+  <projectUrl>http://bitbucket.org/IntelliFactory/websharper.google.maps</projectUrl>
+  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <description>WebSharper bindings to Google Maps API 3.11. WebSharper is an F#-to-JavaScript compiler and web application framework</description>
+  <copyright>Copyright (c) 2013 IntelliFactory</copyright>
+  <tags>Web JavaScript F# Google Maps</tags>
+ </metadata>
+ <files>
+  <file src="if-ws-google-maps\bin\Release\IntelliFactory.WebSharper.Google.Maps.dll" target="lib\net35" />
+  <file src="if-ws-google-maps\bin\Release\IntelliFactory.WebSharper.Google.Maps.xml" target="lib\net35" />
+ </files>
+</package>
