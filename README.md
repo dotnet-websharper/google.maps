@@ -25,6 +25,12 @@ This extension is compatible with [WebSharper
 install the `WebSharper.Google.Maps` [NuGet](http://nuget.org)
 package, and use as you would a regular .NET library.
 
+The source code for the extension is available on both Bitbucket
+(Mercurial) or GitHub (Git):
+
+* [WebSharper.Google.Maps at Bitbucket](http://bitbucket.org/IntelliFactory/websharper.google.maps)
+* [WebSharper.Google.Maps at GitHub](http://bitbucket.org/intellifactory/Websharper.Google.Maps)
+
 ## Configuration
 
 The Google maps API is a free service that is available to every page
