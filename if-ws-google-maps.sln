@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.Google.Maps", "if-ws-google-maps\IntelliFactory.WebSharper.Google.Maps.fsproj", "{B22461D0-20E8-4A65-9EAD-7F482FD3303A}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.Google.Maps.Documentation", "if-ws-google-maps-docs\IntelliFactory.WebSharper.Google.Maps.Documentation.fsproj", "{93F52AE2-4869-44AB-848C-4C95D26052AE}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.Google.Maps.Tests", "if-ws-google-maps-tests\IntelliFactory.WebSharper.Google.Maps.Tests.fsproj", "{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "web\Website.csproj", "{F453CB86-F138-4F1B-A87B-93E1B587E16F}"
@@ -24,10 +22,6 @@ Global
 		{B22461D0-20E8-4A65-9EAD-7F482FD3303A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B22461D0-20E8-4A65-9EAD-7F482FD3303A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B22461D0-20E8-4A65-9EAD-7F482FD3303A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93F52AE2-4869-44AB-848C-4C95D26052AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93F52AE2-4869-44AB-848C-4C95D26052AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93F52AE2-4869-44AB-848C-4C95D26052AE}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{93F52AE2-4869-44AB-848C-4C95D26052AE}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00C2E4ED-8E71-40F9-ACBE-260BDDE45944}.Release|Any CPU.ActiveCfg = Release|Any CPU
