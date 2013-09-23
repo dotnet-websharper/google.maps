@@ -13,24 +13,12 @@ module IntelliFactory.WebSharper.Google.Maps.Tests.HeatMapSample
 
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Html
+open IntelliFactory.WebSharper.JQuery
 open IntelliFactory.WebSharper.Google.Maps
 
-[<Remote>]
-let GetTaxiData () : Async<array<float * float>> =
-    async {
-        let json = System.Web.HttpContext.Current.Server.MapPath("~/taxi.json")
-        let value = Core.Json.Parse(System.IO.File.ReadAllText(json))
-        match value with
-        | Core.Json.Object ["coordinates", Core.Json.Array values] ->
-            return [|
-                for v in values do
-                    match v with
-                    | Core.Json.Array [Core.Json.Number a; Core.Json.Number b] ->
-                        yield (double a, double b)
-                    | _ -> ()
-            |]
-        | _ ->
-            return [||]
+type TaxiData =
+    {
+        coordinates : array<float * float>
     }
 
 [<JavaScript>]
@@ -62,7 +50,11 @@ let Sample () =
     Div [Attr.Style "height: 480px; width: 640px"]
     |>! OnAfterRender (fun self ->
         async {
-            let! data = GetTaxiData ()
-            do Draw self.Dom data
+            let! data =
+                Async.FromContinuations(fun (ok, _, cancel) ->
+                    JQuery.GetJSON("taxi.js", fun (data, _) ->
+                        ok (As<TaxiData> data))
+                    |> ignore)
+            do Draw self.Dom data.coordinates
         }
         |> Async.Start)

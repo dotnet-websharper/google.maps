@@ -313,9 +313,6 @@ module SamplesInternals =
     [<JavaScript>]
     let Samples () =
         Div [
-            H1 [Text "HeatMaps"]
-            Div [HeatMapSample.Sample()]
-
             H1 [Text "Google Maps Samples"]
             SimpleMap ()
             PanTo ()
@@ -330,6 +327,8 @@ module SamplesInternals =
             StreetView ()
             PrimitiveEvent ()
             SimplePolyline ()
+            H1 [Text "HeatMaps"]
+            Div [HeatMapSample.Sample()]
         ]
 
 open IntelliFactory.WebSharper
@@ -341,3 +340,28 @@ type Samples() =
     [<JavaScript>]
     override this.Body = SamplesInternals.Samples () :> Html.IPagelet
 
+
+open IntelliFactory.WebSharper.Sitelets
+
+type Action = | Index
+
+module Site =
+
+    open IntelliFactory.Html
+
+    let HomePage =
+        Content.PageContent <| fun ctx ->
+            { Page.Default with
+                Title = Some "WebSharper Google Maps Tests"
+                Body = [Div [new Samples()]] }
+
+    let Main = Sitelet.Content "/" Index HomePage
+
+[<Sealed>]
+type Website() =
+    interface IWebsite<Action> with
+        member this.Sitelet = Site.Main
+        member this.Actions = [Action.Index]
+
+[<assembly: Website(typeof<Website>)>]
+do ()

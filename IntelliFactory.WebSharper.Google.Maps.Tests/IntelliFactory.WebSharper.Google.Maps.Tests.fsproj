@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{b22461d0-20e8-4a65-9ead-7f482fd3303a}</ProjectGuid>
+    <ProjectGuid>{00c2e4ed-8e71-40f9-acbe-260bdde45944}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <Name>IntelliFactory.WebSharper.Google.Maps</Name>
+    <Name>IntelliFactory.WebSharper.Google.Maps.Tests</Name>
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -20,7 +20,6 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug\$(Name).XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -30,38 +29,24 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\$(Name).XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="..\.build\lib\IntelliFactory.WebSharper.InterfaceGenerator.targets" />
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '11.0'">
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="$(FSharpTargetsPath)" />
+  <Import Project="../build/net45/$(Name).proj" />
   <ItemGroup>
-    <Compile Include="Notation.fs" />
-    <Compile Include="Forward.fs" />
-    <Compile Include="Events.fs" />
-    <Compile Include="MVC.fs" />
-    <Compile Include="Base.fs" />
-    <Compile Include="Controls.fs" />
-    <Compile Include="StreetView.fs" />
-    <Compile Include="MapTypes.fs" />
-    <Compile Include="Map.fs" />
-    <Compile Include="Visualization.fs" />
-    <Compile Include="Specification.fs" />
-    <Compile Include="Main.fs" />
-    <None Include="Annotations.cs" />
-    <None Include="Dependencies.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="FSharp.Core" />
-    <Reference Include="IntelliFactory.JavaScript" />
-    <Reference Include="IntelliFactory.WebSharper" />
-    <Reference Include="IntelliFactory.WebSharper.Core" />
-    <Reference Include="IntelliFactory.WebSharper.Dom">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="IntelliFactory.WebSharper.InterfaceGenerator" />
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Configuration" />
+    <Compile Include="HeatMaps.fs" />
+    <Compile Include="Samples.fs" />
   </ItemGroup>
 </Project>
