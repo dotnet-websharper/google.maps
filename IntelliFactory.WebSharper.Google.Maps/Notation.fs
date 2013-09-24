@@ -22,3 +22,7 @@ let Ctor (ps: seq<Type.IParameter>) : CodeModel.Constructor =
         ||> Seq.fold (fun x y -> x * y)
     Constructor ps
 
+/// Defines a configuration object.
+let Config name =
+    Class name
+    |+> [ Ctor [] |> WithInline "{}" ]

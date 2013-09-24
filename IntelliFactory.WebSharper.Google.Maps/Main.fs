@@ -36,6 +36,11 @@ let Assembly =
             Controls.ZoomControlOptions
             Controls.ZoomControlStyle
 
+            Drawing.OverlayType
+            Drawing.DrawingControlOptions
+            Drawing.DrawingManager
+            Drawing.DrawingManagerOptions
+
             StreetView.StreetViewAddressControlOptions
             StreetView.StreetViewCoverageLayer
             StreetView.StreetViewLink
@@ -63,15 +68,62 @@ let Assembly =
             Map.MapOptions
             Map.MapTypeId
 
+            Places.Autocomplete
+            Places.AutocompleteOptions
+            Places.AutocompletePrediction
+            Places.AutocompleteService
+            Places.AutocompletionRequest
+            Places.ComponentRestrictions
+            Places.PhotoOptions
+            Places.PlaceAspectRating
+            Places.PlaceDetailsRequest
+            Places.PlaceGeometry
+            Places.PlaceResult
+            Places.PlaceReview
+            Places.PlaceSearchPagination
+            Places.PlaceSearchRequest
+            Places.PlacesService
+            Places.PlacesServiceStatus
+            Places.PredictionSubstring
+            Places.PredictionTerm
+            Places.QueryAutocompletePrediction
+            Places.QueryAutocompletionRequest
+            Places.RadarSearchRequest
+            Places.RankBy
+            Places.SearchBox
+            Places.SearchBoxOptions
+            Places.TextSearchRequest
+
+            Visualization.DemographicsLayer
+            Visualization.DemographicsLayerOptions
+            Visualization.DemographicsPolygonOptions
+            Visualization.DemographicsPropertyStyle
+            Visualization.DemographicsQuery
+            Visualization.DemographicsStyle
+            Visualization.DynamicMapsEngineLayer
+            Visualization.FeatureStyle
             Visualization.HeatmapLayer
             Visualization.HeatmapLayerOptions
+            Visualization.MapsEngineLayer
+            Visualization.MapsEngineLayerOptions
+            Visualization.MapsEngineLayerProperties
+            Visualization.MapsEngineStatus
             Visualization.WeightedLocation
 
+            Weather.CloudLayer
+            Weather.LabelColor
+            Weather.TemperatureUnit
+            Weather.WeatherConditions
+            Weather.WeatherForecast
+            Weather.WeatherFeature
+            Weather.WeatherLayerOptions
+            Weather.WeatherLayer
+            Weather.WindSpeedUnit
+
+            Animation
             BicyclingLayer
             Circle
             CircleOptions
-            DirectionsDistance
-            DirectionsDuration
             DirectionsLeg
             DirectionsRenderer
             DirectionsRendererOptions
@@ -81,19 +133,32 @@ let Assembly =
             DirectionsService
             DirectionsStatus
             DirectionsStep
-            DirectionsTravelMode
-            DirectionsUnitSystem
             DirectionsWaypoint
+            Distance
+            DistanceMatrixService
+            DistanceMatrixRequest
+            DistanceMatrixResponse
+            DistanceMatrixResponseRow
+            DistanceMatrixResponseElement
+            DistanceMatrixStatus
+            DistanceMatrixElementStatus
+            Duration
             ElevationResult
             ElevationService
             ElevationStatus
             Event
             FusionTablesCell
+            FusionTablesHeatmap
             FusionTablesLayer
             FusionTablesLayerOptions
+            FusionTablesMarkerOptions
             FusionTablesMouseEvent
+            FusionTablesPolygonOptions
+            FusionTablesPolylineOptions
+            FusionTablesStyle
             Geocoder
             GeocoderAddressComponent
+            GeocoderComponentRestrictions
             GeocoderGeometry
             GeocoderLocationType
             GeocoderRequest
@@ -101,6 +166,8 @@ let Assembly =
             GeocoderStatus
             GroundOverlay
             GroundOverlayOptions
+            Icon
+            IconSequence
             InfoWindow
             InfoWindowOptions
             KmlAuthor
@@ -108,7 +175,9 @@ let Assembly =
             KmlLayer
             KmlLayerMetadata
             KmlLayerOptions
+            KmlLayerStatus
             KmlMouseEvent
+            Location
             LocationElevationRequest
             MapCanvasProjection
             MapPanes
@@ -117,6 +186,9 @@ let Assembly =
             MarkerOptions
             MarkerShape
             MarkerShapeType
+            MaxZoomResult
+            MaxZoomService
+            MaxZoomStatus
             NavigationControlOptions
             NavigationControlStyle
             OverlayView
@@ -127,9 +199,23 @@ let Assembly =
             PolylineOptions
             Rectangle
             RectangleOptions
+            StrokePosition
             // StyledMapType: FIXME after bugs 103, 108
             StyledMapTypeOptions
+            Symbol
+            SymbolPath
+            Time
             TrafficLayer
+            TransitAgency
+            TransitDetails
+            TransitLayer
+            TransitLine
+            TransitOptions
+            TransitStop
+            TransitVehicle
+            TravelMode
+            UnitSystem
+            VehicleType
         ]
     ]
     |> Requires [Res.Js]

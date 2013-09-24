@@ -59,6 +59,9 @@
     <Compile Include="Map.fs" />
     <Compile Include="Visualization.fs" />
     <Compile Include="Specification.fs" />
+    <Compile Include="Places.fs" />
+    <Compile Include="Drawing.fs" />
+    <Compile Include="Weather.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 </Project>

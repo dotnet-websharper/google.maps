@@ -28,7 +28,7 @@ let Draw (div: Dom.Element) (rawData: array<double*double>) : unit =
     JavaScript.Global?pointArray <- pointArray
     let map =
         let center = LatLng(57.6414, 12.0403)
-        let opts = MapOptions(center, MapTypeId.ROADMAP, 13)
+        let opts = MapOptions(center, 13)
         Map(div, opts)
     let heatmap =
         let opts = new HeatmapLayerOptions(pointArray)

@@ -6,112 +6,143 @@ open IntelliFactory.WebSharper.InterfaceGenerator
 open IntelliFactory.WebSharper.Google.Maps.Notation
 
 let ControlPosition =
-    Pattern.EnumInlines "ControlPosition" [
-        "BOTTOM_CENTER", "google.maps.ControlPosition.BOTTOM_CENTER"
-        "BOTTOM_LEFT", "google.maps.ControlPosition.BOTTOM_LEFT"
-        "BOTTOM_RIGHT", "google.maps.ControlPosition.BOTTOM_RIGHT"
+    let t = Type.New()
+    Class "ControlPosition"
+    |=> t
+    |+> [
+        "BOTTOM_CENTER" =? t
+        |> WithComment "Elements are positioned in the center of the bottom row."
 
-        "LEFT_BOTTOM", "google.maps.ControlPosition.LEFT_TOP"
-        "LEFT_CENTER", "google.maps.ControlPosition.LEFT_CENTER"
-        "LEFT_TOP", "google.maps.ControlPosition.LEFT_TOP"
+        "BOTTOM_LEFT" =? t
+        |> WithComment "Elements are positioned in the bottom left and flow towards the middle. Elements are positioned to the right of the Google logo."
 
-        "RIGHT_BOTTOM", "google.maps.ControlPosition.RIGHT_TOP"
-        "RIGHT_CENTER", "google.maps.ControlPosition.RIGHT_CENTER"
-        "RIGHT_TOP", "google.maps.ControlPosition.RIGHT_TOP"
+        "BOTTOM_RIGHT" =? t
+        |> WithComment "Elements are positioned in the bottom right and flow towards the middle. Elements are positioned to the left of the copyrights."
 
-        "TOP_CENTER", "google.maps.ControlPosition.TOP_CENTER"
-        "TOP_LEFT", "google.maps.ControlPosition.TOP_LEFT"
-        "TOP_RIGHT", "google.maps.ControlPosition.TOP_RIGHT"
+        "LEFT_BOTTOM" =? t
+        |> WithComment "Elements are positioned on the left, above bottom-left elements, and flow upwards."
+
+        "LEFT_CENTER" =? t
+        |> WithComment "Elements are positioned in the center of the left side."
+
+        "LEFT_TOP" =? t
+        |> WithComment "Elements are positioned on the left, below top-left elements, and flow downwards."
+
+        "RIGHT_BOTTOM" =? t
+        |> WithComment "Elements are positioned on the right, above bottom-right elements, and flow upwards."
+
+        "RIGHT_CENTER" =? t
+        |> WithComment "Elements are positioned in the center of the right side."
+
+        "RIGHT_TOP" =? t
+        |> WithComment "Elements are positioned on the right, below top-right elements, and flow downwards."
+
+        "TOP_CENTER" =? t
+        |> WithComment "Elements are positioned in the center of the top row."
+
+        "TOP_LEFT" =? t
+        |> WithComment "Elements are positioned in the top left and flow towards the middle."
+
+        "TOP_RIGHT" =? t
+        |> WithComment "Elements are positioned in the top right and flow towards the middle."
     ]
 
 let MapTypeControlStyle =
-    Pattern.EnumInlines "MapTypeControlStyle" [
-        // Uses the default map type control. The control which DEFAULT maps to will vary according to window size and other factors. It may change in future versions of the API.
-        "DEFAULT", "google.maps.MapTypeControlStyle.DEFAULT"
-        // A dropdown menu for the screen realestate conscious.
-        "DROPDOWN_MENU", "google.maps.MapTypeControlStyle.DROPDOWN_MENU"
-        // The standard horizontal radio buttons bar.
-        "HORIZONTAL_BAR", "google.maps.MapTypeControlStyle.HORIZONTAL_BAR"
+    let t = Type.New()
+    Class "google.maps.MapTypeControlStyle"
+    |=> t
+    |+> [
+        "DEFAULT" =? t
+        |> WithComment "Uses the default map type control. The control which DEFAULT maps to will vary according to window size and other factors. It may change in future versions of the API."
+        
+        "DROPDOWN_MENU" =? t
+        |> WithComment "A dropdown menu for the screen realestate conscious."
+
+        "HORIZONTAL_BAR" =? t
+        |> WithComment "The standard horizontal radio buttons bar."
     ]
 
 let MapTypeControlOptions =
-    Pattern.Config "MapTypeControlOptions" {
-        Required = []
-        Optional =
-        [
-            // IDs of map types to show in the control.
-            "mapTypeIds", Type.ArrayOf Forward.MapTypeId
-            // Position id. Used to specify the position of the control on the map. The default position is TOP_RIGHT.
-            "position", ControlPosition.Type
-            // Style id. Used to select what style of map type control to display.
-            "style", MapTypeControlStyle.Type
+    Config "MapTypeControlOptions"
+    |+> Protocol [
+            "mapTypeIds" =% Type.ArrayOf Forward.MapTypeId
+            |> WithComment "IDs of map types to show in the control."
+
+            "position" =% ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_RIGHT."
+
+            "style" =% MapTypeControlStyle
+            |> WithComment "Style id. Used to select what style of map type control to display."
         ]
-    }
 
 let OverviewMapControlOptions =
-    Pattern.Config "OverviewMapControlOptions" {
-        Required = []
-        Optional =
-        [
-            "opened", T<bool>
+    Config "OverviewMapControlOptions"
+    |+> Protocol [
+            "opened" =% T<bool>
+            |> WithComment "Whether the control should display in opened mode or collapsed (minimized) mode. By default, the control is closed."
         ]
-    }
 
 let PanControlOptions =
-    Pattern.Config "PanControlOptions" {
-        Required = []
-        Optional =
-        [
-            "position", ControlPosition.Type
+    Config "PanControlOptions"
+    |+> Protocol [
+            "position" =% ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
         ]
-    }
 
 let RotateControlOptions =
-    Pattern.Config "RotateControlOptions" {
-        Required = []
-        Optional =
-        [
-            "position", ControlPosition.Type
+    Config "RotateControlOptions"
+    |+> Protocol [
+            "position" =% ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
         ]
-    }
-
-let StreetViewControlOptions =
-    Pattern.Config "StreetViewControlOptions" {
-        Required = []
-        Optional =
-        [
-            "position", ControlPosition.Type
-        ]
-    }
 
 let ScaleControlStyle =
-    Pattern.EnumInlines "ScaleControlStyle" [
-        "DEFAULT", "google.maps.ScaleControlStyle.DEFAULT"
+    let t = Type.New()
+    Class "google.maps.ScaleControlStyle"
+    |=> t
+    |+> [
+        "DEFAULT" =? t
+        |> WithComment "The standard scale control."
     ]
 
 let ScaleControlOptions =
-    Pattern.Config "ScaleControlOptions" {
-        Required = []
-        Optional =
-        [
-            "position", ControlPosition.Type
-            "style", ScaleControlStyle.Type
+    Config "ScaleControlOptions"
+    |+> Protocol [
+            "position" =% ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is BOTTOM_LEFT when google.maps.visualRefresh is set to false. When google.maps.visualRefresh is true the scale control will be fixed at the BOTTOM_RIGHT."
+
+            "style" =% ScaleControlStyle
+            |> WithComment "Style id. Used to select what style of scale control to display."
         ]
-    }
+
+let StreetViewControlOptions =
+    Config "StreetViewControlOptions"
+    |+> Protocol [
+            "position" =% ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is embedded within the navigation (zoom and pan) controls. If this position is empty or the same as that specified in the zoomControlOptions or panControlOptions, the Street View control will be displayed as part of the navigation controls. Otherwise, it will be displayed separately."
+        ]
 
 let ZoomControlStyle =
-    Pattern.EnumInlines "ZoomControlStyle" [
-        "DEFAULT", "google.maps.ZoomControlStyle.DEFAULT"
-        "LARGE", "google.maps.ZoomControlStyle.LARGE"
-        "SMALL", "google.maps.ZoomControlStyle.SMALL"
+    let t = Type.New()
+    Class "google.maps.ZoomControlStyle"
+    |=> t
+    |+> [
+        "DEFAULT" =? t
+        |> WithComment "The default zoom control. The control which DEFAULT maps to will vary according to map size and other factors. It may change in future versions of the API."
+
+        "LARGE" =? t
+        |> WithComment "The larger control, with the zoom slider in addition to +/- buttons."
+
+        "SMALL" =? t
+        |> WithComment "A small control with buttons to zoom in and out."
     ]
 
 let ZoomControlOptions =
-    Pattern.Config "ZoomControlOptions" {
-        Required = []
-        Optional =
-        [
-            "position", ControlPosition.Type
-            "style", ZoomControlStyle.Type
+    Config "ZoomControlOptions"
+    |+> Protocol [
+            "position" =% ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
+
+            "style" =% ZoomControlStyle
+            |> WithComment "Style id. Used to select what style of zoom control to display."
         ]
-    }

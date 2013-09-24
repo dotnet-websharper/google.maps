@@ -10,23 +10,27 @@ let LatLng =
     LatLng
     |+> [
             Ctor [
-                T<float>?lattitude
-                T<float>?longitute
-                !? T<bool>?noWrap
+                T<float>?Lat
+                T<float>?Lng
+                !? T<bool>?NoWrap
             ]
+            |> WithComment "Creates a LatLng object representing a geographic point. Latitude is specified in degrees within the range [-90, 90]. Longitude is specified in degrees within the range [-180, 180]. Set noWrap to true to enable values outside of this range. Note the ordering of latitude and longitude."
         ]
     |+> Protocol [
-        // Comparison function.
         "equals" => LatLng?other ^-> T<bool>
+        |> WithComment "Comparison function."
 
-        // Returns the latitude in degrees.
         "lat" => T<unit> ^-> T<float>
+        |> WithComment "Returns the latitude in degrees."
 
-        // Returns the longitude in degrees.
         "lng" => T<unit> ^-> T<float>
+        |> WithComment "Returns the longitude in degrees."
 
-        // Returns a T<string> of the form "lat,lng" for this LatLng. We round the lat/lng values to 6 decimal places by default.
+        "toString" => T<unit -> string>
+        |> WithComment "Converts to string representation."
+
         "toUrlValue" => (!? T<int>) ^-> T<string>
+        |> WithComment "Returns a string of the form \"lat,lng\" for this LatLng. We round the lat/lng values to 6 decimal places by default."
     ]
 
 let LatLngBounds =
@@ -34,33 +38,46 @@ let LatLngBounds =
     LatLngBounds
     |+> [
             Ctor [
-                !? LatLng?sw
-                !? LatLng?ne
+                !? LatLng?SW
+                !? LatLng?NE
             ]
         ]
     |+> Protocol [
-        // Returns true if the given lat/lng is in this bounds.
         "contains" => (LatLng) ^-> T<bool>
-        // Returns true if this bounds approximately equals the given bounds.
+        |> WithComment "Returns true if the given lat/lng is in this bounds."
+
         "equals" => (LatLngBounds) ^-> T<bool>
-        // Extends this bounds to contain the given point.
+        |> WithComment "Returns true if this bounds approximately equals the given bounds."
+
         "extend" => (LatLng) ^-> LatLngBounds
-        // Computes the center of this LatLngBounds
+        |> WithComment "Extends this bounds to contain the given point."
+
         "getCenter" => T<unit> ^-> LatLng
-        // Returns the north-east corner of this bounds.
+        |> WithComment "Computes the center of this LatLngBounds"
+
         "getNorthEast" => T<unit> ^-> LatLng
-        // Returns the south-west corner of this bounds.
+        |> WithComment "Returns the north-east corner of this bounds."
+
         "getSouthWest" => T<unit> ^-> LatLng
-        // Returns true if this bounds shares any points with this bounds.
+        |> WithComment "Returns the south-west corner of this bounds."
+
         "intersects" => (LatLngBounds) ^-> T<bool>
-        // Returns if the bounds are empty.
+        |> WithComment "Returns true if this bounds shares any points with this bounds."
+
         "isEmpty" => T<unit> ^-> T<bool>
-        // Converts the given map bounds to a lat/lng span.
+        |> WithComment "Returns if the bounds are empty."
+
         "toSpan" => T<unit> ^-> LatLng
-        // Returns a T<string> of the form "lat_lo,lng_lo,lat_hi,lng_hi" for this bounds, where "lo" corresponds to the southwest corner of the bounding box, while "hi" corresponds to the northeast corner of that box.
+        |> WithComment "Converts the given map bounds to a lat/lng span."
+
+        "toString" => T<unit -> string>
+        |> WithComment "Converts to string."
+
         "toUrlValue" => (!? T<float>) ^-> T<string>
-        // Extends this bounds to contain the union of this and the given bounds.
+        |> WithComment "Returns a string of the form \"lat_lo,lng_lo,lat_hi,lng_hi\" for this bounds, where \"lo\" corresponds to the southwest corner of the bounding box, while \"hi\" corresponds to the northeast corner of that box."
+
         "union" => (LatLngBounds) ^-> LatLngBounds
+        |> WithComment "Extends this bounds to contain the union of this and the given bounds."
     ]
 
 let Point =
@@ -73,11 +90,14 @@ let Point =
             ]
         ]
     |+> Protocol [
-        // Compares two Points
         "equals" => (Point) ^-> T<bool>
-        // The X coordinate
+        |> WithComment "Compares two Points"
+
+        "toString" => T<unit -> string>
+        |> WithComment "Returns a string representation of this Point."
+
         "x" =@ T<float>
-        // The Y coordinate
+
         "y" =@ T<float>
     ]
 
@@ -86,19 +106,23 @@ let Size =
     Size
     |+> [
             Ctor [
-                T<float>?width
-                T<float>?height
-                !? T<string>?widthUnit
-                !? T<string>?heightUnit
+                T<float>?Width
+                T<float>?Height
+                !? T<string>?WidthUnit
+                !? T<string>?HeightUnit
             ]
+            |> WithComment "Two-dimensonal size, where width is the distance on the x-axis, and height is the distance on the y-axis."
         ]
     |+> Protocol [
-        // Compares two Sizes.
         "equals" => (Size) ^-> T<bool>
+        |> WithComment "Compares two Sizes."
 
-        // The height along the y-axis, in pixels.
+        "toString" => T<unit -> string>
+        |> WithComment "Returns a string representation of this Size."
+
         "height" =@ T<int>
+        |> WithComment "The height along the y-axis, in pixels."
 
-        // The width along the x-axis, in pixels.
         "width" =@ T<int>
+        |> WithComment "The width along the x-axis, in pixels."
     ]

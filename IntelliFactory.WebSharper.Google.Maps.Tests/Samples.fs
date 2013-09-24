@@ -41,7 +41,7 @@ module SamplesInternals =
         Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
         |>! OnAfterRender (fun mapElement ->
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(center, MapTypeId.ROADMAP, 8)
+            let options = new MapOptions(center, 8)
             let map = new Google.Maps.Map(mapElement.Body, options)
             buildMap map)
 
@@ -49,7 +49,7 @@ module SamplesInternals =
     let SimpleMap() =
         Sample <| fun (map: Map) ->
             let latLng = new LatLng(-34.397, 150.644)
-            let options = new MapOptions(latLng, MapTypeId.ROADMAP, 8)
+            let options = new MapOptions(latLng, 8)
             map.SetOptions options
 
     [<JavaScript>]
@@ -57,7 +57,7 @@ module SamplesInternals =
         Sample <| fun map ->
 
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(center, MapTypeId.ROADMAP, 8)
+            let options = new MapOptions(center, 8)
             map.SetOptions options
             let move () = map.PanTo(new LatLng(37.4569, -122.1569))
             // Window.SetTimeout(move, 5000)
@@ -100,7 +100,7 @@ module SamplesInternals =
     let Controls() =
         Sample <| fun map ->
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(center, MapTypeId.ROADMAP, 8)
+            let options = new MapOptions(center, 8)
             options.DisableDefaultUI <- true
             let ncOptions = new NavigationControlOptions()
             ncOptions.Style <- NavigationControlStyle.ZOOM_PAN
@@ -126,7 +126,7 @@ module SamplesInternals =
             let calcRoute () =
                 let start = "chicago, il"
                 let destination  = "st louis, mo"
-                let request = new DirectionsRequest(start, destination, DirectionsTravelMode.DRIVING)
+                let request = new DirectionsRequest(start, destination, TravelMode.DRIVING)
                 directionsService.Route(request, fun (result, status) ->
                     if status = DirectionsStatus.OK then
                         directionsDisplay.SetDirections result)
@@ -151,13 +151,13 @@ module SamplesInternals =
                 let start = "chicago, il"
                 let destination  = "st louis, mo"
 
-                let request = new DirectionsRequest(start, destination, DirectionsTravelMode.DRIVING)
+                let request = new DirectionsRequest(start, destination, TravelMode.DRIVING)
                 let waypoints =
                     [|"champaign, il"
                       "decatur, il"  |]
                     |> Array.map (fun x ->
                                     let wp = new DirectionsWaypoint()
-                                    wp.Location <- x
+                                    wp.Location <- Location(x)
                                     wp)
 
                 request.Waypoints <- waypoints
@@ -208,7 +208,7 @@ module SamplesInternals =
                 mco.MapTypeIds <- mapIds
                 mco
 
-            let options = new MapOptions(center, mapIds.[0], 0)
+            let options = new MapOptions(center, 0, MapTypeId = mapIds.[0])
             options.MapTypeControlOptions <- mapControlOptions
             map.SetOptions options
             // FIXME
@@ -222,9 +222,8 @@ module SamplesInternals =
             let images = [| "sun"; "rain"; "snow"; "storm" |]
             let getWeatherIcon () =
                 let i = int <| Math.Floor(float images.Length * Math.Random())
-                let icon = new MarkerImage("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
-                                            + images.[i] + ".png")
-                icon
+                Icon(Url = ("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
+                            + images.[i] + ".png"))
 
             let addMarkers (_:obj) =
                 let bounds = map.GetBounds()
@@ -287,7 +286,7 @@ module SamplesInternals =
             let marker = new Marker()
             marker.SetPosition fenwayPark
             marker.SetMap map
-            let options = new MapOptions(fenwayPark, MapTypeId.ROADMAP, 14)
+            let options = new MapOptions(fenwayPark, 14)
             options.StreetViewControl <- true
             map.SetOptions options
 
