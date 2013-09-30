@@ -40,8 +40,10 @@ service [here][terms].
 The version 3.0 of the Google Maps API does not require a key. The
 extension will generate code similar to the following for your pages:
 
-    <script type="text/javascript"
-        src="http://maps.google.com/maps/api/js?sensor=true">
+```html
+<script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=true">
+```
 
 [terms]: http://code.google.com/apis/maps/terms.html
 
@@ -70,16 +72,18 @@ The first two steps are independent of the functionality.  For this
 you can create a simple helper function that receives a function that
 takes as a parameter the initialized map:
 
-    open IntelliFactory.WebSharper.Google
+```fsharp
+open IntelliFactory.WebSharper.Google
 
-    [<JavaScript>]
-    let Sample buildMap =
-        Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
-        |>! OnAfterRender (fun mapElement ->
-            let center = new Maps.LatLng(37.4419, -122.1419)
-            let options = new Maps.MapOptions(center, MapTypeId.ROADMAP, 8)
-            let map = new Maps.Map(mapElement.Dom, options)
-            buildMap map)
+[<JavaScript>]
+let Sample buildMap =
+    Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
+    |>! OnAfterRender (fun mapElement ->
+        let center = new Maps.LatLng(37.4419, -122.1419)
+        let options = new Maps.MapOptions(center, MapTypeId.ROADMAP, 8)
+        let map = new Maps.Map(mapElement.Dom, options)
+        buildMap map)
+```
 
 A `<div>` element is created at line 3.  The size of the `<div>` will
 determine the size of the map.  You can set all the style properties
