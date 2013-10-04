@@ -2,7 +2,7 @@
 open IntelliFactory.Build
 
 let bt =
-    BuildTool().PackageId("IntelliFactory.WebSharper.Google.Maps", "2.5")
+    BuildTool().PackageId("WebSharper.Google.Maps", "2.5")
         .References(fun r -> [r.Assembly "System.Web"])
 
 let main =

@@ -13,11 +13,6 @@ Maps API using nothing but F# code.
 
 [gmaps]: http://code.google.com/apis/maps/documentation/javascript
 
-## Status
-
-Current status of the code: the bindings mostly reflect older API,
-with some of the modules ported to 3.11 - this is work in progress.
-
 ## Installation
 
 This extension is compatible with [WebSharper
