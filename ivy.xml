@@ -1,11 +1,5 @@
 <ivy-module version="2.0">
-  <info organisation="IntelliFactory" module="if-ws-google-maps" revision="2.5" />
-  <publications>
-    <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="dll" type="bin" />
-    <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="xml" type="doc" />
-    <artifact name="IntelliFactory.WebSharper.Google.Maps" ext="pdb" type="debug" />
-    <artifact name="if-ws-google-maps-docs" ext="zip" type="doc" />
-  </publications>
+  <info organisation="IntelliFactory" module="websharper.google.maps" revision="2.5" />
   <dependencies>
     <dependency name="WebSharper" rev="latest.integration" />
   </dependencies>

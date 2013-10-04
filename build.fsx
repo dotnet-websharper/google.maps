@@ -19,7 +19,13 @@ bt.Solution [
     test
 
     bt.NuGet.CreatePackage()
-        .Description("WebSharper Extensions for Google Maps")
+        .Configure(fun c ->
+            { c with
+                Title = Some "WebSharper.Google.Maps-3.13"
+                LicenseUrl = Some "http://websharper.com/licensing"
+                ProjectUrl = Some "https://github.com/intellifactory/websharper.google.maps"
+                Description = "WebSharper Extensions for Google Maps 3.13"
+                RequiresLicenseAcceptance = true })
         .Add(main)
 
 ]
