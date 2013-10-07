@@ -3,9 +3,9 @@
 **Add interactive maps to your web applications! ...Without a single
 line of JavaScript.**
 
-The Google Map API enables you to create rich, interactive maps,
-street views, route planning, and much more.  Go and check out their
-[homepage][gmaps].
+The Google Map API, version 3.13, enables you to create rich,
+interactive maps, street views, route planning, and much more.  Go and
+check out their [homepage][gmaps].
 
 With this WebSharper Extension you can develop
 [WebSharper](http://websharper.com) applications that use the Google
