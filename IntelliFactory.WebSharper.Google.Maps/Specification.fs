@@ -806,7 +806,7 @@ let MarkerOptions =
     Class "google.maps.MarkerOptions"
     |+> [
         Constructor LatLng?Position
-        |> WithInline "{position:Position}"
+        |> WithInline "{position:$Position}"
         ]
     |+> Protocol [
 
