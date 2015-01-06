@@ -1,0 +1,8 @@
+bin/
+obj/
+build
+*.suo
+*.user
+/tools/packages/
+/packages/
+/build/

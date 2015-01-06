@@ -12,7 +12,8 @@
 module IntelliFactory.WebSharper.Google.Maps.Tests.HeatMapSample
 
 open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.Html
+open IntelliFactory.WebSharper.JavaScript
+open IntelliFactory.WebSharper.Html.Client
 open IntelliFactory.WebSharper.JQuery
 open IntelliFactory.WebSharper.Google.Maps
 
@@ -25,7 +26,7 @@ type TaxiData =
 let Draw (div: Dom.Element) (rawData: array<double*double>) : unit =
     let taxiData = rawData |> Array.map (fun (lat, lng) -> new LatLng(lat, lng))
     let pointArray = MVCArray(taxiData);
-    JavaScript.Global?pointArray <- pointArray
+    JS.Window?pointArray <- pointArray
     let map =
         let center = LatLng(57.6414, 12.0403)
         let opts = MapOptions(center, 13)

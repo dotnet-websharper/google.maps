@@ -6,7 +6,6 @@ open IntelliFactory.WebSharper.InterfaceGenerator
 open IntelliFactory.WebSharper.Google.Maps.Notation
 open IntelliFactory.WebSharper.Google.Maps.Base
 open IntelliFactory.WebSharper.Google.Maps.Specification
-open IntelliFactory.WebSharper.Dom
 
 let CloudLayer =
     Class "google.maps.weather.CloudLayer"

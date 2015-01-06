@@ -1,7 +1,7 @@
 ﻿/// Helper notation for defining interfaces.
 module IntelliFactory.WebSharper.Google.Maps.Notation
 
-open IntelliFactory.WebSharper.Dom
+open IntelliFactory.WebSharper.JavaScript.Dom
 open IntelliFactory.WebSharper.InterfaceGenerator
 
 let Node = T<Node>

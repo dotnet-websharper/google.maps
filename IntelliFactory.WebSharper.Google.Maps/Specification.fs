@@ -2,11 +2,11 @@
 /// TODO: this code needs revision to update to the latest 3.11 API
 module IntelliFactory.WebSharper.Google.Maps.Specification
 
+open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.InterfaceGenerator
 open IntelliFactory.WebSharper.Google.Maps.Base
 open IntelliFactory.WebSharper.Google.Maps.Notation
 module M = IntelliFactory.WebSharper.Google.Maps.Map
-type Date = IntelliFactory.WebSharper.EcmaScript.Date
 
 let Animation =
     let t = Type.New()
@@ -1345,7 +1345,7 @@ let Time =
         "time_zone" =? T<string>
         |> WithComment "The time zone in which this stop lies. The value is the name of the time zone as defined in the IANA Time Zone Database, e.g. \"America/New_York\"."
 
-        "value" =? T<Date>
+        "value" =? T<JavaScript.Date>
         |> WithComment "The time of this departure or arrival, specified as a JavaScript Date object."
     ]
 
@@ -1695,10 +1695,10 @@ let UnitSystem =
 let TransitOptions =
     Config "TransitOptions"
     |+> Protocol [
-        "arrivalTime" =% T<Date>
+        "arrivalTime" =% T<JavaScript.Date>
         |> WithComment "The desired arrival time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. If arrival time is specified, departure time is ignored."
 
-        "departureTime" =% T<Date>
+        "departureTime" =% T<JavaScript.Date>
         |> WithComment "The desired departure time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. If neither departure time nor arrival time is specified, the time is assumed to be \"now\"."
     ]
 

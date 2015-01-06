@@ -21,8 +21,12 @@
 
 namespace IntelliFactory.WebSharper.Google.Maps.Tests
 
+open IntelliFactory.WebSharper
+
 module Util =
-    open IntelliFactory.WebSharper
+
+    open IntelliFactory.WebSharper.JavaScript
+
     [<Inline "alert($msg)">]
     let Alert (msg: obj) : unit = X
 
@@ -31,10 +35,10 @@ module Util =
 
 module SamplesInternals =
 
-    open IntelliFactory.WebSharper
+    open IntelliFactory.WebSharper.JavaScript
     open IntelliFactory.WebSharper.Google.Maps
-    open IntelliFactory.WebSharper.Html
-    open IntelliFactory.WebSharper.EcmaScript
+    open IntelliFactory.WebSharper.Html.Client
+    open IntelliFactory.WebSharper.JQuery
 
     [<JavaScript>]
     let Sample buildMap =
@@ -75,7 +79,7 @@ module SamplesInternals =
                 let ne = bounds.GetNorthEast()
                 let lngSpan = ne.Lng() - sw.Lng()
                 let latSpan = ne.Lat() - sw.Lat()
-                let rnd = EcmaScript.Math.Random
+                let rnd = Math.Random
                 for i in 1 .. 10 do
                     let point = new LatLng(sw.Lat() + (latSpan * rnd()),
                                            sw.Lng() + (lngSpan * rnd()))
@@ -120,9 +124,9 @@ module SamplesInternals =
             directionsDisplay.SetMap(map)
             let mapDiv = map.GetDiv()
             let dirPanel = Div [ Attr.Name "directionsDiv"]
-            let j = IntelliFactory.WebSharper.JQuery.JQuery.Of(mapDiv)
-            j.After(dirPanel.Body).Ignore
-            directionsDisplay.SetPanel dirPanel.Body
+            let j = JQuery.Of(mapDiv)
+            j.After(dirPanel.Dom).Ignore
+            directionsDisplay.SetPanel dirPanel.Dom
             let calcRoute () =
                 let start = "chicago, il"
                 let destination  = "st louis, mo"
@@ -144,9 +148,9 @@ module SamplesInternals =
             directionsDisplay.SetMap(map)
             let mapDiv = map.GetDiv()
             let dirPanel = Div [Attr.Name "directionsDiv"]
-            let j = JQuery.JQuery.Of mapDiv
-            j.After(dirPanel.Body).Ignore
-            directionsDisplay.SetPanel dirPanel.Body
+            let j = JQuery.Of mapDiv
+            j.After(dirPanel.Dom).Ignore
+            directionsDisplay.SetPanel dirPanel.Dom
             let calcRoute () =
                 let start = "chicago, il"
                 let destination  = "st louis, mo"
@@ -330,14 +334,12 @@ module SamplesInternals =
             Div [HeatMapSample.Sample()]
         ]
 
-open IntelliFactory.WebSharper
-
 [<Sealed>]
 type Samples() =
     inherit Web.Control()
 
     [<JavaScript>]
-    override this.Body = SamplesInternals.Samples () :> Html.IPagelet
+    override this.Body = SamplesInternals.Samples () :> _
 
 
 open IntelliFactory.WebSharper.Sitelets
@@ -346,7 +348,7 @@ type Action = | Index
 
 module Site =
 
-    open IntelliFactory.Html
+    open IntelliFactory.WebSharper.Html.Server
 
     let HomePage =
         Content.PageContent <| fun ctx ->
