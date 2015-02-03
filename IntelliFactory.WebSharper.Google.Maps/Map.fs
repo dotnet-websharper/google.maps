@@ -9,111 +9,111 @@ let MapTypeId = Forward.MapTypeId
 
 let MapOptions =
     Class "MapOptions"
-    |+> [
+    |+> Static [
         Ctor [
             Base.LatLng.Type?Center
             T<int>?Zoom
         ]
         |> WithInline "{center: $Center, zoom: $Zoom}"
     ]
-    |+> Protocol [
-        "backgroundColor" =% T<string>
+    |+> Instance [
+        "backgroundColor" =@ T<string>
         |> WithComment "Color used for the background of the Map div. This color will be visible when tiles have not yet loaded as the user pans. This option can only be set when the map is initialized."
 
-        "center" =% Base.LatLng
+        "center" =@ Base.LatLng
         |> WithComment "The initial Map center. Required."
 
-        "disableDefaultUI" =% T<bool>
+        "disableDefaultUI" =@ T<bool>
         |> WithComment "Enables/disables all default UI. May be overridden individually."
 
-        "disableDoubleClickZoom" =% T<bool>
+        "disableDoubleClickZoom" =@ T<bool>
         |> WithComment "Enables/disables zoom and center on double click. Enabled by default."
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If false, prevents the map from being dragged. Dragging is enabled by default."
 
-        "draggableCursor" =% T<string>
+        "draggableCursor" =@ T<string>
         |> WithComment "The name or url of the cursor to display when mousing over a draggable map."
 
-        "draggingCursor" =% T<string>
+        "draggingCursor" =@ T<string>
         |> WithComment "The name or url of the cursor to display when the map is being dragged."
 
-        "heading" =% T<float>
+        "heading" =@ T<float>
         |> WithComment "The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available."
 
-        "keyboardShortcuts" =% T<bool>
+        "keyboardShortcuts" =@ T<bool>
         |> WithComment "If false, prevents the map from being controlled by the keyboard. Keyboard shortcuts are enabled by default."
 
-        "mapMaker" =% T<bool>
+        "mapMaker" =@ T<bool>
         |> WithComment "True if Map Maker tiles should be used instead of regular tiles."
 
-        "mapTypeControl" =% T<bool>
+        "mapTypeControl" =@ T<bool>
         |> WithComment "The initial enabled/disabled state of the Map type control."
 
-        "mapTypeControlOptions" =% Controls.MapTypeControlOptions
+        "mapTypeControlOptions" =@ Controls.MapTypeControlOptions
         |> WithComment "The initial display options for the Map type control."
 
-        "mapTypeId" =% MapTypeId
+        "mapTypeId" =@ MapTypeId
         |> WithComment "The initial Map mapTypeId. Defaults to ROADMAP."
 
-        "maxZoom" =% T<int>
+        "maxZoom" =@ T<int>
         |> WithComment "The maximum zoom level which will be displayed on the map. If omitted, or set to null, the maximum zoom from the current map type is used instead."
 
-        "minZoom" =% T<int>
+        "minZoom" =@ T<int>
         |> WithComment "The minimum zoom level which will be displayed on the map. If omitted, or set to null, the minimum zoom from the current map type is used instead."
 
-        "noClear" =% T<bool>
+        "noClear" =@ T<bool>
         |> WithComment "If true, do not clear the contents of the Map div."
 
-        "overviewMapControl" =% T<bool>
+        "overviewMapControl" =@ T<bool>
         |> WithComment "The enabled/disabled state of the Overview Map control."
 
-        "overviewMapControlOptions" =% Controls.OverviewMapControlOptions
+        "overviewMapControlOptions" =@ Controls.OverviewMapControlOptions
         |> WithComment "The display options for the Overview Map control."
 
-        "panControl" =% T<bool>
+        "panControl" =@ T<bool>
         |> WithComment "The enabled/disabled state of the Pan control."
 
-        "panControlOptions" =% Controls.PanControlOptions
+        "panControlOptions" =@ Controls.PanControlOptions
         |> WithComment "The display options for the Pan control."
 
-        "rotateControl" =% T<bool>
+        "rotateControl" =@ T<bool>
         |> WithComment "The enabled/disabled state of the Rotate control."
 
-        "rotateControlOptions" =% Controls.RotateControlOptions
+        "rotateControlOptions" =@ Controls.RotateControlOptions
         |> WithComment "The display options for the Rotate control."
 
-        "scaleControl" =% T<bool>
+        "scaleControl" =@ T<bool>
         |> WithComment "The initial enabled/disabled state of the Scale control."
 
-        "scaleControlOptions" =% Controls.ScaleControlOptions
+        "scaleControlOptions" =@ Controls.ScaleControlOptions
         |> WithComment "The initial display options for the Scale control."
 
-        "scrollwheel" =% T<bool>
+        "scrollwheel" =@ T<bool>
         |> WithComment "If false, disables scrollwheel zooming on the map. The scrollwheel is enabled by default."
 
-        "streetView" =% StreetView.StreetViewPanorama
+        "streetView" =@ StreetView.StreetViewPanorama
         |> WithComment "A StreetViewPanorama to display when the Street View pegman is dropped on the map. If no panorama is specified, a default StreetViewPanorama will be displayed in the map's div when the pegman is dropped."
 
-        "streetViewControl" =% T<bool>
+        "streetViewControl" =@ T<bool>
         |> WithComment "The initial enabled/disabled state of the Street View Pegman control. This control is part of the default UI, and should be set to false when displaying a map type on which the Street View road overlay should not appear (e.g. a non-Earth map type)."
 
-        "streetViewControlOptions" =% Controls.StreetViewControlOptions
+        "streetViewControlOptions" =@ Controls.StreetViewControlOptions
         |> WithComment "The initial display options for the Street View Pegman control."
 
-        "styles" =% Type.ArrayOf MapTypes.MapTypeStyle
+        "styles" =@ Type.ArrayOf MapTypes.MapTypeStyle
         |> WithComment "Styles to apply to each of the default map types. Note that for Satellite/Hybrid and Terrain modes, these styles will only apply to labels and geometry."
 
-        "tilt" =% T<float>
+        "tilt" =@ T<float>
         |> WithComment "Controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. The value 0 causes the map to always use a 0° overhead view regardless of the zoom level and viewport. The value 45 causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for SATELLITE and HYBRID map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value specified by this option. Because getTilt and this option refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects."
 
-        "zoom" =% T<int>
+        "zoom" =@ T<int>
         |> WithComment "The initial Map zoom level. Required."
 
-        "zoomControl" =% T<bool>
+        "zoomControl" =@ T<bool>
         |> WithComment "The enabled/disabled state of the Zoom control."
 
-        "zoomControlOptions" =% Controls.ZoomControlOptions
+        "zoomControlOptions" =@ Controls.ZoomControlOptions
         |> WithComment "The display options for the Zoom control."
     ]
 
@@ -122,15 +122,14 @@ let Map =
     Map
     |=> Inherits MVC.MVCObject
     |=> Forward.Map
-    |+>
-        [
-            Ctor [
-                Node?mapDiv
-                !? MapOptions?options
-            ]
-            |> WithComment "Creates a new map inside of the given HTML container, which is typically a DIV element."
+    |+> Static [
+        Ctor [
+            Node?mapDiv
+            !? MapOptions?options
         ]
-    |+> Protocol [
+        |> WithComment "Creates a new map inside of the given HTML container, which is typically a DIV element."
+    ]
+    |+> Instance [
             "fitBounds" => Base.LatLngBounds?bounds ^-> T<unit>
             |> WithComment "Sets the maps to fit to the given bounds."
 
@@ -184,13 +183,13 @@ let Map =
 
             "setZoom" => T<int> ^-> T<unit>
 
-            "controls" =@ (Type.ArrayOf <| MVC.MVCArray Node)
+            "controls" =@ (Type.ArrayOf MVC.MVCArray.[Node])
             |> WithComment "Additional controls to attach to the map. To add a control to the map, add the control's <div> to the MVCArray corresponding to the ControlPosition where it should be rendered."
 
             "mapTypes" =@ MapTypes.MapTypeRegistry
             |> WithComment "A registry of MapType instances by string ID."
 
-            "overlayMapTypes" =@ MVC.MVCArray MapTypes.MapType
+            "overlayMapTypes" =@ MVC.MVCArray.[MapTypes.MapType]
             |> WithComment "Additional map types to overlay."
 
             // TODO: events

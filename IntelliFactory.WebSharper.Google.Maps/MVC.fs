@@ -8,7 +8,7 @@ open IntelliFactory.WebSharper.Google.Maps.Notation
 let MVCObject =
     let MVCObject = Class "google.maps.MVCObject"
     MVCObject
-    |+> Protocol [
+    |+> Instance [
         "addListener" => (T<string>?eventName * T<obj->unit>) ^-> Events.MapsEventListener
         |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with google.maps.event.removeListener."
 
@@ -43,14 +43,14 @@ let MVCObject =
         "unbindAll" => T<unit> ^-> T<unit>
         |> WithComment "Removes all bindings."
     ]
-    |+> [
+    |+> Static [
         Constructor T<unit>
     ]
 
-let MVCArray = Generic / fun t ->
+let MVCArray = Generic - fun t ->
     (
         Class "google.maps.MVCArray"
-        |+> Protocol [
+        |+> Instance [
             "clear" => T<unit->unit>
             |> WithComment "Removes all elements from the array."
 
@@ -83,7 +83,7 @@ let MVCArray = Generic / fun t ->
 
             /// TODO: "insert_at", "remove_at", "set_at" events
         ]
-        |+> [
+        |+> Static [
                 Constructor (!? (Type.ArrayOf t))
             ]
         |=> Inherits MVCObject

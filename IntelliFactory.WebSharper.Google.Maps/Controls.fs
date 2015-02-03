@@ -9,7 +9,7 @@ let ControlPosition =
     let t = Type.New()
     Class "ControlPosition"
     |=> t
-    |+> [
+    |+> Static [
         "BOTTOM_CENTER" =? t
         |> WithComment "Elements are positioned in the center of the bottom row."
 
@@ -51,7 +51,7 @@ let MapTypeControlStyle =
     let t = Type.New()
     Class "google.maps.MapTypeControlStyle"
     |=> t
-    |+> [
+    |+> Static [
         "DEFAULT" =? t
         |> WithComment "Uses the default map type control. The control which DEFAULT maps to will vary according to window size and other factors. It may change in future versions of the API."
         
@@ -64,35 +64,35 @@ let MapTypeControlStyle =
 
 let MapTypeControlOptions =
     Config "MapTypeControlOptions"
-    |+> Protocol [
-            "mapTypeIds" =% Type.ArrayOf Forward.MapTypeId
+    |+> Instance [
+            "mapTypeIds" =@ Type.ArrayOf Forward.MapTypeId
             |> WithComment "IDs of map types to show in the control."
 
-            "position" =% ControlPosition
+            "position" =@ ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_RIGHT."
 
-            "style" =% MapTypeControlStyle
+            "style" =@ MapTypeControlStyle
             |> WithComment "Style id. Used to select what style of map type control to display."
         ]
 
 let OverviewMapControlOptions =
     Config "OverviewMapControlOptions"
-    |+> Protocol [
-            "opened" =% T<bool>
+    |+> Instance [
+            "opened" =@ T<bool>
             |> WithComment "Whether the control should display in opened mode or collapsed (minimized) mode. By default, the control is closed."
         ]
 
 let PanControlOptions =
     Config "PanControlOptions"
-    |+> Protocol [
-            "position" =% ControlPosition
+    |+> Instance [
+            "position" =@ ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
         ]
 
 let RotateControlOptions =
     Config "RotateControlOptions"
-    |+> Protocol [
-            "position" =% ControlPosition
+    |+> Instance [
+            "position" =@ ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
         ]
 
@@ -100,25 +100,25 @@ let ScaleControlStyle =
     let t = Type.New()
     Class "google.maps.ScaleControlStyle"
     |=> t
-    |+> [
+    |+> Static [
         "DEFAULT" =? t
         |> WithComment "The standard scale control."
     ]
 
 let ScaleControlOptions =
     Config "ScaleControlOptions"
-    |+> Protocol [
-            "position" =% ControlPosition
+    |+> Instance [
+            "position" =@ ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is BOTTOM_LEFT when google.maps.visualRefresh is set to false. When google.maps.visualRefresh is true the scale control will be fixed at the BOTTOM_RIGHT."
 
-            "style" =% ScaleControlStyle
+            "style" =@ ScaleControlStyle
             |> WithComment "Style id. Used to select what style of scale control to display."
         ]
 
 let StreetViewControlOptions =
     Config "StreetViewControlOptions"
-    |+> Protocol [
-            "position" =% ControlPosition
+    |+> Instance [
+            "position" =@ ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is embedded within the navigation (zoom and pan) controls. If this position is empty or the same as that specified in the zoomControlOptions or panControlOptions, the Street View control will be displayed as part of the navigation controls. Otherwise, it will be displayed separately."
         ]
 
@@ -126,7 +126,7 @@ let ZoomControlStyle =
     let t = Type.New()
     Class "google.maps.ZoomControlStyle"
     |=> t
-    |+> [
+    |+> Static [
         "DEFAULT" =? t
         |> WithComment "The default zoom control. The control which DEFAULT maps to will vary according to map size and other factors. It may change in future versions of the API."
 
@@ -139,10 +139,10 @@ let ZoomControlStyle =
 
 let ZoomControlOptions =
     Config "ZoomControlOptions"
-    |+> Protocol [
-            "position" =% ControlPosition
+    |+> Instance [
+            "position" =@ ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
 
-            "style" =% ZoomControlStyle
+            "style" =@ ZoomControlStyle
             |> WithComment "Style id. Used to select what style of zoom control to display."
         ]

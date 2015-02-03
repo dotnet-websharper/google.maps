@@ -8,7 +8,7 @@ open IntelliFactory.WebSharper.Google.Maps.Notation
 let LatLng =
     let LatLng = Class "google.maps.LatLng"
     LatLng
-    |+> [
+    |+> Static [
             Ctor [
                 T<float>?Lat
                 T<float>?Lng
@@ -16,7 +16,7 @@ let LatLng =
             ]
             |> WithComment "Creates a LatLng object representing a geographic point. Latitude is specified in degrees within the range [-90, 90]. Longitude is specified in degrees within the range [-180, 180]. Set noWrap to true to enable values outside of this range. Note the ordering of latitude and longitude."
         ]
-    |+> Protocol [
+    |+> Instance [
         "equals" => LatLng?other ^-> T<bool>
         |> WithComment "Comparison function."
 
@@ -36,13 +36,13 @@ let LatLng =
 let LatLngBounds =
     let LatLngBounds = Class "google.maps.LatLngBounds"
     LatLngBounds
-    |+> [
+    |+> Static [
             Ctor [
                 !? LatLng?SW
                 !? LatLng?NE
             ]
         ]
-    |+> Protocol [
+    |+> Instance [
         "contains" => (LatLng) ^-> T<bool>
         |> WithComment "Returns true if the given lat/lng is in this bounds."
 
@@ -83,13 +83,13 @@ let LatLngBounds =
 let Point =
     let Point = Class "google.maps.Point"
     Point
-    |+> [
+    |+> Static [
             Ctor [
                 T<float>?x
                 T<float>?y
             ]
         ]
-    |+> Protocol [
+    |+> Instance [
         "equals" => (Point) ^-> T<bool>
         |> WithComment "Compares two Points"
 
@@ -104,7 +104,7 @@ let Point =
 let Size =
     let Size = Class "google.maps.Size"
     Size
-    |+> [
+    |+> Static [
             Ctor [
                 T<float>?Width
                 T<float>?Height
@@ -113,7 +113,7 @@ let Size =
             ]
             |> WithComment "Two-dimensonal size, where width is the distance on the x-axis, and height is the distance on the y-axis."
         ]
-    |+> Protocol [
+    |+> Instance [
         "equals" => (Size) ^-> T<bool>
         |> WithComment "Compares two Sizes."
 

@@ -17,7 +17,7 @@ let Assembly =
             Events.MapsEventListener
 
             MVC.MVCObject
-            Generic - MVC.MVCArray
+            MVC.MVCArray
 
             Base.LatLng
             Base.LatLngBounds

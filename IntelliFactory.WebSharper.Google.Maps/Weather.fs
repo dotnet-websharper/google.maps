@@ -9,8 +9,8 @@ open IntelliFactory.WebSharper.Google.Maps.Specification
 
 let CloudLayer =
     Class "google.maps.weather.CloudLayer"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
         "getMap" => T<unit> ^-> Map.Map
         |> WithComment "Returns the map on which this layer is displayed."
 
@@ -22,7 +22,7 @@ let TemperatureUnit =
     let t = Type.New()
     Class "google.maps.weather.TemperatureUnit"
     |=> t
-    |+> [
+    |+> Static [
         "CELSIUS" =? t
         "FAHRENHEIT" =? t
     ]
@@ -31,7 +31,7 @@ let WindSpeedUnit =
     let t = Type.New()
     Class "google.maps.weather.WindSpeedUnit"
     |=> t
-    |+> [
+    |+> Static [
         "KILOMETERS_PER_HOUR" =? t
         "METERS_PER_SECOND" =? t
         "MILES_PER_HOUR" =? t
@@ -41,33 +41,33 @@ let LabelColor =
     let t = Type.New()
     Class "google.maps.weather.LabelColor"
     |=> t
-    |+> [
+    |+> Static [
         "BLACK" =? t
         "WHITE" =? t
     ]
 
 let WeatherLayerOptions =
     Config "google.maps.weather.WeatherLayerOptions"
-    |+> Protocol [
-        "clickable" =% T<bool>
+    |+> Instance [
+        "clickable" =@ T<bool>
         |> WithComment "If true, the layer receives mouse events. Default value is true."
 
-        "labelColor" =% LabelColor
+        "labelColor" =@ LabelColor
         |> WithComment "The color of labels on the weather layer. If this is not explicitly set, the label color is chosen automatically depending on the map type."
 
-        "map" =% Map.Map
+        "map" =@ Map.Map
 
-        "suppressInfoWindows" =% T<bool>
+        "suppressInfoWindows" =@ T<bool>
 
-        "temperatureUnits" =% TemperatureUnit
+        "temperatureUnits" =@ TemperatureUnit
 
-        "windSpeedUnits" =% WindSpeedUnit
+        "windSpeedUnits" =@ WindSpeedUnit
     ]
 
 let WeatherLayer =
     Class "google.maps.weather.WeatherLayer"
-    |+> [Constructor (!?WeatherLayerOptions)]
-    |+> Protocol [
+    |+> Static [Constructor (!?WeatherLayerOptions)]
+    |+> Instance [
         "getMap" => T<unit> ^-> Map.Map
         |> WithComment "Returns the map on which this layer is displayed."
 
@@ -79,7 +79,7 @@ let WeatherLayer =
 
 let WeatherConditions =
     Class "google.maps.weather.WeatherConditions"
-    |+> Protocol [
+    |+> Instance [
         "day" =? T<string>
         |> WithComment "The current day of the week in long form, e.g. \"Monday\"."
 
@@ -105,7 +105,7 @@ let WeatherConditions =
 
 let WeatherForecast =
     Class "google.maps.weather.WeatherForecast"
-    |+> Protocol [
+    |+> Instance [
         "day" =? T<string>
         |> WithComment "The current day of the week in long form, e.g. \"Monday\"."
 
@@ -127,7 +127,7 @@ let WeatherForecast =
 
 let WeatherFeature =
     Class "google.maps.weather.WeatherFeature"
-    |+> Protocol [
+    |+> Instance [
         "current" =? WeatherConditions
         |> WithComment "The current weather conditions at this location."
 

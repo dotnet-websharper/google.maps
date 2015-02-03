@@ -10,14 +10,14 @@ open IntelliFactory.WebSharper.JavaScript.Dom
 
 let ComponentRestrictions =
     Config "google.maps.places.ComponentRestrictions"
-    |+> Protocol [
-        "country" =% T<string>
+    |+> Instance [
+        "country" =@ T<string>
         |> WithComment "Restricts predictions to the specified country (ISO 3166-1 Alpha-2 country code, case insensitive). E.g., us, br, au."
     ]
 
 let PlaceAspectRating =
     Class "google.maps.places.PlaceAspectRating"
-    |+> Protocol [
+    |+> Instance [
         "rating" =? T<int>
         |> WithComment "The rating of this aspect. For individual reviews this is an integer from 0 to 3. For aggregated ratings of a place this is an integer from 0 to 30."
 
@@ -27,14 +27,14 @@ let PlaceAspectRating =
 
 let PlaceDetailsRequest =
     Config "google.maps.places.PlaceDetailsRequest"
-    |+> Protocol [
-        "reference" =% T<string>
+    |+> Instance [
+        "reference" =@ T<string>
         |> WithComment "The reference of the Place for which details are being requested."
     ]
 
 let PlaceGeometry =
     Class "google.maps.places.PlaceGeometry"
-    |+> Protocol [
+    |+> Instance [
         "location" =? LatLng
         |> WithComment "The Place's position."
 
@@ -44,14 +44,14 @@ let PlaceGeometry =
 
 let PhotoOptions =
     Config "google.maps.places.PhotoOptions"
-    |+> Protocol [
-        "maxHeight" =% T<int>
-        "maxWidth" =% T<int>
+    |+> Instance [
+        "maxHeight" =@ T<int>
+        "maxWidth" =@ T<int>
     ]
 
 let PlacePhoto =
     Class "google.maps.places.PlacePhoto"
-    |+> Protocol [
+    |+> Instance [
         "getUrl" => PhotoOptions ^-> T<string>
         |> WithComment "Returns the image URL corresponding to the specified options. You must include a PhotoOptions object with at least one of maxWidth or maxHeight specified."
 
@@ -67,7 +67,7 @@ let PlacePhoto =
 
 let PlaceReview =
     Class "google.maps.places.PlaceReview"
-    |+> Protocol [
+    |+> Instance [
         "aspects" =? Type.ArrayOf PlaceAspectRating
         |> WithComment "The aspects rated by the review. The ratings on a scale of 0 to 3."
 
@@ -83,7 +83,7 @@ let PlaceReview =
 
 let PlaceSearchPagination =
     Class "google.maps.places.PlaceSearchPagination"
-    |+> Protocol [
+    |+> Instance [
         "nextPage" => T<unit -> unit>
         |> WithComment "Fetches the next page of results. Uses the same callback function that was provided to the first search request."
 
@@ -95,7 +95,7 @@ let RankBy =
     let t = Type.New()
     Class "google.maps.places.RankBy"
     |=> t
-    |+> [
+    |+> Static [
         "DISTANCE" =? t
         |> WithComment "Ranks place results by distance from the location."
 
@@ -105,41 +105,41 @@ let RankBy =
 
 let PlaceSearchRequest =
     Config "google.maps.places.PlaceSearchRequest"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "The bounds within which to search for Places. Both location and radius will be ignored if bounds is set."
 
-        "keyword" =% T<string>
+        "keyword" =@ T<string>
         |> WithComment "A term to be matched against all available fields, including but not limited to name, type, and address, as well as customer reviews and other third-party content."
 
-        "location" =% LatLng
+        "location" =@ LatLng
         |> WithComment "The location around which to search for Places."
 
-        "maxPriceLevel" =% T<int>
+        "maxPriceLevel" =@ T<int>
         |> WithComment "Restricts results to only those places at the specified price level or lower. Valid values are in the range from 0 (most affordable) to 4 (most expensive), inclusive. Must be greater than or equal to minPrice , if specified."
 
-        "minPriceLevel" =% T<int>
+        "minPriceLevel" =@ T<int>
         |> WithComment "Restricts results to only those places at the specified price level or higher. Valid values are in the range from 0 (most affordable) to 4 (most expensive), inclusive. Must be less than or equal to maxPrice, if specified."
 
-        "name" =% T<string>
+        "name" =@ T<string>
         |> WithComment "Restricts the Place search results to Places that include this text in the name."
 
-        "openNow" =% T<bool>
+        "openNow" =@ T<bool>
         |> WithComment "Restricts results to only those places that are open right now."
 
-        "radius" =% T<float>
+        "radius" =@ T<float>
         |> WithComment "The distance from the given location within which to search for Places, in meters. The maximum allowed value is 50000."
 
-        "rankBy" =% RankBy
+        "rankBy" =@ RankBy
         |> WithComment "Specifies the ranking method to use when returning results."
 
-        "types" =% T<string[]>
+        "types" =@ T<string[]>
         |> WithComment "Restricts the Place search results to Places with a type matching at least one of the specified types in this array. Valid types are given here."
     ]
 
 let PlaceResult =
     Class "google.maps.places.PlaceResult"
-    |+> Protocol [
+    |+> Instance [
         "address_components" =? Type.ArrayOf GeocoderAddressComponent
         |> WithComment "The collection of address components for this Place's location."
 
@@ -213,7 +213,7 @@ let PlacesServiceStatus =
     let t = Type.New()
     Class "google.maps.places.PlacesServiceStatus"
     |=> t
-    |+> [
+    |+> Static [
         "INVALID_REQUEST" =? t
         |> WithComment "This request was invalid."
 
@@ -235,7 +235,7 @@ let PlacesServiceStatus =
 
 let PredictionSubstring =
     Config "google.maps.places.PredictionSubstring"
-    |+> Protocol [
+    |+> Instance [
         "length" =? T<int>
         |> WithComment "The length of the substring."
 
@@ -245,7 +245,7 @@ let PredictionSubstring =
 
 let PredictionTerm =
     Config "google.maps.places.PredictionTerm"
-    |+> Protocol [
+    |+> Instance [
         "offset" =? T<int>
         |> WithComment "The offset, in unicode characters, of the start of this term in the description of the place."
 
@@ -255,7 +255,7 @@ let PredictionTerm =
 
 let QueryAutocompletePrediction =
     Class "google.maps.places.QueryAutocompletePrediction"
-    |+> Protocol [
+    |+> Instance [
         "description" =? T<string>
         |> WithComment "This is the unformatted version of the query suggested by the Places service."
 
@@ -268,68 +268,68 @@ let QueryAutocompletePrediction =
 
 let QueryAutocompletionRequest =
     Config "google.maps.places.QueryAutocompletionRequest"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "Bounds for prediction biasing. Predictions will be biased towards, but not restricted to, the given bounds. Both location and radius will be ignored if bounds is set."
 
-        "input" =% T<string>
+        "input" =@ T<string>
         |> WithComment "The user entered input string."
 
-        "location" =% LatLng
+        "location" =@ LatLng
         |> WithComment "Location for prediction biasing. Predictions will be biased towards the given location and radius. Alternatively, bounds can be used."
 
-        "offset" =% T<int>
+        "offset" =@ T<int>
         |> WithComment "The character position in the input term at which the service uses text for predictions (the position of the cursor in the input field)."
 
-        "radius" =% T<float>
+        "radius" =@ T<float>
         |> WithComment "The radius of the area used for prediction biasing. The radius is specified in meters, and must always be accompanied by a location property. Alternatively, bounds can be used."
     ]
 
 let RadarSearchRequest =
     Config "google.maps.places.RadarSearchRequest"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "Bounds used to bias results when searching for Places (optional). Both location and radius will be ignored if bounds is set. Results will not be restricted to those inside these bounds; but, results inside it will rank higher."
 
-        "keyword" =% T<string>
+        "keyword" =@ T<string>
         |> WithComment "A term to be matched against all available fields, including but not limited to name, type, and address, as well as customer reviews and other third-party content."
 
-        "location" =% LatLng
+        "location" =@ LatLng
         |> WithComment "The center of the area used to bias results when searching for Places."
 
-        "name" =% T<string>
+        "name" =@ T<string>
         |> WithComment "Restricts results to Places that include this text in the name."
 
-        "radius" =% T<float>
+        "radius" =@ T<float>
         |> WithComment "The radius of the area used to bias results when searching for Places, in meters."
 
-        "types" =% T<string[]>
+        "types" =@ T<string[]>
         |> WithComment "Restricts the Place search results to Places with a type matching at least one of the specified types in this array. Valid types are given here."
     ]
 
 let TextSearchRequest =
     Config "google.maps.places.TextSearchRequest"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "Bounds used to bias results when searching for Places (optional). Both location and radius will be ignored if bounds is set. Results will not be restricted to those inside these bounds; but, results inside it will rank higher."
 
-        "location" =% LatLng
+        "location" =@ LatLng
         |> WithComment "The center of the area used to bias results when searching for Places."
 
-        "query" =% T<string>
+        "query" =@ T<string>
         |> WithComment "The request's query term. e.g. the name of a place ('Eiffel Tower'), a category followed by the name of a location ('pizza in New York'), or the name of a place followed by a location disambiguator ('Starbucks in Sydney')."
 
-        "radius" =% T<float>
+        "radius" =@ T<float>
         |> WithComment "The radius of the area used to bias results when searching for Places, in meters."
 
-        "types" =% T<string[]>
+        "types" =@ T<string[]>
         |> WithComment "Restricts the Place search results to Places with a type matching at least one of the specified types in this array. Valid types are given here."
     ]
 
 let PlacesService =
     Class "google.maps.places.PlacesService"
-    |+> [Constructor T<Element>?AttrContainer]
-    |+> Protocol [
+    |+> Static [Constructor T<Element>?AttrContainer]
+    |+> Instance [
         "getDetails" => PlaceDetailsRequest * (PlaceResult * PlacesServiceStatus ^-> T<unit>) ^-> T<unit>
         |> WithComment "Retrieves details about the Place identified by the given reference."
 
@@ -345,15 +345,15 @@ let PlacesService =
 
 let SearchBoxOptions =
     Config "google.maps.places.SearchBoxOptions"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "The area towards which to bias query predictions. Predictions are biased towards, but not restricted to, queries targeting these bounds."
     ]
 
 let SearchBox =
     Class "google.maps.places.SearchBox"
-    |+> [Constructor (T<Element>?InputField * !?SearchBoxOptions)]
-    |+> Protocol [
+    |+> Static [Constructor (T<Element>?InputField * !?SearchBoxOptions)]
+    |+> Instance [
         "getBounds" => T<unit> ^-> LatLngBounds
         |> WithComment "Returns the bounds to which query predictions are biased."
 
@@ -366,20 +366,20 @@ let SearchBox =
 
 let AutocompleteOptions =
     Config "google.maps.places.AutocompleteOptions"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "The area in which to search for places. Results are biased towards, but not restricted to, places contained within these bounds."
 
-        "componentRestrictions" =% ComponentRestrictions
+        "componentRestrictions" =@ ComponentRestrictions
         |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. E.g., the country."
 
-        "types" =% T<string[]>
+        "types" =@ T<string[]>
         |> WithComment "The types of predictions to be returned. Four types are supported: 'establishment' for businesses, 'geocode' for addresses, '(regions)' for administrative regions and '(cities)' for localities. If nothing is specified, all types are returned."
     ]
 
 let AutocompletePrediction =
     Config "google.maps.places.AutocompletePrediction"
-    |+> Protocol [
+    |+> Instance [
         "description" =? T<string>
         |> WithComment "This is the unformatted version of the query suggested by the Places service."
 
@@ -401,8 +401,8 @@ let AutocompletePrediction =
 
 let Autocomplete =
     Class "google.maps.places.Autocomplete"
-    |+> [Constructor (T<Element>?InputField * !?AutocompleteOptions)]
-    |+> Protocol [
+    |+> Static [Constructor (T<Element>?InputField * !?AutocompleteOptions)]
+    |+> Instance [
         "getBounds" => T<unit> ^-> LatLngBounds
         |> WithComment "Returns the bounds to which predictions are biased."
 
@@ -421,33 +421,33 @@ let Autocomplete =
 
 let AutocompletionRequest =
     Config "google.maps.places.AutocompletionRequest"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "Bounds for prediction biasing. Predictions will be biased towards, but not restricted to, the given bounds. Both location and radius will be ignored if bounds is set."
 
-        "componentRestrictions" =% ComponentRestrictions
+        "componentRestrictions" =@ ComponentRestrictions
         |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. E.g., the country."
 
-        "input" =% T<string>
+        "input" =@ T<string>
         |> WithComment "The user entered input string."
 
-        "location" =% LatLng
+        "location" =@ LatLng
         |> WithComment "Location for prediction biasing. Predictions will be biased towards the given location and radius. Alternatively, bounds can be used."
 
-        "offset" =% T<int>
+        "offset" =@ T<int>
         |> WithComment "The character position in the input term at which the service uses text for predictions (the position of the cursor in the input field)."
 
-        "radius" =% T<float>
+        "radius" =@ T<float>
         |> WithComment "The radius of the area used for prediction biasing. The radius is specified in meters, and must always be accompanied by a location property. Alternatively, bounds can be used."
 
-        "types" =% T<string[]>
+        "types" =@ T<string[]>
         |> WithComment "The types of predictions to be returned. Four types are supported: 'establishment' for businesses, 'geocode' for addresses, '(regions)' for administrative regions and '(cities)' for localities. If nothing is specified, all types are returned."
     ]
 
 let AutocompleteService =
     Class "google.maps.places.AutocompleteService"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
         "getPlacePredictions" => AutocompletionRequest * (Type.ArrayOf AutocompletePrediction * PlacesServiceStatus ^-> T<unit>) ^-> T<unit>
         |> WithComment "Retrieves place autocomplete predictions based on the supplied autocomplete request."
 

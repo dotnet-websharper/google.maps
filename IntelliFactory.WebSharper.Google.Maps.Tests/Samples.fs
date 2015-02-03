@@ -95,7 +95,7 @@ module SamplesInternals =
             let center = map.GetCenter()
             let helloWorldElement = Span [Text "Hello World"]
             let iwOptions = new InfoWindowOptions()
-            iwOptions.Content <- helloWorldElement.Body
+            iwOptions.Content <- Choice2Of2 helloWorldElement.Body
             iwOptions.Position <- center
             let iw = new InfoWindow(iwOptions)
             iw.Open(map)
@@ -191,7 +191,7 @@ module SamplesInternals =
             let itOptions = new ImageMapTypeOptions()
 
             itOptions.GetTileUrl <-
-                (fun _ coord zoom ->
+                (fun _ (coord, zoom) ->
                     getHorizontallyRepeatingTileUrl (coord, zoom,
                         (fun (coord, zoom) ->
                             let bound = Math.Pow(float 2, float zoom)

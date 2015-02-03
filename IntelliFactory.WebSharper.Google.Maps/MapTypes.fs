@@ -9,12 +9,12 @@ open IntelliFactory.WebSharper.Google.Maps.Notation
 
 let Projection =
     Class "google.maps.Projection"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
-        "fromLatLngToPoint" =% Base.LatLng * !? Base.Point ^-> Base.Point
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
+        "fromLatLngToPoint" =@ Base.LatLng * !? Base.Point ^-> Base.Point
         |> WithComment "Translates from the LatLng cylinder to the Point plane. This interface specifies a function which implements translation from given LatLng values to world coordinates on the map projection. The Maps API calls this method when it needs to plot locations on screen. Projection objects must implement this method."
 
-        "fromPointToLatLng" =% Base.Point * !? T<bool> ^-> Base.LatLng
+        "fromPointToLatLng" =@ Base.Point * !? T<bool> ^-> Base.LatLng
         |> WithComment "This interface specifies a function which implements translation from world coordinates on a map projection to LatLng values. The Maps API calls this method when it needs to translate actions on screen to positions on the map. Projection objects must implement this method."
     ]
 
@@ -23,30 +23,30 @@ let Visibility =
 
 let MapTypeStyler =
     Config "MapTypeStyler"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
-        "color" =% T<string>
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
+        "color" =@ T<string>
         |> WithComment "Sets the color of the feature. Valid values: An RGB hex string, i.e. '#ff0000'."
 
-        "gamma" =% T<float>
+        "gamma" =@ T<float>
         |> WithComment "Modifies the gamma by raising the lightness to the given power. Valid values: Floating point numbers, [0.01, 10], with 1.0 representing no change."
 
-        "hue" =% T<string>
+        "hue" =@ T<string>
         |> WithComment "Sets the hue of the feature to match the hue of the color supplied. Note that the saturation and lightness of the feature is conserved, which means that the feature will not match the color supplied exactly. Valid values: An RGB hex string, i.e. '#ff0000'."
 
-        "invert_lightness" =% T<bool>
+        "invert_lightness" =@ T<bool>
         |> WithComment "A value of true will invert the lightness of the feature while preserving the hue and saturation."
 
-        "lightness" =% T<float>
+        "lightness" =@ T<float>
         |> WithComment "Shifts lightness of colors by a percentage of the original value if decreasing and a percentage of the remaining value if increasing. Valid values: [-100, 100]."
 
-        "saturation" =% T<float>
+        "saturation" =@ T<float>
         |> WithComment "Shifts the saturation of colors by a percentage of the original value if decreasing and a percentage of the remaining value if increasing. Valid values: [-100, 100]."
 
-        "visibility" =% Visibility
+        "visibility" =@ Visibility
         |> WithComment "Sets the visibility of the feature. Valid values: 'on', 'off' or 'simplifed'."
 
-        "weight" =% T<int>
+        "weight" =@ T<int>
         |> WithComment "Sets the weight of the feature, in pixels. Valid values: Integers greater than or equal to zero."
     ]
 
@@ -132,25 +132,25 @@ let MapTypeStyleElementType =
 
 let MapTypeStyle =
     Config "MapTypeStyle"
-    |+> Protocol [
-        "elementType" =% MapTypeStyleElementType
+    |+> Instance [
+        "elementType" =@ MapTypeStyleElementType
         |> WithComment "Selects the element type to which a styler should be applied. An element type distinguishes between the different representations of a feature. Optional; if elementType is not specified, the value is assumed to be 'all'."
 
-        "featureType" =% MapTypeStyleFeatureType
+        "featureType" =@ MapTypeStyleFeatureType
         |> WithComment "Selects the feature, or group of features, to which a styler should be applied. Optional; if featureType is not specified, the value is assumed to be 'all'."
 
-        "stylers" =% Type.ArrayOf MapTypeStyler
+        "stylers" =@ Type.ArrayOf MapTypeStyler
         |> WithComment "The style rules to apply to the selectors. The rules are applied to the map's elements in the order they are listed in this array."
     ]
 
 let MapType =
     Class "google.maps.MapType"
     |=> Inherits MVC.MVCObject
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithInline "{}"
     ]
-    |+> Protocol [
+    |+> Instance [
 
             "getTile" => Base.Point?tileCoord * T<int>?zoom * Document?ownerDocument ^-> Node
             |> WithComment "Returns a tile for the given tile coordinate (x, y) and zoom level. This tile will be appended to the given ownerDocument. Not available for base map types."
@@ -158,46 +158,46 @@ let MapType =
             "releaseTile" => Node ^-> T<unit>
             |> WithComment "Releases the given tile, performing any necessary cleanup. The provided tile will have already been removed from the document. Optional."
 
-            "alt" =% T<string>
+            "alt" =@ T<string>
             |> WithComment "Alt text to display when this MapType's button is hovered over in the MapTypeControl. Optional."
 
-            "maxZoom" =% T<int>
+            "maxZoom" =@ T<int>
             |> WithComment "The maximum zoom level for the map when displaying this MapType. Required for base MapTypes, ignored for overlay MapTypes."
 
-            "minZoom" =% T<int>
+            "minZoom" =@ T<int>
             |> WithComment "The minimum zoom level for the map when displaying this MapType. Optional; defaults to 0."
 
-            "name" =% T<string>
+            "name" =@ T<string>
             |> WithComment "Name to display in the MapTypeControl. Optional."
 
-            "projection" =% Projection
+            "projection" =@ Projection
             |> WithComment "The Projection used to render this MapType. Optional; defaults to Mercator."
 
-            "radius" =% T<float>
+            "radius" =@ T<float>
             |> WithComment "Radius of the planet for the map, in meters. Optional; defaults to Earth's equatorial radius of 6378137 meters."
 
-            "tileSize" =% Base.Size
+            "tileSize" =@ Base.Size
             |> WithComment "The dimensions of each tile. Required."
         ]
 
 let StyledMapTypeOptions =
     Class "google.maps.StyledMapTypeOptions"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
-        "alt" =% T<string>
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
+        "alt" =@ T<string>
         |> WithComment "Text to display when this MapType's button is hovered over in the map type control."
 
-        "maxZoom" =% T<string>
+        "maxZoom" =@ T<string>
         |> WithComment "The maximum zoom level for the map when displaying this MapType. Optional."
 
-        "minZoom" =% T<string>
+        "minZoom" =@ T<string>
         |> WithComment "The minimum zoom level for the map when displaying this MapType. Optional."
     ]
 
 let StyledMapType =
     Class "google.maps.StyledMapType"
     |=> Inherits MapType
-    |+> [
+    |+> Static [
         Ctor [
             (Type.ArrayOf MapTypeStyle)?Styles
             StyledMapTypeOptions?Options
@@ -208,49 +208,49 @@ let StyledMapType =
 let MapTypeRegistry =
     Class "google.maps.MapTypeRegistry"
     |=> Inherits MVC.MVCObject
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithComment "The MapTypeRegistry holds the collection of custom map types available to the map for its use. The API consults this registry when providing the list of avaiable map types within controls, for example."
     ]
-    |+> Protocol [
+    |+> Instance [
         "set" => T<string> * MapType ^-> T<unit>
         |> WithComment "Sets the registry to associate the passed string identifier with the passed MapType."
     ]
 
 let ImageMapTypeOptions =
     Config "ImageMapTypeOptions"
-    |+> Protocol [
-        "alt" =% T<string>
+    |+> Instance [
+        "alt" =@ T<string>
         |> WithComment "Alt text to display when this MapType's button is hovered over in the MapTypeControl."
 
-        "getTileUrl" =% T<obj> -* Base.Point * T<int> ^-> T<string>
+        "getTileUrl" =@ T<obj> -* Base.Point * T<int> ^-> T<string>
         |> WithComment "Returns a string (URL) for given tile coordinate (x, y) and zoom level. This function should have a signature of: getTileUrl(Point, number):string"
 
-        "maxZoom" =% T<int>
+        "maxZoom" =@ T<int>
         |> WithComment "The maximum zoom level for the map when displaying this MapType."
 
-        "minZoom" =% T<int>
+        "minZoom" =@ T<int>
         |> WithComment "The minimum zoom level for the map when displaying this MapType. Optional."
 
-        "name" =% T<string>
+        "name" =@ T<string>
         |> WithComment "Name to display in the MapTypeControl."
 
-        "opacity" =% T<float>
+        "opacity" =@ T<float>
         |> WithComment "The opacity to apply to the tiles. The opacity should be specified as a float value between 0 and 1.0, where 0 is fully transparent and 1 is fully opaque."
 
-        "tileSize" =% Base.Size.Type
+        "tileSize" =@ Base.Size.Type
         |> WithComment "The tile size."
     ]
 
 let ImageMapType =
     Class "google.maps.ImageMapType"
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
             "getOpacity" => T<unit> ^-> T<float>
             |> WithComment "Returns the opacity level (0 (transparent) to 1.0) of the ImageMapType tiles."
 
             "setOpacity" => T<float> ^-> T<unit>
             |> WithComment "Sets the opacity level (0 (transparent) to 1.0) of the ImageMapType tiles."
         ]
-    |+> [Constructor ImageMapTypeOptions]
+    |+> Static [Constructor ImageMapTypeOptions]
 

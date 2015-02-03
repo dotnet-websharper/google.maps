@@ -25,4 +25,4 @@ let Ctor (ps: seq<Type.IParameter>) : CodeModel.Constructor =
 /// Defines a configuration object.
 let Config name =
     Class name
-    |+> [ Ctor [] |> WithInline "{}" ]
+    |+> Static [ Ctor [] |> WithInline "{}" ]

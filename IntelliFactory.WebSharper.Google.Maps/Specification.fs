@@ -12,7 +12,7 @@ let Animation =
     let t = Type.New()
     Class "google.maps.Animation"
     |=> t
-    |+> [
+    |+> Static [
         "BOUNCE" =? t
         |> WithComment "Marker bounces until animation is stopped."
 
@@ -61,7 +61,7 @@ let ScaleControlOptions =
 
 let MapPanes =
     Config "google.maps.MapPanes"
-    |+> Protocol [
+    |+> Instance [
         "floatPane" =@ Node
         |> WithComment "This pane contains the info window. It is above all map overlays. (Pane 6)."
 
@@ -87,7 +87,7 @@ let MapPanes =
 
 let MapCanvasProjection =
     Class "google.maps.MapCanvasProjection"
-    |+> Protocol [
+    |+> Instance [
         "fromContainerPixelToLatLng" => Point ^-> LatLng
         |> WithComment "Computes the geographical coordinates from pixel coordinates in the map's container."
 
@@ -128,7 +128,7 @@ let StyledMapType, StyledMapTypeOptions =
     let StyledMapType =
         StyledMapType
         |=> Implements [MapTypes.MapType]
-        |+> [Constructor (Type.ArrayOf MapTypes.MapTypeStyle * !? StyledMapTypeOptions)]
+        |+> Static [Constructor (Type.ArrayOf MapTypes.MapTypeStyle * !? StyledMapTypeOptions)]
         |=> Inherits MVC.MVCObject
     (StyledMapType, StyledMapTypeOptions)
 
@@ -136,7 +136,7 @@ let StrokePosition =
     let t = Type.New()
     Class "google.maps.StrokePosition"
     |=> t
-    |+> [
+    |+> Static [
         "CENTER" =? t
         |> WithComment "The stroke is centered on the polygon's path, with half the stroke inside the polygon and half the stroke outside the polygon."
 
@@ -149,100 +149,100 @@ let StrokePosition =
 
 let RectangleOptions =
     Config "RectangleOptions"
-    |+> Protocol [
-        "bounds" =% LatLngBounds
+    |+> Instance [
+        "bounds" =@ LatLngBounds
         |> WithComment "The bounds."
 
-        "clickable" =% T<bool>
+        "clickable" =@ T<bool>
         |> WithComment "Indicates whether this Rectangle handles mouse events. Defaults to true."
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If set to true, the user can drag this rectangle over the map. Defaults to false."
 
-        "editable" =% T<bool>
+        "editable" =@ T<bool>
         |> WithComment "If set to true, the user can edit this rectangle by dragging the control points shown at the corners and on each edge. Defaults to false."
 
-        "fillColor" =% T<string>
+        "fillColor" =@ T<string>
         |> WithComment "The fill color. All CSS3 colors are supported except for extended named colors."
 
-        "fillOpacity" =% T<float>
+        "fillOpacity" =@ T<float>
         |> WithComment "The fill opacity between 0.0 and 1.0."
 
-        "map" =% M.Map.Type
+        "map" =@ M.Map.Type
         |> WithComment "Map on which to display Rectangle."
 
-        "strokeColor" =% T<string>
+        "strokeColor" =@ T<string>
         |> WithComment "The stroke color. All CSS3 colors are supported except for extended named colors."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The stroke opacity between 0.0 and 1.0"
 
-        "strokePosition" =% StrokePosition
+        "strokePosition" =@ StrokePosition
         |> WithComment "The stroke position. Defaults to CENTER. This property is not supported on Internet Explorer 8 and earlier."
 
-        "strokeWeight" =% T<int>
+        "strokeWeight" =@ T<int>
         |> WithComment "The stroke width in pixels."
 
-        "visible" =% T<bool>
+        "visible" =@ T<bool>
         |> WithComment "Whether this rectangle is visible on the map. Defaults to true."
 
-        "zIndex" =% T<int>
+        "zIndex" =@ T<int>
         |> WithComment "The zIndex compared to other polys."
     ]
 
 let CircleOptions =
     Config "CircleOptions"
-    |+> Protocol [
-        "center" =% LatLng
+    |+> Instance [
+        "center" =@ LatLng
         |> WithComment "The center"
 
-        "clickable" =% T<bool>
+        "clickable" =@ T<bool>
         |> WithComment "Indicates whether this Circle handles mouse events. Defaults to true."
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If set to true, the user can drag this circle over the map. Defaults to false."
 
-        "editable" =% T<bool>
+        "editable" =@ T<bool>
         |> WithComment "If set to true, the user can edit this circle by dragging the control points shown at the center and around the circumference of the circle. Defaults to false."
 
-        "fillColor" =% T<string>
+        "fillColor" =@ T<string>
         |> WithComment "The fill color. All CSS3 colors are supported except for extended named colors."
 
-        "fillOpacity" =% T<float>
+        "fillOpacity" =@ T<float>
         |> WithComment "The fill opacity between 0.0 and 1.0."
 
-        "map" =% M.Map.Type
+        "map" =@ M.Map.Type
         |> WithComment "Map on which to display Circle."
 
-        "radius" =% T<float>
+        "radius" =@ T<float>
         |> WithComment "The radius in meters on the Earth's surface"
 
-        "strokeColor" =% T<string>
+        "strokeColor" =@ T<string>
         |> WithComment "The stroke color. All CSS3 colors are supported except for extended named colors."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The stroke opacity between 0.0 and 1.0."
 
-        "strokePosition" =% StrokePosition
+        "strokePosition" =@ StrokePosition
         |> WithComment "The stroke position. Defaults to CENTER. This property is not supported on Internet Explorer 8 and earlier."
 
-        "strokeWeight" =% T<int>
+        "strokeWeight" =@ T<int>
         |> WithComment "The stroke width in pixels."
 
-        "visible" =% T<bool>
+        "visible" =@ T<bool>
         |> WithComment "Whether this circle is visible on the map. Defaults to true."
 
-        "zIndex" =% T<int>
+        "zIndex" =@ T<int>
         |> WithComment "The zIndex compared to other polys."
     ]
 
 let Circle =
     Class "google.maps.Circle"
-    |+> [
+    |+> Static [
         Constructor CircleOptions
         |> WithComment "Create a circle using the passed CircleOptions, which specify the center, radius, and style."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getBounds" => T<unit> ^-> LatLngBounds
         |> WithComment "Gets the LatLngBounds of this Circle."
 
@@ -284,11 +284,11 @@ let Circle =
 
 let Rectangle =
     Class "google.maps.Rectangle"
-    |+> [
+    |+> Static [
         Constructor RectangleOptions
         |> WithComment "Create a rectangle using the passed RectangleOptions, which specify the bounds and style."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getBounds" => T<unit> ^-> LatLngBounds
         |> WithComment "Returns the bounds of this rectangle."
 
@@ -324,20 +324,20 @@ let Rectangle =
 
 let GroundOverlayOptions =
     Config "GroundOverlayOptions"
-    |+> Protocol [
-        "clickable" =% T<bool>
+    |+> Instance [
+        "clickable" =@ T<bool>
         |> WithComment "If true, the ground overlay can receive mouse events."
 
-        "map" =% M.Map.Type
+        "map" =@ M.Map.Type
         |> WithComment "The map on which to display the overlay."
 
-        "opacity" =% T<float>
+        "opacity" =@ T<float>
         |> WithComment "The opacity of the overlay, expressed as a number between 0 and 1. Optional. Defaults to 1."
     ]
 
 let GroundOverlay =
     Class "google.maps.GroundOverlay"
-    |+> [
+    |+> Static [
         Ctor [
             T<string>?Url
             LatLngBounds?Bounds
@@ -346,7 +346,7 @@ let GroundOverlay =
         |> WithComment "Creates a ground overlay from the provided image URL and its LatLngBounds. The image is scaled to fit the current bounds, and projected using the current map projection."
     ]
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
         "getBounds" => T<unit> ^-> LatLngBounds
         |> WithComment "Gets the LatLngBounds of this overlay."
 
@@ -368,12 +368,12 @@ let GroundOverlay =
 
 let BicyclingLayer =
     Class "google.maps.BicyclingLayer"
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithComment "A layer that displays bike lanes and paths and demotes large roads."
     ]
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
         "getMap" => T<unit> ^-> M.Map
         |> WithComment "Returns the map on which this layer is displayed."
 
@@ -383,93 +383,93 @@ let BicyclingLayer =
 
 let FusionTablesHeatmap =
     Config "google.maps.FusionTablesHeatmap"
-    |+> Protocol [
-        "enabled" =% T<bool>
+    |+> Instance [
+        "enabled" =@ T<bool>
         |> WithComment "If true, render the layer as a heatmap."
     ]
 
 let FusionTablesMarkerOptions =
     Config "google.maps.FusionTablesMarkerOptions"
-    |+> Protocol [
-        "iconName" =% T<string>
+    |+> Instance [
+        "iconName" =@ T<string>
         |> WithComment "The name of a Fusion Tables supported icon (http://www.google.com/fusiontables/DataSource?dsrcid=308519)"
     ]
 
 let FusionTablesPolygonOptions =
     Config "google.maps.FusionTablesPolygonOptions"
-    |+> Protocol [
-        "fillColor" =% T<string>
+    |+> Instance [
+        "fillColor" =@ T<string>
         |> WithComment "The fill color, defined by a six-digit hexadecimal number in RRGGBB format (e.g. #00AAFF)."
 
-        "fillOpacity" =% T<float>
+        "fillOpacity" =@ T<float>
         |> WithComment "The fill opacity between 0.0 and 1.0."
 
-        "strokeColor" =% T<string>
+        "strokeColor" =@ T<string>
         |> WithComment "The stroke color, defined by a six-digit hexadecimal number in RRGGBB format (e.g. #00AAFF)."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The stroke opacity between 0.0 and 1.0."
 
-        "strokeWeight" =% T<float>
+        "strokeWeight" =@ T<float>
         |> WithComment "The stroke width in pixels, between 0 and 10."
     ]
 
 let FusionTablesPolylineOptions =
     Config "google.maps.FusionTablesPolylineOptions"
-    |+> Protocol [
-        "strokeColor" =% T<string>
+    |+> Instance [
+        "strokeColor" =@ T<string>
         |> WithComment "The stroke color, defined by a six-digit hexadecimal number in RRGGBB format (e.g. #00AAFF)."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The stroke opacity between 0.0 and 1.0."
 
-        "strokeWeight" =% T<float>
+        "strokeWeight" =@ T<float>
         |> WithComment "The stroke width in pixels."
     ]
 
 let FusionTablesStyle =
     Config "google.maps.FusionTablesStyle"
-    |+> Protocol [
-        "markerOptions" =% FusionTablesMarkerOptions
+    |+> Instance [
+        "markerOptions" =@ FusionTablesMarkerOptions
         |> WithComment "Options which control the appearance of point features."
 
-        "polygonOptions" =% FusionTablesPolygonOptions
+        "polygonOptions" =@ FusionTablesPolygonOptions
         |> WithComment "Options which control the appearance of polygons."
 
-        "polylineOptions" =% FusionTablesPolylineOptions
+        "polylineOptions" =@ FusionTablesPolylineOptions
         |> WithComment "Options which control the appearance of polylines."
 
-        "where" =% T<string>
+        "where" =@ T<string>
         |> WithComment "The SQL predicate to be applied to the layer."
     ]
 
 let FusionTablesLayerOptions =
     Config "google.maps.FusionTablesLayerOptions"
-    |+> Protocol [
-        "clickable" =% T<bool>
+    |+> Instance [
+        "clickable" =@ T<bool>
         |> WithComment "If true, the layer receives mouse events. Default value is true."
 
-        "heatmap" =% FusionTablesHeatmap
+        "heatmap" =@ FusionTablesHeatmap
         |> WithComment "Options which define the appearance of the layer as a heatmap."
 
-        "map" =% M.Map
+        "map" =@ M.Map
         |> WithComment "The map on which to display the layer."
 
-        "query" =% T<string>
+        "query" =@ T<string>
         |> WithComment "Options defining the data to display."
 
-        "styles" =% Type.ArrayOf FusionTablesStyle
+        "styles" =@ Type.ArrayOf FusionTablesStyle
         |> WithComment "An array of up to 5 style specifications, which control the appearance of features within the layer."
 
-        "suppressInfoWindows" =% T<bool>
+        "suppressInfoWindows" =@ T<bool>
         |> WithComment "Suppress the rendering of info windows when layer features are clicked."
     ]
 
 let FusionTablesLayer =
     Class "google.maps.FusionTablesLayer"
-    |+> [Constructor !? FusionTablesLayerOptions]
+    |+> Static [Constructor !? FusionTablesLayerOptions]
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
         "getMap" => T<unit> ^-> M.Map
         |> WithComment "Returns the map on which this layer is displayed."
 
@@ -481,32 +481,32 @@ let FusionTablesLayer =
 
 let FusionTablesQuery =
     Class "google.maps.FusionTablesQuery"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
-        "from" =% T<string>
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
+        "from" =@ T<string>
         |> WithComment "The ID of the Fusion Tables table to display. This ID can be found in the table's URL, as the value of the dsrcid parameter. Required."
 
-        "limit" =% T<int>
+        "limit" =@ T<int>
         |> WithComment "Limit on the number of results returned by the query."
 
-        "offset" =% T<int>
+        "offset" =@ T<int>
         |> WithComment "Offset into the sorted results."
 
-        "orderBy" =% T<string>
+        "orderBy" =@ T<string>
         |> WithComment "The method by which to sort the results. Accepts either of:
 * A column name. The column name may be suffixed with ASC or DESC (e.g. col2 DESC) to specify ascending or descending sort.
 * An ST_DISTANCE spatial relationship (sort by distance). A column and the coordinate from which to calculate distance must be passed, for example, orderBy: 'ST_DISTANCE(col1, LATLNG(1.2, 3.4))'."
 
-        "select" =% T<string>
+        "select" =@ T<string>
         |> WithComment "A column, containing geographic features to be displayed on the map. See Fusion Tables Setup in the Maps API documentation for information about valid columns."
 
-        "where" =% T<string>
+        "where" =@ T<string>
         |> WithComment "The SQL predicate to be applied to the layer."
     ]
 
 let FusionTablesMouseEvent =
     Class "google.maps.FusionTablesMouseEvent"
-    |+> Protocol [
+    |+> Instance [
         "infoWindowHtml" =@ T<string>
         |> WithComment "Pre-rendered HTML content, as placed in the infowindow by the default UI."
 
@@ -522,7 +522,7 @@ let FusionTablesMouseEvent =
 
 let FusionTablesCell =
     Class "google.maps.FusionTablesCell"
-    |+> Protocol [
+    |+> Instance [
         "columnName" =@ T<string>
         |> WithComment "The name of the column in which the cell was located."
 
@@ -532,7 +532,7 @@ let FusionTablesCell =
 
 let KmlAuthor =
     Class "google.maps.KmlAuthor"
-    |+> Protocol [
+    |+> Instance [
         "email" =? T<string>
         |> WithComment "The author's e-mail address, or an empty string if not specified."
 
@@ -545,7 +545,7 @@ let KmlAuthor =
 
 let KmlFeatureData =
     Class "google.maps.KmlFeatureData"
-    |+> Protocol [
+    |+> Instance [
         "author" =? KmlAuthor
         |> WithComment "The feature's <atom:author>, extracted from the layer markup (if specified)."
 
@@ -567,7 +567,7 @@ let KmlFeatureData =
 
 let KmlMouseEvent =
     Class "google.maps.KmlMouseEvent"
-    |+> Protocol [
+    |+> Instance [
         "featureData" =? KmlFeatureData
         |> WithComment "A KmlFeatureData object, containing information about the clicked feature."
 
@@ -581,7 +581,7 @@ let KmlMouseEvent =
 
 let KmlLayerMetadata =
     Class "google.maps.KmlLayerMetadata"
-    |+> Protocol [
+    |+> Instance [
         "author" =? KmlAuthor
         |> WithComment "The layer's <atom:author>, extracted from the layer markup."
 
@@ -600,23 +600,23 @@ let KmlLayerMetadata =
 
 let KmlLayerOptions =
     Config "KmlLayerOptions"
-    |+> Protocol [
-        "clickable" =% T<bool>
+    |+> Instance [
+        "clickable" =@ T<bool>
         |> WithComment "If true, the layer receives mouse events. Default value is true."
 
-        "map" =% M.Map.Type
+        "map" =@ M.Map.Type
         |> WithComment "The map on which to display the layer."
 
-        "preserveViewport" =% T<bool>
+        "preserveViewport" =@ T<bool>
         |> WithComment "By default, the input map is centered and zoomed to the bounding box of the contents of the layer. If this option is set to true, the viewport is left unchanged, unless the map's center and zoom were never set."
 
-        "screenOverlays" =% T<bool>
+        "screenOverlays" =@ T<bool>
         |> WithComment "Whether to render the screen overlays. Default true."
 
-        "suppressInfoWindows" =% T<bool>
+        "suppressInfoWindows" =@ T<bool>
         |> WithComment "Suppress the rendering of info windows when layer features are clicked."
 
-        "url" =% T<string>
+        "url" =@ T<string>
         |> WithComment "The URL of the KML document to display."
     ]
 
@@ -624,7 +624,7 @@ let KmlLayerStatus =
     let t = Type.New()
     Class "google.maps.KmlLayerStatus"
     |=> t
-    |+> [
+    |+> Static [
         "DOCUMENT_NOT_FOUND" =? t
         |> WithComment "The document could not be found. Most likely it is an invalid URL, or the document is not publicly available."
 
@@ -655,12 +655,12 @@ let KmlLayerStatus =
 
 let KmlLayer =
     Class "google.maps.KmlLayer"
-    |+> [
+    |+> Static [
         Constructor !? KmlLayerOptions
         |> WithComment "Creates a KmlLayer which renders the contents of the specified KML/KMZ file (https://developers.google.com/kml/documentation/kmlreference) or GeoRSS file (http://www.georss.org)."
     ]
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
         "getDefaultViewport" => T<unit> ^-> LatLngBounds
         |> WithComment "Get the default viewport for the layer being displayed."
 
@@ -685,9 +685,9 @@ let KmlLayer =
 
 let TrafficLayer =
     Class "google.maps.TrafficLayer"
-    |+> [Constructor T<unit>]
+    |+> Static [Constructor T<unit>]
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
         "getMap" => T<unit> ^-> M.Map
         |> WithComment "Returns the map on which this layer is displayed."
 
@@ -697,9 +697,9 @@ let TrafficLayer =
 
 let TransitLayer =
     Class "google.maps.TransitLayer"
-    |+> [Constructor T<unit>]
+    |+> Static [Constructor T<unit>]
     |=> Inherits MVC.MVCObject
-    |+> Protocol [
+    |+> Instance [
         "getMap" => T<unit> ^-> M.Map
         |> WithComment "Returns the map on which this layer is displayed."
 
@@ -713,27 +713,27 @@ let MarkerImage =
 let Icon =
     Config "Icon"
     |=> Implements [MarkerImage]
-    |+> Protocol [
-        "anchor" =% Point
+    |+> Instance [
+        "anchor" =@ Point
         |> WithComment "The position at which to anchor an image in correspondance to the location of the marker on the map. By default, the anchor is located along the center point of the bottom of the image."
 
-        "origin" =% Point
+        "origin" =@ Point
         |> WithComment "The position of the image within a sprite, if any. By default, the origin is located at the top left corner of the image (0, 0)."
 
-        "scaledSize" =% Size
+        "scaledSize" =@ Size
         |> WithComment "The size of the entire image after scaling, if any. Use this property to stretch/shrink an image or a sprite."
 
-        "size" =% Size
+        "size" =@ Size
         |> WithComment "The display size of the sprite or image. When using sprites, you must specify the sprite size. If the size is not provided, it will be set when the image loads."
 
-        "url" =% T<string>
+        "url" =@ T<string>
         |> WithComment "The URL of the image or sprite sheet."
     ]
 
 let SymbolPath =
     let t = Type.New()
     Class "google.maps.SymbolPath"
-    |+> [
+    |+> Static [
         "BACKWARD_CLOSED_ARROW" =? t
         |> WithComment "A backward-pointing closed arrow."
 
@@ -756,36 +756,36 @@ let SymbolPath =
 let Symbol =
     Class "google.maps.Symbol"
     |=> Implements [MarkerImage]
-    |+> [
+    |+> Static [
         Constructor SymbolPath?Path
         |> WithInline "{path:$Path}"
         ]
-    |+> Protocol [
-        "anchor" =% Point
+    |+> Instance [
+        "anchor" =@ Point
         |> WithComment "The position of the symbol relative to the marker or polyline. The coordinates of the symbol's path are translated left and up by the anchor's x and y coordinates respectively. By default, a symbol is anchored at (0, 0). The position is expressed in the same coordinate system as the symbol's path."
 
-        "fillColor" =% T<string>
+        "fillColor" =@ T<string>
         |> WithComment "The symbol's fill color. All CSS3 colors are supported except for extended named colors. For symbol markers, this defaults to 'black'. For symbols on polylines, this defaults to the stroke color of the corresponding polyline."
 
-        "fillOpacity" =% T<float>
+        "fillOpacity" =@ T<float>
         |> WithComment "The symbol's fill opacity. Defaults to 0."
 
-        "path" =% SymbolPath
+        "path" =@ SymbolPath
         |> WithComment "The symbol's path, which is a built-in symbol path, or a custom path expressed using SVG path notation. Required."
 
-        "rotation" =% T<float>
+        "rotation" =@ T<float>
         |> WithComment "The angle by which to rotate the symbol, expressed clockwise in degrees. Defaults to 0. A symbol in an IconSequence where fixedRotation is false is rotated relative to the angle of the edge on which it lies."
 
-        "scale" =% T<float>
+        "scale" =@ T<float>
         |> WithComment "The amount by which the symbol is scaled in size. For symbol markers, this defaults to 1; after scaling, the symbol may be of any size. For symbols on a polyline, this defaults to the stroke weight of the polyline; after scaling, the symbol must lie inside a square 22 pixels in size centered at the symbol's anchor."
 
-        "strokeColor" =% T<string>
+        "strokeColor" =@ T<string>
         |> WithComment "The symbol's stroke color. All CSS3 colors are supported except for extended named colors. For symbol markers, this defaults to 'black'. For symbols on a polyline, this defaults to the stroke color of the polyline."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The symbol's stroke opacity. For symbol markers, this defaults to 1. For symbols on a polyline, this defaults to the stroke opacity of the polyline."
 
-        "strokeWeight" =% T<float>
+        "strokeWeight" =@ T<float>
         |> WithComment "The symbol's stroke weight. Defaults to the scale of the symbol."
     ]
 
@@ -804,61 +804,61 @@ let MarkerShape =
 
 let MarkerOptions =
     Class "google.maps.MarkerOptions"
-    |+> [
+    |+> Static [
         Constructor LatLng?Position
         |> WithInline "{position:$Position}"
         ]
-    |+> Protocol [
+    |+> Instance [
 
-        "anchorPoint" =% Point
+        "anchorPoint" =@ Point
         |> WithComment "The offset from the marker's position to the tip of an InfoWindow that has been opened with the marker as anchor."
 
-        "animation" =% Animation
+        "animation" =@ Animation
         |> WithComment "Which animation to play when marker is added to a map."
 
-        "clickable" =% T<bool>
+        "clickable" =@ T<bool>
         |> WithComment "If true, the marker receives mouse and touch events. Default value is true."
 
-        "crossOnDrag" =% T<bool>
+        "crossOnDrag" =@ T<bool>
         |> WithComment "If false, disables cross that appears beneath the marker when dragging. This option is true by default. This option is only enabled when google.maps.visualRefresh is set to true. For backwards compatibility, if raiseOnDrag is set to false then the default for crossOnDrag changes to false."
 
-        "cursor" =% T<string>
+        "cursor" =@ T<string>
         |> WithComment "Mouse cursor to show on hover"
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If true, the marker can be dragged. Default value is false."
 
-        "flat" =% T<bool>
+        "flat" =@ T<bool>
         |> WithComment "If true, the marker shadow will not be displayed."
 
-        "icon" =% MarkerImage
+        "icon" =@ MarkerImage
         |> WithComment "Icon for the foreground. If a string is provided, it is treated as though it were an Icon with the string as url."
 
-        "map" =% M.Map + StreetView.StreetViewPanorama
+        "map" =@ M.Map + StreetView.StreetViewPanorama
         |> WithComment "Map on which to display Marker."
 
-        "optimized" =% T<bool>
+        "optimized" =@ T<bool>
         |> WithComment "Optimization renders many markers as a single static element. Optimized rendering is enabled by default. Disable optimized rendering for animated GIFs or PNGs, or when each marker must be rendered as a separate DOM element (advanced usage only)."
 
-        "position" =% LatLng
+        "position" =@ LatLng
         |> WithComment "Marker position. Required."
 
-        "raiseOnDrag" =% T<bool>
+        "raiseOnDrag" =@ T<bool>
         |> WithComment "If false, disables raising and lowering the marker on drag. This option is true by default. This option is disabled when google.maps.visualRefresh is set to true. Instead, a cross will appear beneath the marker icon while dragging. Please refer to the crossOnDrag property for new code. For backwards compatibility, if this is set to false then the default for crossOnDrag changes to false."
 
-        "shadow" =% MarkerImage
+        "shadow" =@ MarkerImage
         |> WithComment "Shadow image. If a string is provided, it is treated as though it were an Icon with the string as url. Shadows are not rendered when google.maps.visualRefresh is set to true."
 
-        "shape" =% MarkerShape
+        "shape" =@ MarkerShape
         |> WithComment "Image map region definition used for drag/click."
 
-        "title" =% T<string>
+        "title" =@ T<string>
         |> WithComment "Rollover text."
 
-        "visible" =% T<bool>
+        "visible" =@ T<bool>
         |> WithComment "If true, the marker is visible."
 
-        "zIndex" =% T<int>
+        "zIndex" =@ T<int>
         |> WithComment "All markers are displayed on the map in order of their zIndex, with higher values displaying in front of markers with lower values. By default, markers are displayed according to their vertical position on screen, with lower markers appearing in front of markers further up the screen."
     ]
 
@@ -866,14 +866,14 @@ let MarkerOptions =
 let Marker =
     Class "google.maps.Marker"
     |=> Inherits MVC.MVCObject
-    |+> [
+    |+> Static [
         Constructor !? MarkerOptions
         |> WithComment "Creates a marker with the options specified. If a map is specified, the marker is added to the map upon construction. Note that the position must be set for the marker to display."
 
-        "MAX_ZINDEX" =% T<int>
+        "MAX_ZINDEX" =@ T<int>
         |> WithComment "The maximum default z-index that the API will assign to a marker. You may set a higher z-index to bring a marker to the front."
         ]
-    |+> Protocol [
+    |+> Instance [
         "getAnimation" => T<unit> ^-> Animation
 
         "getClickable" => T<unit> ^-> T<bool>
@@ -933,57 +933,57 @@ let Marker =
 
 let IconSequence =
     Config "IconSequence"
-    |+> Protocol [
-        "fixedRotation" =% T<bool>
+    |+> Instance [
+        "fixedRotation" =@ T<bool>
         |> WithComment "If true, each icon in the sequence has the same fixed rotation regardless of the angle of the edge on which it lies. Defaults to false, in which case each icon in the sequence is rotated to align with its edge."
 
-        "icon" =% Symbol
+        "icon" =@ Symbol
         |> WithComment "The icon to render on the line."
 
-        "offset" =% T<string>
+        "offset" =@ T<string>
         |> WithComment "The distance from the start of the line at which an icon is to be rendered. This distance may be expressed as a percentage of line's length (e.g. '50%') or in pixels (e.g. '50px'). Defaults to '100%'."
 
-        "repeat" =% T<string>
+        "repeat" =@ T<string>
         |> WithComment "The distance between consecutive icons on the line. This distance may be expressed as a percentage of the line's length (e.g. '50%') or in pixels (e.g. '50px'). To disable repeating of the icon, specify '0'. Defaults to '0'."
     ]
 
 let PolylineOptions =
     Config "PolylineOptions"
-    |+> Protocol [
-        "clickable" =% T<bool>
+    |+> Instance [
+        "clickable" =@ T<bool>
         |> WithComment "Indicates whether this Polyline handles mouse events. Defaults to true."
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If set to true, the user can drag this shape over the map. The geodesic property defines the mode of dragging. Defaults to false."
 
-        "editable" =% T<bool>
+        "editable" =@ T<bool>
         |> WithComment "If set to true, the user can edit this shape by dragging the control points shown at the vertices and on each segment. Defaults to false."
 
-        "geodesic" =% T<bool>
+        "geodesic" =@ T<bool>
         |> WithComment "When true, edges of the polygon are interpreted as geodesic and will follow the curvature of the Earth. When false, edges of the polygon are rendered as straight lines in screen space. Note that the shape of a geodesic polygon may appear to change when dragged, as the dimensions are maintained relative to the surface of the earth. Defaults to false."
 
-        "icons" =% Type.ArrayOf IconSequence
+        "icons" =@ Type.ArrayOf IconSequence
         |> WithComment "The icons to be rendered along the polyline."
 
-        "map" =% M.Map.Type
+        "map" =@ M.Map.Type
         |> WithComment "Map on which to display Polyline."
 
-        "path" =% Type.ArrayOf LatLng
+        "path" =@ Type.ArrayOf LatLng
         |> WithComment "The ordered sequence of coordinates of the Polyline. This path may be specified using either a simple array of LatLngs, or an MVCArray of LatLngs. Note that if you pass a simple array, it will be converted to an MVCArray Inserting or removing LatLngs in the MVCArray will automatically update the polyline on the map."
 
-        "strokeColor" =% T<string>
+        "strokeColor" =@ T<string>
         |> WithComment "The stroke color. All CSS3 colors are supported except for extended named colors."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The stroke opacity between 0.0 and 1.0."
 
-        "strokeWeight" =% T<int>
+        "strokeWeight" =@ T<int>
         |> WithComment "The stroke width in pixels."
 
-        "visible" =% T<bool>
+        "visible" =@ T<bool>
         |> WithComment "Whether this polyline is visible on the map. Defaults to true."
 
-        "zIndex" =% T<int>
+        "zIndex" =@ T<int>
         |> WithComment "The zIndex compared to other polys."
     ]
 
@@ -991,8 +991,8 @@ let PolylineOptions =
 let Polyline =
     Class "google.maps.Polyline"
     |=> Inherits MVC.MVCObject
-    |+> [Constructor !? PolylineOptions]
-    |+> Protocol [
+    |+> Static [Constructor !? PolylineOptions]
+    |+> Instance [
         "getDraggable" => T<unit -> bool>
         |> WithComment "Returns whether this shape can be dragged by the user."
 
@@ -1002,7 +1002,7 @@ let Polyline =
         "getMap" => T<unit> ^-> M.Map
         |> WithComment "Returns the map on which this shape is attached."
 
-        "getPath" => T<unit> ^-> MVC.MVCArray LatLng
+        "getPath" => T<unit> ^-> MVC.MVCArray.[LatLng]
         |> WithComment "Retrieves the first path."
 
         "getVisible" => T<bool -> unit>
@@ -1019,7 +1019,7 @@ let Polyline =
 
         "setOptions" => PolylineOptions ^-> T<unit>
 
-        "setPath" => (MVC.MVCArray LatLng + Type.ArrayOf LatLng) ^-> T<unit>
+        "setPath" => (MVC.MVCArray.[LatLng] + Type.ArrayOf LatLng) ^-> T<unit>
         |> WithComment "Sets the first path. See PolylineOptions for more details."
 
         "setVisible" => T<bool -> unit>
@@ -1028,48 +1028,48 @@ let Polyline =
 
 let PolygonOptions =
     Config "PolygonOptions"
-    |+> Protocol [
-        "clickable" =% T<bool>
+    |+> Instance [
+        "clickable" =@ T<bool>
         |> WithComment "Indicates whether this Polygon handles mouse events. Defaults to true."
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If set to true, the user can drag this shape over the map. The geodesic property defines the mode of dragging. Defaults to false."
 
-        "editable" =% T<bool>
+        "editable" =@ T<bool>
         |> WithComment "If set to true, the user can edit this shape by dragging the control points shown at the vertices and on each segment. Defaults to false."
 
-        "fillColor" =% T<string>
+        "fillColor" =@ T<string>
         |> WithComment "The fill color. All CSS3 colors are supported except for extended named colors."
 
-        "fillOpacity" =% T<float>
+        "fillOpacity" =@ T<float>
         |> WithComment "The fill opacity between 0.0 and 1.0"
 
-        "geodesic" =% T<bool>
+        "geodesic" =@ T<bool>
         |> WithComment "When true, edges of the polygon are interpreted as geodesic and will follow the curvature of the Earth. When false, edges of the polygon are rendered as straight lines in screen space. Note that the shape of a geodesic polygon may appear to change when dragged, as the dimensions are maintained relative to the surface of the earth. Defaults to false."
 
-        "map" =% M.Map.Type
+        "map" =@ M.Map.Type
         |> WithComment "Map on which to display Polygon."
 
-        "paths" =% (MVC.MVCArray LatLng + MVC.MVCArray (MVC.MVCArray LatLng)
+        "paths" =@ (MVC.MVCArray.[LatLng] + MVC.MVCArray.[MVC.MVCArray.[LatLng]]
                     + Type.ArrayOf LatLng + Type.ArrayOf (Type.ArrayOf LatLng))
         |> WithComment "The ordered sequence of coordinates that designates a closed loop. Unlike polylines, a polygon may consist of one or more paths. As a result, the paths property may specify one or more arrays of LatLng coordinates. Paths are closed automatically; do not repeat the first vertex of the path as the last vertex. Simple polygons may be defined using a single array of LatLngs. More complex polygons may specify an array of arrays. Any simple arrays are converted into MVCArrays. Inserting or removing LatLngs from the MVCArray will automatically update the polygon on the map."
 
-        "strokeColor" =% T<string>
+        "strokeColor" =@ T<string>
         |> WithComment "The stroke color. All CSS3 colors are supported except for extended named colors."
 
-        "strokeOpacity" =% T<float>
+        "strokeOpacity" =@ T<float>
         |> WithComment "The stroke opacity between 0.0 and 1.0"
 
         "strokePosition" => StrokePosition
         |> WithComment "The stroke position. Defaults to CENTER. This property is not supported on Internet Explorer 8 and earlier."
 
-        "strokeWeight" =% T<int>
+        "strokeWeight" =@ T<int>
         |> WithComment "The stroke width in pixels."
 
-        "visible" =% T<bool>
+        "visible" =@ T<bool>
         |> WithComment "Whether this polygon is visible on the map. Defaults to true."
 
-        "zIndex" =% T<int>
+        "zIndex" =@ T<int>
         |> WithComment "The zIndex compared to other polys."
     ]
 
@@ -1077,11 +1077,11 @@ let PolygonOptions =
 let Polygon =
     Class "google.maps.Polygon"
     |=> Inherits MVC.MVCObject
-    |+> [
+    |+> Static [
         Constructor !? PolygonOptions
         |> WithComment "Create a polygon using the passed PolygonOptions, which specify the polygon's path, the stroke style for the polygon's edges, and the fill style for the polygon's interior regions. A polygon may contain one or more paths, where each path consists of an array of LatLngs. You may pass either an array of LatLngs or an MVCArray of LatLngs when constructing these paths. Arrays are converted to MVCArrays within the polygon upon instantiation."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getDraggable" => T<unit -> bool>
         |> WithComment "Returns whether this shape can be dragged by the user."
 
@@ -1091,10 +1091,10 @@ let Polygon =
         "getMap" => T<unit> ^-> M.Map.Type
         |> WithComment "Returns the map on which this shape is attached."
 
-        "getPath" => T<unit> ^-> MVC.MVCArray LatLng
+        "getPath" => T<unit> ^-> MVC.MVCArray.[LatLng]
         |> WithComment "Retrieves the first path."
 
-        "getPaths" => T<unit> ^-> MVC.MVCArray (MVC.MVCArray LatLng)
+        "getPaths" => T<unit> ^-> MVC.MVCArray.[MVC.MVCArray.[LatLng]]
         |> WithComment "Retrieves the paths for this polygon."
 
         "getVisible" => T<unit -> bool>
@@ -1111,10 +1111,10 @@ let Polygon =
 
         "setOptions" => PolygonOptions ^-> T<unit>
 
-        "setPath" => MVC.MVCArray LatLng + Type.ArrayOf LatLng ^-> T<unit>
+        "setPath" => MVC.MVCArray.[LatLng] + Type.ArrayOf LatLng ^-> T<unit>
         |> WithComment "Sets the first path. See PolylineOptions for more details."
 
-        "setPaths" => (MVC.MVCArray (MVC.MVCArray LatLng) + MVC.MVCArray LatLng
+        "setPaths" => (MVC.MVCArray.[MVC.MVCArray.[LatLng]] + MVC.MVCArray.[LatLng]
                         + Type.ArrayOf (Type.ArrayOf LatLng) + Type.ArrayOf LatLng) ^-> T<unit>
         |> WithComment "Sets the path for this polygon."
 
@@ -1124,23 +1124,23 @@ let Polygon =
 
 let InfoWindowOptions =
     Config "InfoWindowOptions"
-    |+> Protocol [
-                "content" =% (T<string> + Node)
+    |+> Instance [
+                "content" =@ (T<string> + Node)
                 |> WithComment "Content to display in the InfoWindow. This can be an HTML element, a plain-text string, or a string containing HTML. The InfoWindow will be sized according to the content. To set an explicit size for the content, set content to be a HTML element with that size."
 
-                "disableAutoPan" =% T<bool>
+                "disableAutoPan" =@ T<bool>
                 |> WithComment "Disable auto-pan on open. By default, the info window will pan the map so that it is fully visible when it opens."
 
-                "maxWidth" =% T<int>
+                "maxWidth" =@ T<int>
                 |> WithComment "Maximum width of the infowindow, regardless of content's width. This value is only considered if it is set before a call to open. To change the maximum width when changing content, call close, setOptions, and then open."
 
-                "pixelOffset" =% Size
+                "pixelOffset" =@ Size
                 |> WithComment "The offset, in pixels, of the tip of the info window from the point on the map at whose geographical coordinates the info window is anchored. If an InfoWindow is opened with an anchor, the pixelOffset will be calculated from the anchor's anchorPoint property."
 
-                "position" =% LatLng
+                "position" =@ LatLng
                 |> WithComment "The LatLng at which to display this InfoWindow. If the InfoWindow is opened with an anchor, the anchor's position will be used instead."
 
-                "zIndex" =% T<int>
+                "zIndex" =@ T<int>
                 |> WithComment "All InfoWindows are displayed on the map in order of their zIndex, with higher values displaying in front of InfoWindows with lower values. By default, InfoWindows are displayed according to their latitude, with InfoWindows of lower latitudes appearing in front of InfoWindows at higher latitudes. InfoWindows are always displayed in front of markers."
             ]
 
@@ -1148,11 +1148,11 @@ let InfoWindowOptions =
 let InfoWindow =
     Class "google.maps.InfoWindow"
     |=> Inherits MVC.MVCObject
-    |+> [
+    |+> Static [
         Constructor !? InfoWindowOptions
         |> WithComment "Creates an info window with the given options. An InfoWindow can be placed on a map at a particular position or above a marker, depending on what is specified in the options. Unless auto-pan is disabled, an InfoWindow will pan the map to make itself visible when it is opened. After constructing an InfoWindow, you must call open to display it on the map. The user can click the close button on the InfoWindow to remove it from the map, or the developer can call close() for the same effect."
     ]
-    |+> Protocol [
+    |+> Instance [
 
         "close" => T<unit> ^-> T<unit>
         |> WithComment "Closes this InfoWindow by removing it from the DOM structure."
@@ -1177,36 +1177,36 @@ let InfoWindow =
 
 let GeocoderRequest =
     Config "GeocoderRequest"
-    |+> Protocol [
-        "address" =% T<string>
+    |+> Instance [
+        "address" =@ T<string>
         |> WithComment "Address. Optional."
 
-        "bounds" =% LatLngBounds.Type
+        "bounds" =@ LatLngBounds.Type
         |> WithComment "LatLngBounds within which to search. Optional."
 
-        "location" =% LatLng.Type
+        "location" =@ LatLng.Type
         |> WithComment "LatLng about which to search. Optional."
 
-        "region" =% T<string>
+        "region" =@ T<string>
         |> WithComment "Country code used to bias the search, specified as a Unicode region subtag / CLDR identifier. Optional."
     ]
 
 let GeocoderComponentRestrictions =
     Config "GeocoderComponentRestrictions"
-    |+> Protocol [
-        "administrativeArea" =% T<string>
+    |+> Instance [
+        "administrativeArea" =@ T<string>
         |> WithComment "Matches all the administrative_area levels. Optional."
 
-        "country" =% T<string>
+        "country" =@ T<string>
         |> WithComment "Matches a country name or a two letter ISO 3166-1 country code. Optional."
 
-        "locality" =% T<string>
+        "locality" =@ T<string>
         |> WithComment "Matches against both locality and sublocality types. Optional."
 
-        "postalCode" =% T<string>
+        "postalCode" =@ T<string>
         |> WithComment "Matches postal_code and postal_code_prefix. Optional."
 
-        "route" =% T<string>
+        "route" =@ T<string>
         |> WithComment "Matches the long or short name of a route. Optional."
     ]
 
@@ -1214,7 +1214,7 @@ let GeocoderStatus =
     let t = Type.New()
     Class "google.maps.GeocoderStatus"
     |=> t
-    |+> [
+    |+> Static [
         "ERROR" =? t
         |> WithComment "There was a problem contacting the Google servers."
 
@@ -1241,7 +1241,7 @@ let GeocoderLocationType =
     let t = Type.New()
     Class "google.maps.GeocoderLocationType"
     |=> t
-    |+> [
+    |+> Static [
         "APPROXIMATE" =? t
         |> WithComment "The returned result is approximate."
 
@@ -1258,7 +1258,7 @@ let GeocoderLocationType =
 
 let GeocoderAddressComponent =
     Class "google.maps.GeocoderAddressComponent"
-    |+> Protocol [
+    |+> Instance [
         "long_name" =@ T<string>
         |> WithComment "The full text of the address component"
 
@@ -1271,7 +1271,7 @@ let GeocoderAddressComponent =
 
 let GeocoderGeometry =
     Class "google.maps.GeocoderGeometry"
-    |+> Protocol [
+    |+> Instance [
         "bounds" =@ LatLngBounds
         |> WithComment "The precise bounds of this GeocoderResult, if applicable"
 
@@ -1287,7 +1287,7 @@ let GeocoderGeometry =
 
 let GeocoderResult =
     Class "google.maps.GeocoderResult"
-    |+> Protocol [
+    |+> Instance [
         "address_components" =@ Type.ArrayOf GeocoderAddressComponent
         |> WithComment "An array of GeocoderAddressComponents"
 
@@ -1310,15 +1310,15 @@ let GeocoderResult =
 let Geocoder =
     Class "google.maps.Geocoder"
     |=> Inherits MVC.MVCObject
-    |+> [Constructor T<unit>]
-    |+> Protocol [
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
         "geocode" => GeocoderRequest * ((Type.ArrayOf GeocoderResult * GeocoderStatus) ^-> T<unit>) ^-> T<unit>
         |> WithComment "Geocode a request."
     ]
 
 let Distance =
     Class "google.maps.Distance"
-    |+> Protocol [
+    |+> Instance [
         "text" =? T<string>
         |> WithComment "A string representation of the distance value, using the UnitSystem specified in the request."
 
@@ -1328,7 +1328,7 @@ let Distance =
 
 let Duration =
     Class "google.maps.Duration"
-    |+> Protocol [
+    |+> Instance [
         "text" =? T<string>
         |> WithComment "A string representation of the duration value."
 
@@ -1338,7 +1338,7 @@ let Duration =
 
 let Time =
     Class "google.maps.Time"
-    |+> Protocol [
+    |+> Instance [
         "text" =? T<string>
         |> WithComment "A string representing the time's value. The time is displayed in the time zone of the transit stop."
 
@@ -1351,7 +1351,7 @@ let Time =
 
 let TransitStop =
     Class "google.maps.TransitStop"
-    |+> Protocol [
+    |+> Instance [
         "location" =? LatLng
         |> WithComment "The location of this stop."
 
@@ -1362,7 +1362,7 @@ let TransitStop =
 let VehicleType =
     let t = Type.New()
     Class "google.maps.VehicleType"
-    |+> [
+    |+> Static [
         "BUS" =? t
         |> WithComment "Bus."
 
@@ -1417,7 +1417,7 @@ let VehicleType =
 
 let TransitVehicle =
     Class "google.maps.TransitVehicle"
-    |+> Protocol [
+    |+> Instance [
         "icon" =? T<string>
         |> WithComment "A URL for an icon that corresponds to the type of vehicle used on this line."
 
@@ -1433,7 +1433,7 @@ let TransitVehicle =
 
 let TransitAgency =
     Class "google.maps.TransitAgency"
-    |+> Protocol [
+    |+> Instance [
         "name" =? T<string>
         |> WithComment "The name of this transit agency."
 
@@ -1446,7 +1446,7 @@ let TransitAgency =
 
 let TransitLine =
     Class "google.maps.TransitLine"
-    |+> Protocol [
+    |+> Instance [
         "agencies" =? Type.ArrayOf TransitAgency
         |> WithComment "The transit agency that operates this transit line."
 
@@ -1474,7 +1474,7 @@ let TransitLine =
 
 let TransitDetails =
     Class "google.maps.TransitDetails"
-    |+> Protocol [
+    |+> Instance [
         "arrival_stop" =? TransitStop
         |> WithComment "The arrival stop of this transit step."
 
@@ -1504,7 +1504,7 @@ let TravelMode =
     let t = Type.New()
     Class "google.maps.TravelMode"
     |=> t
-    |+> [
+    |+> Static [
         "BICYCLING" =? t
         |> WithComment "Specifies a bicycling directions request."
 
@@ -1522,7 +1522,7 @@ let DirectionsStep =
     let t = Type.New()
     Class "google.maps.DirectionsStep"
     |=> t
-    |+> Protocol [
+    |+> Instance [
         "distance" =? Distance
         |> WithComment "The distance covered by this step. This property may be undefined as the distance may be unknown."
 
@@ -1553,7 +1553,7 @@ let DirectionsStep =
 
 let DirectionsLeg =
     Class "google.maps.DirectionsLeg"
-    |+> Protocol [
+    |+> Instance [
         "arrival_time" =? Time
         |> WithComment "An estimated arrival time for this leg. Only applicable for TRANSIT requests."
 
@@ -1590,7 +1590,7 @@ let DirectionsLeg =
 
 let DirectionsRoute =
     Class "google.maps.DirectionsRoute"
-    |+> Protocol [
+    |+> Instance [
         "bounds" =? LatLngBounds
         |> WithComment "The bounds for this route."
 
@@ -1612,7 +1612,7 @@ let DirectionsRoute =
 
 let DirectionsResult =
     Class "google.maps.DirectionsResult"
-    |+> Protocol [
+    |+> Instance [
         "routes" =? Type.ArrayOf DirectionsRoute
         |> WithComment "An array of DirectionsRoutes, each of which contains information about the legs and steps of which it is composed. There will only be one route unless the DirectionsRequest was made with provideRouteAlternatives set to true."
     ]
@@ -1621,7 +1621,7 @@ let DirectionsStatus =
     let t = Type.New()
     Class "google.maps.DirectionsStatus"
     |=> t
-    |+> [
+    |+> Static [
         "INVALID_REQUEST" =? t
         |> WithComment "The DirectionsRequest provided was invalid."
 
@@ -1649,14 +1649,14 @@ let DirectionsStatus =
 
 let Location =
     Class "google.maps.Location"
-    |+> [
+    |+> Static [
         Constructor T<string>?Query
         |> WithInline "$Query"
 
         Constructor LatLng?Position
         |> WithInline "$Position"
     ]
-    |+> Protocol [
+    |+> Instance [
         "isQuery" =? T<bool>
         |> WithGetterInline "typeof $this === 'string'"
 
@@ -1672,11 +1672,11 @@ let Location =
 
 let DirectionsWaypoint =
     Config "DirectionsWaypoint"
-    |+> Protocol [
-        "location" =% Location
+    |+> Instance [
+        "location" =@ Location
         |> WithComment "Waypoint location. Can be an address string or LatLng. Optional."
 
-        "stopover" =% T<bool>
+        "stopover" =@ T<bool>
         |> WithComment "If true, indicates that this waypoint is a stop between the origin and destination. This has the effect of splitting the route into two. This value is true by default. Optional."
     ]
 
@@ -1684,7 +1684,7 @@ let UnitSystem =
     let t = Type.New()
     Class "google.maps.UnitSystem"
     |=> t
-    |+> [
+    |+> Static [
         "IMPERIAL" =? t
         |> WithComment "Specifies that distances in the DirectionsResult should be expressed in imperial units."
 
@@ -1694,17 +1694,17 @@ let UnitSystem =
 
 let TransitOptions =
     Config "TransitOptions"
-    |+> Protocol [
-        "arrivalTime" =% T<JavaScript.Date>
+    |+> Instance [
+        "arrivalTime" =@ T<JavaScript.Date>
         |> WithComment "The desired arrival time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. If arrival time is specified, departure time is ignored."
 
-        "departureTime" =% T<JavaScript.Date>
+        "departureTime" =@ T<JavaScript.Date>
         |> WithComment "The desired departure time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. If neither departure time nor arrival time is specified, the time is assumed to be \"now\"."
     ]
 
 let DirectionsRequest =
     Class "google.maps.DirectionsRequest"
-    |+> [
+    |+> Static [
         Ctor [
             (Location + LatLng + T<string>)?Origin
             (Location + LatLng + T<string>)?Destination
@@ -1712,99 +1712,99 @@ let DirectionsRequest =
         ]
         |> WithInline "{origin:$Origin, destination:$Destination, travelMode:$TravelMode}"
     ]
-    |+> Protocol [
-        "avoidHighways" =% T<bool>
+    |+> Instance [
+        "avoidHighways" =@ T<bool>
         |> WithComment "If true, instructs the Directions service to avoid highways where possible. Optional."
 
-        "avoidTolls" =% T<bool>
+        "avoidTolls" =@ T<bool>
         |> WithComment "If true, instructs the Directions service to avoid toll roads where possible. Optional."
 
-        "destination" =% Location
+        "destination" =@ Location
         |> WithComment "Location of destination. This can be specified as either a string to be geocoded or a LatLng. Required."
 
-        "durationInTraffic" =% T<bool>
+        "durationInTraffic" =@ T<bool>
         |> WithComment "Whether or not we should provide trip duration based on current traffic conditions. Only available to Maps API for Business customers."
 
-        "optimizeWaypoints" =% T<bool>
+        "optimizeWaypoints" =@ T<bool>
         |> WithComment "If set to true, the DirectionService will attempt to re-order the supplied intermediate waypoints to minimize overall cost of the route. If waypoints are optimized, inspect DirectionsRoute.waypoint_order in the response to determine the new ordering."
 
-        "origin" =% Location
+        "origin" =@ Location
         |> WithComment "Location of origin. This can be specified as either a string to be geocoded or a LatLng. Required."
 
-        "provideRouteAlternatives" =% T<bool>
+        "provideRouteAlternatives" =@ T<bool>
         |> WithComment "Whether or not route alternatives should be provided. Optional."
 
-        "region" =% T<string>
+        "region" =@ T<string>
         |> WithComment "Region code used as a bias for geocoding requests. Optional."
 
-        "transitOptions" =% TransitOptions
+        "transitOptions" =@ TransitOptions
         |> WithComment "Settings that apply only to requests where travelMode is TRANSIT. This object will have no effect for other travel modes."
 
-        "travelMode" =% TravelMode
+        "travelMode" =@ TravelMode
         |> WithComment "Type of routing requested. Required."
 
-        "unitSystem" =% UnitSystem
+        "unitSystem" =@ UnitSystem
         |> WithComment "Preferred unit system to use when displaying distance. Defaults to the unit system used in the country of origin."
 
-        "waypoints" =% Type.ArrayOf DirectionsWaypoint
+        "waypoints" =@ Type.ArrayOf DirectionsWaypoint
         |> WithComment "Array of intermediate waypoints. Directions will be calculated from the origin to the destination by way of each waypoint in this array. The maximum allowed waypoints is 8, plus the origin, and destination. Maps API for Business customers are allowed 23 waypoints, plus the origin, and destination. Waypoints are not supported for transit directions. Optional."
     ]
 
 
 let DirectionsRendererOptions =
     Config "DirectionsRendererOptions"
-    |+> Protocol [
-        "directions" =% DirectionsResult
+    |+> Instance [
+        "directions" =@ DirectionsResult
         |> WithComment "The directions to display on the map and/or in a <div> panel, retrieved as a DirectionsResult object from DirectionsService."
 
-        "draggable" =% T<bool>
+        "draggable" =@ T<bool>
         |> WithComment "If true, allows the user to drag and modify the paths of routes rendered by this DirectionsRenderer."
 
-        "hideRouteList" =% T<bool>
+        "hideRouteList" =@ T<bool>
         |> WithComment "This property indicates whether the renderer should provide UI to select amongst alternative routes. By default, this flag is false and a user-selectable list of routes will be shown in the directions' associated panel. To hide that list, set hideRouteList to true."
 
-        "infoWindow" =% InfoWindow
+        "infoWindow" =@ InfoWindow
         |> WithComment "The InfoWindow in which to render text information when a marker is clicked. Existing info window content will be overwritten and its position moved. If no info window is specified, the DirectionsRenderer will create and use its own info window. This property will be ignored if suppressInfoWindows is set to true."
 
-        "map" =% M.Map
+        "map" =@ M.Map
         |> WithComment "Map on which to display the directions."
 
-        "markerOptions" =% MarkerOptions
+        "markerOptions" =@ MarkerOptions
         |> WithComment "Options for the markers. All markers rendered by the DirectionsRenderer will use these options."
 
-        "panel" =% Node
+        "panel" =@ Node
         |> WithComment "The <div> in which to display the directions steps."
 
-        "polylineOptions" =% PolylineOptions
+        "polylineOptions" =@ PolylineOptions
         |> WithComment "Options for the polylines. All polylines rendered by the DirectionsRenderer will use these options."
 
-        "preserveViewport" =% T<bool>
+        "preserveViewport" =@ T<bool>
         |> WithComment "By default, the input map is centered and zoomed to the bounding box of this set of directions. If this option is set to true, the viewport is left unchanged, unless the map's center and zoom were never set."
 
-        "routeIndex" =% T<int>
+        "routeIndex" =@ T<int>
         |> WithComment "The index of the route within the DirectionsResult object. The default value is 0."
 
-        "suppressBicyclingLayer" =% T<bool>
+        "suppressBicyclingLayer" =@ T<bool>
         |> WithComment "Suppress the rendering of the BicyclingLayer when bicycling directions are requested."
 
-        "suppressInfoWindows" =% T<bool>
+        "suppressInfoWindows" =@ T<bool>
         |> WithComment "Suppress the rendering of info windows."
 
-        "suppressMarkers" =% T<bool>
+        "suppressMarkers" =@ T<bool>
         |> WithComment "Suppress the rendering of markers."
 
-        "suppressPolylines" =% T<bool>
+        "suppressPolylines" =@ T<bool>
         |> WithComment "Suppress the rendering of polylines."
     ]
 
 let DirectionsRenderer =
     Class "google.maps.DirectionsRenderer"
     |=> Inherits MVC.MVCObject
-    |+> [
+    |+> Static [
         Constructor !? DirectionsRendererOptions
         |> WithComment "Creates the renderer with the given options. Directions can be rendered on a map (as visual overlays) or additionally on a <div> panel (as textual instructions)."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getDirections" =>  T<unit> ^-> DirectionsResult
         |> WithComment "Returns the renderer's current set of directions."
 
@@ -1835,40 +1835,40 @@ let DirectionsRenderer =
 
 let DirectionsService =
     Class "google.maps.DirectionsService"
-    |+> [Constructor T<unit>]
-    |+> Protocol [
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
         "route" => (DirectionsRequest * (DirectionsResult * DirectionsStatus ^-> T<unit>)) ^-> T<unit>
         |> WithComment "Issue a directions search request."
     ]
 
 let PathElevationRequest =
     Config "PathElevationRequest"
-    |+> [
+    |+> Static [
         Constructor T<int>?Samples
         |> WithInline "{samples:$Samples}"
     ]
-    |+> Protocol [
-        "path" =% Type.ArrayOf LatLng
+    |+> Instance [
+        "path" =@ Type.ArrayOf LatLng
         |> WithComment "The path along which to collect elevation values."
 
-        "samples" =% T<int>
+        "samples" =@ T<int>
         |> WithComment "Required. The number of equidistant points along the given path for which to retrieve elevation data, including the endpoints. The number of samples must be a value between 2 and 512 inclusive."
     ]
 
 let LocationElevationRequest =
     Config "LocationElevationRequest"
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithInline "{}"
     ]
-    |+> Protocol [
-        "locations" =% Type.ArrayOf LatLng
+    |+> Instance [
+        "locations" =@ Type.ArrayOf LatLng
         |> WithComment "The discrete locations for which to retrieve elevations."
     ]
 
 let ElevationResult =
     Class "google.maps.ElevationResult"
-    |+> Protocol [
+    |+> Instance [
         "elevation" =? T<float>
         |> WithComment "The elevation of this point on Earth, in meters above sea level."
 
@@ -1883,7 +1883,7 @@ let ElevationStatus =
     let t = Type.New()
     Class "google.maps.ElevationStatus"
     |=> t
-    |+> [
+    |+> Static [
         "INVALID_REQUEST" =? t
         |> WithComment "This request was invalid."
 
@@ -1902,11 +1902,11 @@ let ElevationStatus =
 
 let ElevationService =
     Class "google.maps.ElevationService"
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithComment "Creates a new instance of a ElevationService that sends elevation queries to Google servers."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getElevationAlongPath" => (PathElevationRequest * (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> T<unit>
         |> WithComment "Makes an elevation request along a path, where the elevation data are returned as distance-based samples along that path."
 
@@ -1918,7 +1918,7 @@ let MaxZoomStatus =
     let t = Type.New()
     Class "google.maps.MaxZoomStatus"
     |=> t
-    |+> [
+    |+> Static [
         "ERROR" =? t
         |> WithComment "There was a problem contacting the Google servers."
 
@@ -1928,7 +1928,7 @@ let MaxZoomStatus =
 
 let MaxZoomResult =
     Class "google.maps.MaxZoomResult"
-    |+> Protocol [
+    |+> Instance [
         "status" =? MaxZoomStatus
         |> WithComment "Status of the request."
 
@@ -1938,18 +1938,18 @@ let MaxZoomResult =
 
 let MaxZoomService =
     Class "google.maps.MaxZoomService"
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithComment "Creates a new instance of a MaxZoomService that can be used to send queries about the maximum zoom level available for satellite imagery."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getMaxZoomAtLatLng" => LatLng * (MaxZoomResult ^-> T<unit>) ^-> T<unit>
         |> WithComment "Returns the maximum zoom level available at a particular LatLng for the Satellite map type. As this request is asynchronous, you must pass a callback function which will be executed upon completion of the request, being passed a MaxZoomResult."
     ]
 
 let DistanceMatrixRequest =
     Class "google.maps.DistanceMatrixRequest"
-    |+> [
+    |+> Static [
         Ctor [
             (Type.ArrayOf Location)?Origins
             (Type.ArrayOf Location)?Destinations
@@ -1957,29 +1957,29 @@ let DistanceMatrixRequest =
         ]
         |> WithInline "{origins:$Origins, destinations:$Destinations, travelMode:$TravelMode}"
     ]
-    |+> Protocol [
-        "avoidHighways" =% T<bool>
+    |+> Instance [
+        "avoidHighways" =@ T<bool>
         |> WithComment "If true, instructs the Distance Matrix service to avoid highways where possible. Optional."
 
-        "avoidTolls" =% T<bool>
+        "avoidTolls" =@ T<bool>
         |> WithComment "If true, instructs the Distance Matrix service to avoid toll roads where possible. Optional."
 
-        "destinations" =% Type.ArrayOf Location
+        "destinations" =@ Type.ArrayOf Location
         |> WithComment "An array containing destination address strings and/or LatLngs, to which to calculate distance and time. Required."
 
-        "durationInTraffic" =% T<bool>
+        "durationInTraffic" =@ T<bool>
         |> WithComment "Whether or not we should provide trip durations based on current traffic conditions. Only available to Maps API for Business customers."
 
-        "origins" =% Type.ArrayOf Location
+        "origins" =@ Type.ArrayOf Location
         |> WithComment "An array containing origin address strings and/or LatLngs, from which to calculate distance and time. Required."
 
-        "region" =% T<string>
+        "region" =@ T<string>
         |> WithComment "Region code used as a bias for geocoding requests. Optional."
 
-        "travelMode" =% TravelMode
+        "travelMode" =@ TravelMode
         |> WithComment "Type of routing requested. Required."
 
-        "unitSystem" =% UnitSystem
+        "unitSystem" =@ UnitSystem
         |> WithComment "Preferred unit system to use when displaying distance. Optional; defaults to metric."
     ]
 
@@ -1987,7 +1987,7 @@ let DistanceMatrixElementStatus =
     let t = Type.New()
     Class "google.maps.DistanceMatrixElementStatus"
     |=> t
-    |+> [
+    |+> Static [
         "NOT_FOUND" =? t
         |> WithComment "The origin and/or destination of this pairing could not be geocoded."
 
@@ -2002,7 +2002,7 @@ let DistanceMatrixStatus =
     let t = Type.New()
     Class "google.maps.DistanceMatrixStatus"
     |=> t
-    |+> [
+    |+> Static [
         "INVALID_REQUEST" =? t
         |> WithComment "The provided request was invalid."
 
@@ -2027,7 +2027,7 @@ let DistanceMatrixStatus =
 
 let DistanceMatrixResponseElement =
     Class "google.maps.DistanceMatrixResponseElement"
-    |+> Protocol [
+    |+> Instance [
         "distance" =? Distance
         |> WithComment "The distance for this origin-destination pairing. This property may be undefined as the distance may be unknown."
 
@@ -2040,14 +2040,14 @@ let DistanceMatrixResponseElement =
 
 let DistanceMatrixResponseRow =
     Class "google.maps.DistanceMatrixResponseRow"
-    |+> Protocol [
+    |+> Instance [
         "elements" =? Type.ArrayOf DistanceMatrixResponseElement
         |> WithComment "The row's elements, corresponding to the destination addresses."
     ]
 
 let DistanceMatrixResponse =
     Class "google.maps.DistanceMatrixResponse"
-    |+> Protocol [
+    |+> Instance [
         "destinationAddresses" =? T<string[]>
         |> WithComment "The formatted destination addresses."
 
@@ -2060,11 +2060,11 @@ let DistanceMatrixResponse =
 
 let DistanceMatrixService =
     Class "google.maps.DistanceMatrixService"
-    |+> [
+    |+> Static [
         Constructor T<unit>
         |> WithComment "Creates a new instance of a DistanceMatrixService that sends distance matrix queries to Google servers."
     ]
-    |+> Protocol [
+    |+> Instance [
         "getDistanceMatrix" => DistanceMatrixRequest * (DistanceMatrixResponse * DistanceMatrixStatus ^-> T<unit>) ^-> T<unit>
         |> WithComment "Issues a distance matrix request."
     ]
@@ -2072,8 +2072,8 @@ let DistanceMatrixService =
 let OverlayView =
     Class "google.maps.OverlayView"
     |=> Inherits MVC.MVCObject
-    |+> [Constructor T<unit>]
-    |+> Protocol [
+    |+> Static [Constructor T<unit>]
+    |+> Instance [
         "draw" => T<unit -> unit>
         |> WithComment "Implement this method to draw or update the overlay. This method is called after onAdd() and when the position from projection.fromLatLngToPixel() would return a new value for a given LatLng. This can happen on change of zoom, center, or map type. It is not necessarily called on drag or resize."
 
@@ -2100,7 +2100,7 @@ let MapsEventListener = Class "google.maps.MapsEventListener"
 // TODO
 let Event =
     Class "google.maps.event"
-    |+> [
+    |+> Static [
         // Cross browser event handler registration. This listener is removed by calling removeListener(handle) for the handle that is returned by this function.
         "addDomListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
         "addDomListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>) * T<bool>) ^-> MapsEventListener
