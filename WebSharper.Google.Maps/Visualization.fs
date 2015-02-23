@@ -1,10 +1,10 @@
 ﻿/// See "Visualization Library" at
 /// at http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Visualization
+module WebSharper.Google.Maps.Visualization
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
-module M = IntelliFactory.WebSharper.Google.Maps.Map
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
+module M = WebSharper.Google.Maps.Map
 
 let MapsEngineLayerOptions =
     Config "google.maps.visualization.MapsEngineLayerOptions"

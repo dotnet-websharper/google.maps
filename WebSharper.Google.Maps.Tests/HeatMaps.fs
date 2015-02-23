@@ -9,13 +9,13 @@
 //-----------------------------------------------------------------
 // $end{copyright}
 
-module IntelliFactory.WebSharper.Google.Maps.Tests.HeatMapSample
+module WebSharper.Google.Maps.Tests.HeatMapSample
 
-open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.JavaScript
-open IntelliFactory.WebSharper.Html.Client
-open IntelliFactory.WebSharper.JQuery
-open IntelliFactory.WebSharper.Google.Maps
+open WebSharper
+open WebSharper.JavaScript
+open WebSharper.Html.Client
+open WebSharper.JQuery
+open WebSharper.Google.Maps
 
 type TaxiData =
     {

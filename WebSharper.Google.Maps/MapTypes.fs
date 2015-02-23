@@ -2,10 +2,10 @@
 /// http://developers.google.com/maps/documentation/javascript/reference
 ///
 /// TODO: this needs to be upgraded to the latest API.
-module IntelliFactory.WebSharper.Google.Maps.MapTypes
+module WebSharper.Google.Maps.MapTypes
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
 
 let Projection =
     Class "google.maps.Projection"

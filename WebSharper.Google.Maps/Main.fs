@@ -1,7 +1,7 @@
-﻿module IntelliFactory.WebSharper.Google.Maps.Main
+﻿module WebSharper.Google.Maps.Main
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Specification
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Specification
 
 module Res =
     let Js =
@@ -9,10 +9,10 @@ module Res =
 
 let Assembly =
     Assembly [
-        Namespace "IntelliFactory.WebSharper.Google.Maps.Resources" [
+        Namespace "WebSharper.Google.Maps.Resources" [
             Res.Js
         ]
-        Namespace "IntelliFactory.WebSharper.Google.Maps" [
+        Namespace "WebSharper.Google.Maps" [
 
             Events.MapsEventListener
 

@@ -19,13 +19,13 @@
         <h2>Source Code Explained</h2>
      ]*)
 
-namespace IntelliFactory.WebSharper.Google.Maps.Tests
+namespace WebSharper.Google.Maps.Tests
 
-open IntelliFactory.WebSharper
+open WebSharper
 
 module Util =
 
-    open IntelliFactory.WebSharper.JavaScript
+    open WebSharper.JavaScript
 
     [<Inline "alert($msg)">]
     let Alert (msg: obj) : unit = X
@@ -35,10 +35,10 @@ module Util =
 
 module SamplesInternals =
 
-    open IntelliFactory.WebSharper.JavaScript
-    open IntelliFactory.WebSharper.Google.Maps
-    open IntelliFactory.WebSharper.Html.Client
-    open IntelliFactory.WebSharper.JQuery
+    open WebSharper.JavaScript
+    open WebSharper.Google.Maps
+    open WebSharper.Html.Client
+    open WebSharper.JQuery
 
     [<JavaScript>]
     let Sample buildMap =
@@ -342,13 +342,13 @@ type Samples() =
     override this.Body = SamplesInternals.Samples () :> _
 
 
-open IntelliFactory.WebSharper.Sitelets
+open WebSharper.Sitelets
 
 type Action = | Index
 
 module Site =
 
-    open IntelliFactory.WebSharper.Html.Server
+    open WebSharper.Html.Server
 
     let HomePage =
         Content.PageContent <| fun ctx ->

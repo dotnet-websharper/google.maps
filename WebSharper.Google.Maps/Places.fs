@@ -1,12 +1,12 @@
 /// Definitions for the Places part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Places
+module WebSharper.Google.Maps.Places
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
-open IntelliFactory.WebSharper.Google.Maps.Base
-open IntelliFactory.WebSharper.Google.Maps.Specification
-open IntelliFactory.WebSharper.JavaScript.Dom
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
+open WebSharper.Google.Maps.Base
+open WebSharper.Google.Maps.Specification
+open WebSharper.JavaScript.Dom
 
 let ComponentRestrictions =
     Config "google.maps.places.ComponentRestrictions"

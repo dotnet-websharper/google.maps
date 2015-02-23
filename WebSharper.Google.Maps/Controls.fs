@@ -1,9 +1,9 @@
 ﻿/// Definitions for the Controls part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Controls
+module WebSharper.Google.Maps.Controls
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
 
 let ControlPosition =
     let t = Type.New()

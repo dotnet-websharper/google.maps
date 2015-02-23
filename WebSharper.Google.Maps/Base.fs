@@ -1,9 +1,9 @@
 ﻿/// Definitions for the Base part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Base
+module WebSharper.Google.Maps.Base
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
 
 let LatLng =
     let LatLng = Class "google.maps.LatLng"

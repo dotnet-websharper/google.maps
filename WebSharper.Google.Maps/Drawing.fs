@@ -1,11 +1,11 @@
 /// Definitions for the Drawing part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Drawing
+module WebSharper.Google.Maps.Drawing
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
-open IntelliFactory.WebSharper.Google.Maps.Base
-open IntelliFactory.WebSharper.Google.Maps.Specification
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
+open WebSharper.Google.Maps.Base
+open WebSharper.Google.Maps.Specification
 
 let OverlayType =
     let t = Type.New()

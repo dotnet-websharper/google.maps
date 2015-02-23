@@ -7,11 +7,11 @@ let bt =
     |> fun bt -> bt.WithFramework(bt.Framework.Net40)
 
 let main =
-    bt.WebSharper.Extension("IntelliFactory.WebSharper.Google.Maps")
+    bt.WebSharper.Extension("WebSharper.Google.Maps")
         .SourcesFromProject()
 
 let test =
-    bt.WebSharper.HtmlWebsite("IntelliFactory.WebSharper.Google.Maps.Tests")
+    bt.WebSharper.HtmlWebsite("WebSharper.Google.Maps.Tests")
         .SourcesFromProject()
         .References(fun r -> [r.Project main])
 

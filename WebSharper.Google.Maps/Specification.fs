@@ -1,12 +1,12 @@
 ﻿/// The rest of the spec.
 /// TODO: this code needs revision to update to the latest 3.11 API
-module IntelliFactory.WebSharper.Google.Maps.Specification
+module WebSharper.Google.Maps.Specification
 
-open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Base
-open IntelliFactory.WebSharper.Google.Maps.Notation
-module M = IntelliFactory.WebSharper.Google.Maps.Map
+open WebSharper
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Base
+open WebSharper.Google.Maps.Notation
+module M = WebSharper.Google.Maps.Map
 
 let Animation =
     let t = Type.New()

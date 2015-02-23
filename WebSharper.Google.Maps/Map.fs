@@ -1,9 +1,9 @@
 ﻿/// Definitions for the Map part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Map
+module WebSharper.Google.Maps.Map
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
 
 let MapTypeId = Forward.MapTypeId
 

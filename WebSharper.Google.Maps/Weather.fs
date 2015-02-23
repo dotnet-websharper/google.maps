@@ -1,11 +1,11 @@
 /// Definitions for the Weather part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.Weather
+module WebSharper.Google.Maps.Weather
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
-open IntelliFactory.WebSharper.Google.Maps.Base
-open IntelliFactory.WebSharper.Google.Maps.Specification
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
+open WebSharper.Google.Maps.Base
+open WebSharper.Google.Maps.Specification
 
 let CloudLayer =
     Class "google.maps.weather.CloudLayer"

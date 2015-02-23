@@ -1,7 +1,7 @@
 ﻿/// Forward type declarations.
-module IntelliFactory.WebSharper.Google.Maps.Forward
+module WebSharper.Google.Maps.Forward
 
-open IntelliFactory.WebSharper.InterfaceGenerator
+open WebSharper.InterfaceGenerator
 
 let Map = Type.New()
 

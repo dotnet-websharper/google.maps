@@ -1,9 +1,9 @@
 ﻿/// Definitions for the StreetView part of the API. See:
 /// http://developers.google.com/maps/documentation/javascript/reference
-module IntelliFactory.WebSharper.Google.Maps.StreetView
+module WebSharper.Google.Maps.StreetView
 
-open IntelliFactory.WebSharper.InterfaceGenerator
-open IntelliFactory.WebSharper.Google.Maps.Notation
+open WebSharper.InterfaceGenerator
+open WebSharper.Google.Maps.Notation
 
 let StreetViewTileData =
     Class "google.maps.StreetViewTileData"
