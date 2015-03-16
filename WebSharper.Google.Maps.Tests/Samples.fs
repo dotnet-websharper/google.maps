@@ -226,8 +226,9 @@ module SamplesInternals =
             let images = [| "sun"; "rain"; "snow"; "storm" |]
             let getWeatherIcon () =
                 let i = int <| Math.Floor(float images.Length * Math.Random())
-                Icon(Url = ("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
-                            + images.[i] + ".png"))
+                Google.Maps.Icon(
+                    Url = ("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
+                           + images.[i] + ".png"))
 
             let addMarkers (_:obj) =
                 let bounds = map.GetBounds()
