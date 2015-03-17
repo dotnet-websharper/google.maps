@@ -78,6 +78,7 @@ let Assembly =
             Places.PlaceAspectRating
             Places.PlaceDetailsRequest
             Places.PlaceGeometry
+            Places.PlacePhoto
             Places.PlaceResult
             Places.PlaceReview
             Places.PlaceSearchPagination
@@ -200,7 +201,7 @@ let Assembly =
             Rectangle
             RectangleOptions
             StrokePosition
-            // StyledMapType: FIXME after bugs 103, 108
+            StyledMapType
             StyledMapTypeOptions
             Symbol
             SymbolPath

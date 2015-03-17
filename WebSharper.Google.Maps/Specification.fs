@@ -2095,7 +2095,7 @@ let OverlayView =
         |> WithComment "Adds the overlay to the map or panorama."
     ]
 
-let MapsEventListener = Class "google.maps.MapsEventListener"
+let MapsEventListener = Events.MapsEventListener
 
 // TODO
 let Event =
