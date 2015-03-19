@@ -3,7 +3,7 @@ module WebSharper.Google.Maps.Forward
 
 open WebSharper.InterfaceGenerator
 
-let Map = Type.New()
+let Map = Class "google.maps.Map"
 
 let MapTypeId =
     Pattern.EnumInlines "MapTypeId" [

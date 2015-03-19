@@ -8,23 +8,21 @@ open WebSharper.Google.Maps.Base
 open WebSharper.Google.Maps.Specification
 
 let OverlayType =
-    let t = Type.New()
     Class "google.maps.drawing.OverlayType"
-    |=> t
     |+> Static [
-        "CIRCLE" =? t
+        "CIRCLE" =? TSelf
         |> WithComment "Specifies that the DrawingManager creates circles, and that the overlay given in the overlaycomplete event is a circle."
 
-        "MARKER" =? t
+        "MARKER" =? TSelf
         |> WithComment "Specifies that the DrawingManager creates markers, and that the overlay given in the overlaycomplete event is a marker."
 
-        "POLYGON" =? t
+        "POLYGON" =? TSelf
         |> WithComment "Specifies that the DrawingManager creates polygons, and that the overlay given in the overlaycomplete event is a polygon."
 
-        "POLYLINE" =? t
+        "POLYLINE" =? TSelf
         |> WithComment "Specifies that the DrawingManager creates polylines, and that the overlay given in the overlaycomplete event is a polyline."
 
-        "RECTANGLE" =? t
+        "RECTANGLE" =? TSelf
         |> WithComment "Specifies that the DrawingManager creates rectangles, and that the overlay given in the overlaycomplete event is a rectangle."
     ]
 

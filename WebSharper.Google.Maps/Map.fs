@@ -118,10 +118,8 @@ let MapOptions =
     ]
 
 let Map =
-    let Map = Class "google.maps.Map"
-    Map
+    Forward.Map
     |=> Inherits MVC.MVCObject
-    |=> Forward.Map
     |+> Static [
         Ctor [
             Node?mapDiv

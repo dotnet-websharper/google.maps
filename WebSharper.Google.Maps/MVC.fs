@@ -6,8 +6,7 @@ open WebSharper.InterfaceGenerator
 open WebSharper.Google.Maps.Notation
 
 let MVCObject =
-    let MVCObject = Class "google.maps.MVCObject"
-    MVCObject
+    Class "google.maps.MVCObject"
     |+> Instance [
         "addListener" => (T<string>?eventName * T<obj->unit>) ^-> Events.MapsEventListener
         |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with google.maps.event.removeListener."
@@ -15,7 +14,7 @@ let MVCObject =
         "bindTo" =>
             Fun T<unit> [
                 T<string>?key
-                MVCObject?target
+                TSelf?target
                 T<string>?targetKey
                 T<bool>?noNotify
             ]

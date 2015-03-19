@@ -199,17 +199,15 @@ let StreetViewPanorama =
     ]
 
 let StreetViewStatus =
-    let t = Type.New()
     Class "StreetViewStatus"
-    |=> t
     |+> Static [
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The request was successful."
 
-        "UNKNOWN_ERROR" =? t
+        "UNKNOWN_ERROR" =? TSelf
         |> WithComment "The request could not be successfully processed, yet the exact reason for failure is unknown."
 
-        "ZERO_RESULTS" =? t
+        "ZERO_RESULTS" =? TSelf
         |> WithComment "There are no nearby panoramas."
     ]
 

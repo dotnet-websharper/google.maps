@@ -9,14 +9,12 @@ open WebSharper.Google.Maps.Notation
 module M = WebSharper.Google.Maps.Map
 
 let Animation =
-    let t = Type.New()
     Class "google.maps.Animation"
-    |=> t
     |+> Static [
-        "BOUNCE" =? t
+        "BOUNCE" =? TSelf
         |> WithComment "Marker bounces until animation is stopped."
 
-        "DROP" =? t
+        "DROP" =? TSelf
         |> WithComment "Marker falls from the top of the map ending with a small bounce."
         ]
 
@@ -133,17 +131,15 @@ let StyledMapType, StyledMapTypeOptions =
     (StyledMapType, StyledMapTypeOptions)
 
 let StrokePosition =
-    let t = Type.New()
     Class "google.maps.StrokePosition"
-    |=> t
     |+> Static [
-        "CENTER" =? t
+        "CENTER" =? TSelf
         |> WithComment "The stroke is centered on the polygon's path, with half the stroke inside the polygon and half the stroke outside the polygon."
 
-        "INSIDE" =? t
+        "INSIDE" =? TSelf
         |> WithComment "The stroke lies inside the polygon."
 
-        "OUTSIDE" =? t
+        "OUTSIDE" =? TSelf
         |> WithComment "The stroke lies outside the polygon."
     ]
 
@@ -621,35 +617,33 @@ let KmlLayerOptions =
     ]
 
 let KmlLayerStatus =
-    let t = Type.New()
     Class "google.maps.KmlLayerStatus"
-    |=> t
     |+> Static [
-        "DOCUMENT_NOT_FOUND" =? t
+        "DOCUMENT_NOT_FOUND" =? TSelf
         |> WithComment "The document could not be found. Most likely it is an invalid URL, or the document is not publicly available."
 
-        "DOCUMENT_TOO_LARGA" =? t
+        "DOCUMENT_TOO_LARGA" =? TSelf
         |> WithComment "The document exceeds the file size limits of KmlLayer."
 
-        "FETCH_ERROR" =? t
+        "FETCH_ERROR" =? TSelf
         |> WithComment "The document could not be fetched."
 
-        "INVALID_DOCUMENT" =? t
+        "INVALID_DOCUMENT" =? TSelf
         |> WithComment "The document is not a valid KML, KMZ or GeoRSS document."
 
-        "INVALID_REQUEST" =? t
+        "INVALID_REQUEST" =? TSelf
         |> WithComment "The KmlLayer is invalid."
 
-        "LIMITS_EXCEEDED" =? t
+        "LIMITS_EXCEEDED" =? TSelf
         |> WithComment "The document exceeds the feature limits of KmlLayer."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The layer loaded successfully."
 
-        "TIMED_OUT" =? t
+        "TIMED_OUT" =? TSelf
         |> WithComment "The document could not be loaded within a reasonable amount of time."
 
-        "UNKNOWN" =? t
+        "UNKNOWN" =? TSelf
         |> WithComment "The document failed to load for an unknown reason."
     ]
 
@@ -731,25 +725,24 @@ let Icon =
     ]
 
 let SymbolPath =
-    let t = Type.New()
     Class "google.maps.SymbolPath"
     |+> Static [
-        "BACKWARD_CLOSED_ARROW" =? t
+        "BACKWARD_CLOSED_ARROW" =? TSelf
         |> WithComment "A backward-pointing closed arrow."
 
-        "BACKWARD_OPEN_ARROW" =? t
+        "BACKWARD_OPEN_ARROW" =? TSelf
         |> WithComment "A backward-pointing open arrow."
 
-        "CIRCLE" =? t
+        "CIRCLE" =? TSelf
         |> WithComment "A circle."
 
-        "FORWARD_CLOSED_ARROW" =? t
+        "FORWARD_CLOSED_ARROW" =? TSelf
         |> WithComment "A forward-pointing closed arrow."
 
-        "FORWARD_OPEN_ARROW" =? t
+        "FORWARD_OPEN_ARROW" =? TSelf
         |> WithComment "A forward-pointing open arrow."
 
-        "Custom" => T<string>?path ^-> t
+        "Custom" => T<string>?path ^-> TSelf
         |> WithInline "$path"
     ]
 
@@ -1211,47 +1204,43 @@ let GeocoderComponentRestrictions =
     ]
 
 let GeocoderStatus =
-    let t = Type.New()
     Class "google.maps.GeocoderStatus"
-    |=> t
     |+> Static [
-        "ERROR" =? t
+        "ERROR" =? TSelf
         |> WithComment "There was a problem contacting the Google servers."
 
-        "INVALID_REQUEST" =? t
+        "INVALID_REQUEST" =? TSelf
         |> WithComment "This GeocoderRequest was invalid."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The response contains a valid GeocoderResponse."
 
-        "OVER_QUERY_LIMIT" =? t
+        "OVER_QUERY_LIMIT" =? TSelf
         |> WithComment "The webpage has gone over the requests limit in too short a period of time."
 
-        "REQUEST_DENIED" =? t
+        "REQUEST_DENIED" =? TSelf
         |> WithComment "The webpage is not allowed to use the geocoder."
 
-        "UNKNOWN_ERROR" =? t
+        "UNKNOWN_ERROR" =? TSelf
         |> WithComment "A geocoding request could not be processed due to a server error. The request may succeed if you try again."
 
-        "ZERO_RESULTS" =? t
+        "ZERO_RESULTS" =? TSelf
         |> WithComment "No result was found for this GeocoderRequest."
     ]
 
 let GeocoderLocationType =
-    let t = Type.New()
     Class "google.maps.GeocoderLocationType"
-    |=> t
     |+> Static [
-        "APPROXIMATE" =? t
+        "APPROXIMATE" =? TSelf
         |> WithComment "The returned result is approximate."
 
-        "GEOMETRIC_CENTER" =? t
+        "GEOMETRIC_CENTER" =? TSelf
         |> WithComment "The returned result is the geometric center of a result such a line (e.g. street) or polygon (region)."
 
-        "RANGE_INTERPOLATED" =? t
+        "RANGE_INTERPOLATED" =? TSelf
         |> WithComment "The returned result reflects an approximation (usually on a road) interpolated between two precise points (such as intersections). Interpolated results are generally returned when rooftop geocodes are unavailable for a street address."
 
-        "ROOFTOP" =? t
+        "ROOFTOP" =? TSelf
         |> WithComment "The returned result reflects a precise geocode."
     ]
 
@@ -1360,58 +1349,57 @@ let TransitStop =
     ]
 
 let VehicleType =
-    let t = Type.New()
     Class "google.maps.VehicleType"
     |+> Static [
-        "BUS" =? t
+        "BUS" =? TSelf
         |> WithComment "Bus."
 
-        "CABLE_CAR" =? t
+        "CABLE_CAR" =? TSelf
         |> WithComment "A vehicle that operates on a cable, usually on the ground. Aerial cable cars may be of the type GONDOLA_LIFT."
 
-        "COMMUTER_TRAIN" =? t
+        "COMMUTER_TRAIN" =? TSelf
         |> WithComment "Commuter rail."
 
-        "FERRY" =? t
+        "FERRY" =? TSelf
         |> WithComment "Ferry."
 
-        "FUNICULAR" =? t
+        "FUNICULAR" =? TSelf
         |> WithComment "A vehicle that is pulled up a steep incline by a cable."
 
-        "GONDOLA_LIFT" =? t
+        "GONDOLA_LIFT" =? TSelf
         |> WithComment "An aerial cable car."
 
-        "HEAVY_RAIL" =? t
+        "HEAVY_RAIL" =? TSelf
         |> WithComment "Heavy rail."
 
-        "HIGH_SPEED_TRAIN" =? t
+        "HIGH_SPEED_TRAIN" =? TSelf
         |> WithComment "High speed train."
 
-        "INTERCITY_BUS" =? t
+        "INTERCITY_BUS" =? TSelf
         |> WithComment "Intercity bus."
 
-        "METRO_RAIL" =? t
+        "METRO_RAIL" =? TSelf
         |> WithComment "Light rail."
 
-        "MONORAIL" =? t
+        "MONORAIL" =? TSelf
         |> WithComment "Monorail."
 
-        "OTHER" =? t
+        "OTHER" =? TSelf
         |> WithComment "Other vehicles."
 
-        "RAIL" =? t
+        "RAIL" =? TSelf
         |> WithComment "Rail."
 
-        "SHARE_TAXI" =? t
+        "SHARE_TAXI" =? TSelf
         |> WithComment "Share taxi is a sort of bus transport with ability to drop off and pick up passengers anywhere on its route. Generally share taxi uses minibus vehicles."
 
-        "SUBWAY" =? t
+        "SUBWAY" =? TSelf
         |> WithComment "Underground light rail."
 
-        "TRAM" =? t
+        "TRAM" =? TSelf
         |> WithComment "Above ground light rail."
 
-        "TROLLEYBUS" =? t
+        "TROLLEYBUS" =? TSelf
         |> WithComment "Trolleybus."
     ]
 
@@ -1501,27 +1489,23 @@ let TransitDetails =
     ]
 
 let TravelMode =
-    let t = Type.New()
     Class "google.maps.TravelMode"
-    |=> t
     |+> Static [
-        "BICYCLING" =? t
+        "BICYCLING" =? TSelf
         |> WithComment "Specifies a bicycling directions request."
 
-        "DRIVING" =? t
+        "DRIVING" =? TSelf
         |> WithComment "Specifies a driving directions request."
 
-        "TRANSIT" =? t
+        "TRANSIT" =? TSelf
         |> WithComment "Specifies a transit directions request."
 
-        "WALKING" =? t
+        "WALKING" =? TSelf
         |> WithComment "Specifies a walking directions request."
     ]
 
 let DirectionsStep =
-    let t = Type.New()
     Class "google.maps.DirectionsStep"
-    |=> t
     |+> Instance [
         "distance" =? Distance
         |> WithComment "The distance covered by this step. This property may be undefined as the distance may be unknown."
@@ -1541,7 +1525,7 @@ let DirectionsStep =
         "start_location" =? LatLng
         |> WithComment "The starting location of this step."
 
-        "steps" =? t
+        "steps" =? TSelf
         |> WithComment "Sub-steps of this step. Specified for non-transit sections of transit routes."
 
         "transit" =? TransitDetails
@@ -1618,32 +1602,30 @@ let DirectionsResult =
     ]
 
 let DirectionsStatus =
-    let t = Type.New()
     Class "google.maps.DirectionsStatus"
-    |=> t
     |+> Static [
-        "INVALID_REQUEST" =? t
+        "INVALID_REQUEST" =? TSelf
         |> WithComment "The DirectionsRequest provided was invalid."
 
-        "MAX_WAYPOINTS_EXCEEDED" =? t
+        "MAX_WAYPOINTS_EXCEEDED" =? TSelf
         |> WithComment "Too many DirectionsWaypoints were provided in the DirectionsRequest. The total allowed waypoints is 8, plus the origin and destination. Maps API for Business customers are allowed 23 waypoints, plus the origin, and destination."
 
-        "NOT_FOUND" =? t
+        "NOT_FOUND" =? TSelf
         |> WithComment "At least one of the origin, destination, or waypoints could not be geocoded."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The response contains a valid DirectionsResult."
 
-        "OVER_QUERY_LIMIT" =? t
+        "OVER_QUERY_LIMIT" =? TSelf
         |> WithComment "The webpage has gone over the requests limit in too short a period of time."
 
-        "REQUEST_DENIED" =? t
+        "REQUEST_DENIED" =? TSelf
         |> WithComment "The webpage is not allowed to use the directions service."
 
-        "UNKNOWN_ERROR" =? t
+        "UNKNOWN_ERROR" =? TSelf
         |> WithComment "A directions request could not be processed due to a server error. The request may succeed if you try again."
 
-        "ZERO_RESULTS" =? t
+        "ZERO_RESULTS" =? TSelf
         |> WithComment "No route could be found between the origin and destination."
     ]
 
@@ -1681,14 +1663,12 @@ let DirectionsWaypoint =
     ]
 
 let UnitSystem =
-    let t = Type.New()
     Class "google.maps.UnitSystem"
-    |=> t
     |+> Static [
-        "IMPERIAL" =? t
+        "IMPERIAL" =? TSelf
         |> WithComment "Specifies that distances in the DirectionsResult should be expressed in imperial units."
 
-        "METRIC" =? t
+        "METRIC" =? TSelf
         |> WithComment "Specifies that distances in the DirectionsResult should be expressed in metric units."
     ]
 
@@ -1880,23 +1860,21 @@ let ElevationResult =
     ]
 
 let ElevationStatus =
-    let t = Type.New()
     Class "google.maps.ElevationStatus"
-    |=> t
     |+> Static [
-        "INVALID_REQUEST" =? t
+        "INVALID_REQUEST" =? TSelf
         |> WithComment "This request was invalid."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The request did not encounter any errors."
 
-        "OVER_QUERY_LIMIT" =? t
+        "OVER_QUERY_LIMIT" =? TSelf
         |> WithComment "The webpage has gone over the requests limit in too short a period of time."
 
-        "REQUEST_DENIED" =? t
+        "REQUEST_DENIED" =? TSelf
         |> WithComment "The webpage is not allowed to use the elevation service for some reason."
 
-        "UNKNOWN_ERROR" =? t
+        "UNKNOWN_ERROR" =? TSelf
         |> WithComment "A geocoding, directions or elevation request could not be successfully processed, yet the exact reason for the failure is not known."
     ]
 
@@ -1915,14 +1893,12 @@ let ElevationService =
     ]
 
 let MaxZoomStatus =
-    let t = Type.New()
     Class "google.maps.MaxZoomStatus"
-    |=> t
     |+> Static [
-        "ERROR" =? t
+        "ERROR" =? TSelf
         |> WithComment "There was a problem contacting the Google servers."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The response contains a valid MaxZoomResult."
     ]
 
@@ -1984,44 +1960,40 @@ let DistanceMatrixRequest =
     ]
 
 let DistanceMatrixElementStatus =
-    let t = Type.New()
     Class "google.maps.DistanceMatrixElementStatus"
-    |=> t
     |+> Static [
-        "NOT_FOUND" =? t
+        "NOT_FOUND" =? TSelf
         |> WithComment "The origin and/or destination of this pairing could not be geocoded."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The response contains a valid result."
 
-        "ZERO_RESULTS" =? t
+        "ZERO_RESULTS" =? TSelf
         |> WithComment "No route could be found between the origin and destination."
     ]
 
 let DistanceMatrixStatus =
-    let t = Type.New()
     Class "google.maps.DistanceMatrixStatus"
-    |=> t
     |+> Static [
-        "INVALID_REQUEST" =? t
+        "INVALID_REQUEST" =? TSelf
         |> WithComment "The provided request was invalid."
 
-        "MAX_DIMENSIONS_EXCEEDED" =? t
+        "MAX_DIMENSIONS_EXCEEDED" =? TSelf
         |> WithComment "The request contains more than 25 origins, or more than 25 destinations."
 
-        "MAX_ELEMENTS_EXCEEDED" =? t
+        "MAX_ELEMENTS_EXCEEDED" =? TSelf
         |> WithComment "The product of origins and destinations exceeds the per-query limit."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The response contains a valid result."
 
-        "OVER_QUERY_LIMIT" =? t
+        "OVER_QUERY_LIMIT" =? TSelf
         |> WithComment "Too many elements have been requested within the allowed time period. The request should succeed if you try again after a reasonable amount of time."
 
-        "REQUEST_DENIED" =? t
+        "REQUEST_DENIED" =? TSelf
         |> WithComment "The service denied use of the Distance Matrix service by your web page."
 
-        "UNKNOWN_ERROR" =? t
+        "UNKNOWN_ERROR" =? TSelf
         |> WithComment "A Distance Matrix request could not be processed due to a server error. The request may succeed if you try again."
     ]
 

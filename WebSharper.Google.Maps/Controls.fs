@@ -6,59 +6,55 @@ open WebSharper.InterfaceGenerator
 open WebSharper.Google.Maps.Notation
 
 let ControlPosition =
-    let t = Type.New()
     Class "ControlPosition"
-    |=> t
     |+> Static [
-        "BOTTOM_CENTER" =? t
+        "BOTTOM_CENTER" =? TSelf
         |> WithComment "Elements are positioned in the center of the bottom row."
 
-        "BOTTOM_LEFT" =? t
+        "BOTTOM_LEFT" =? TSelf
         |> WithComment "Elements are positioned in the bottom left and flow towards the middle. Elements are positioned to the right of the Google logo."
 
-        "BOTTOM_RIGHT" =? t
+        "BOTTOM_RIGHT" =? TSelf
         |> WithComment "Elements are positioned in the bottom right and flow towards the middle. Elements are positioned to the left of the copyrights."
 
-        "LEFT_BOTTOM" =? t
+        "LEFT_BOTTOM" =? TSelf
         |> WithComment "Elements are positioned on the left, above bottom-left elements, and flow upwards."
 
-        "LEFT_CENTER" =? t
+        "LEFT_CENTER" =? TSelf
         |> WithComment "Elements are positioned in the center of the left side."
 
-        "LEFT_TOP" =? t
+        "LEFT_TOP" =? TSelf
         |> WithComment "Elements are positioned on the left, below top-left elements, and flow downwards."
 
-        "RIGHT_BOTTOM" =? t
+        "RIGHT_BOTTOM" =? TSelf
         |> WithComment "Elements are positioned on the right, above bottom-right elements, and flow upwards."
 
-        "RIGHT_CENTER" =? t
+        "RIGHT_CENTER" =? TSelf
         |> WithComment "Elements are positioned in the center of the right side."
 
-        "RIGHT_TOP" =? t
+        "RIGHT_TOP" =? TSelf
         |> WithComment "Elements are positioned on the right, below top-right elements, and flow downwards."
 
-        "TOP_CENTER" =? t
+        "TOP_CENTER" =? TSelf
         |> WithComment "Elements are positioned in the center of the top row."
 
-        "TOP_LEFT" =? t
+        "TOP_LEFT" =? TSelf
         |> WithComment "Elements are positioned in the top left and flow towards the middle."
 
-        "TOP_RIGHT" =? t
+        "TOP_RIGHT" =? TSelf
         |> WithComment "Elements are positioned in the top right and flow towards the middle."
     ]
 
 let MapTypeControlStyle =
-    let t = Type.New()
     Class "google.maps.MapTypeControlStyle"
-    |=> t
     |+> Static [
-        "DEFAULT" =? t
+        "DEFAULT" =? TSelf
         |> WithComment "Uses the default map type control. The control which DEFAULT maps to will vary according to window size and other factors. It may change in future versions of the API."
         
-        "DROPDOWN_MENU" =? t
+        "DROPDOWN_MENU" =? TSelf
         |> WithComment "A dropdown menu for the screen realestate conscious."
 
-        "HORIZONTAL_BAR" =? t
+        "HORIZONTAL_BAR" =? TSelf
         |> WithComment "The standard horizontal radio buttons bar."
     ]
 
@@ -97,11 +93,9 @@ let RotateControlOptions =
         ]
 
 let ScaleControlStyle =
-    let t = Type.New()
     Class "google.maps.ScaleControlStyle"
-    |=> t
     |+> Static [
-        "DEFAULT" =? t
+        "DEFAULT" =? TSelf
         |> WithComment "The standard scale control."
     ]
 
@@ -123,17 +117,15 @@ let StreetViewControlOptions =
         ]
 
 let ZoomControlStyle =
-    let t = Type.New()
     Class "google.maps.ZoomControlStyle"
-    |=> t
     |+> Static [
-        "DEFAULT" =? t
+        "DEFAULT" =? TSelf
         |> WithComment "The default zoom control. The control which DEFAULT maps to will vary according to map size and other factors. It may change in future versions of the API."
 
-        "LARGE" =? t
+        "LARGE" =? TSelf
         |> WithComment "The larger control, with the zoom slider in addition to +/- buttons."
 
-        "SMALL" =? t
+        "SMALL" =? TSelf
         |> WithComment "A small control with buttons to zoom in and out."
     ]
 

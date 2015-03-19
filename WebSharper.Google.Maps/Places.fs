@@ -92,14 +92,12 @@ let PlaceSearchPagination =
     ]
 
 let RankBy =
-    let t = Type.New()
     Class "google.maps.places.RankBy"
-    |=> t
     |+> Static [
-        "DISTANCE" =? t
+        "DISTANCE" =? TSelf
         |> WithComment "Ranks place results by distance from the location."
 
-        "PROMINENCE" =? t
+        "PROMINENCE" =? TSelf
         |> WithComment "Ranks place results by their prominence."
     ]
 
@@ -210,26 +208,24 @@ let PlaceResult =
     ]
 
 let PlacesServiceStatus =
-    let t = Type.New()
     Class "google.maps.places.PlacesServiceStatus"
-    |=> t
     |+> Static [
-        "INVALID_REQUEST" =? t
+        "INVALID_REQUEST" =? TSelf
         |> WithComment "This request was invalid."
 
-        "OK" =? t
+        "OK" =? TSelf
         |> WithComment "The response contains a valid result."
 
-        "OVER_QUERY_LIMIT" =? t
+        "OVER_QUERY_LIMIT" =? TSelf
         |> WithComment "The application has gone over its request quota."
 
-        "REQUEST_DENIED" =? t
+        "REQUEST_DENIED" =? TSelf
         |> WithComment "The application is not allowed to use the PlacesService."
 
-        "UNKNOWN_ERROR" =? t
+        "UNKNOWN_ERROR" =? TSelf
         |> WithComment "The PlacesService request could not be processed due to a server error. The request may succeed if you try again."
 
-        "ZERO_RESULTS" =? t
+        "ZERO_RESULTS" =? TSelf
         |> WithComment "No result was found for this request."
     ]
 

@@ -38,13 +38,11 @@ let MapsEngineLayerProperties =
     ]
 
 let MapsEngineStatus =
-    let t = Type.New()
     Class "google.maps.visualization.MapsEngineStatus"
-    |=> t
     |+> Static [
-        "INVALID_LAYER" =? t
-        "OK" =? t
-        "UNKNOWN_ERROR" =? t
+        "INVALID_LAYER" =? TSelf
+        "OK" =? TSelf
+        "UNKNOWN_ERROR" =? TSelf
     ]
 
 let MapsEngineLayer =

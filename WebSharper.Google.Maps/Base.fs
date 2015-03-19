@@ -6,8 +6,7 @@ open WebSharper.InterfaceGenerator
 open WebSharper.Google.Maps.Notation
 
 let LatLng =
-    let LatLng = Class "google.maps.LatLng"
-    LatLng
+    Class "google.maps.LatLng"
     |+> Static [
             Ctor [
                 T<float>?Lat
@@ -17,7 +16,7 @@ let LatLng =
             |> WithComment "Creates a LatLng object representing a geographic point. Latitude is specified in degrees within the range [-90, 90]. Longitude is specified in degrees within the range [-180, 180]. Set noWrap to true to enable values outside of this range. Note the ordering of latitude and longitude."
         ]
     |+> Instance [
-        "equals" => LatLng?other ^-> T<bool>
+        "equals" => TSelf?other ^-> T<bool>
         |> WithComment "Comparison function."
 
         "lat" => T<unit> ^-> T<float>
@@ -34,8 +33,7 @@ let LatLng =
     ]
 
 let LatLngBounds =
-    let LatLngBounds = Class "google.maps.LatLngBounds"
-    LatLngBounds
+    Class "google.maps.LatLngBounds"
     |+> Static [
             Ctor [
                 !? LatLng?SW
@@ -46,10 +44,10 @@ let LatLngBounds =
         "contains" => (LatLng) ^-> T<bool>
         |> WithComment "Returns true if the given lat/lng is in this bounds."
 
-        "equals" => (LatLngBounds) ^-> T<bool>
+        "equals" => TSelf ^-> T<bool>
         |> WithComment "Returns true if this bounds approximately equals the given bounds."
 
-        "extend" => (LatLng) ^-> LatLngBounds
+        "extend" => (LatLng) ^-> TSelf
         |> WithComment "Extends this bounds to contain the given point."
 
         "getCenter" => T<unit> ^-> LatLng
@@ -61,7 +59,7 @@ let LatLngBounds =
         "getSouthWest" => T<unit> ^-> LatLng
         |> WithComment "Returns the south-west corner of this bounds."
 
-        "intersects" => (LatLngBounds) ^-> T<bool>
+        "intersects" => (TSelf) ^-> T<bool>
         |> WithComment "Returns true if this bounds shares any points with this bounds."
 
         "isEmpty" => T<unit> ^-> T<bool>
@@ -76,13 +74,12 @@ let LatLngBounds =
         "toUrlValue" => (!? T<float>) ^-> T<string>
         |> WithComment "Returns a string of the form \"lat_lo,lng_lo,lat_hi,lng_hi\" for this bounds, where \"lo\" corresponds to the southwest corner of the bounding box, while \"hi\" corresponds to the northeast corner of that box."
 
-        "union" => (LatLngBounds) ^-> LatLngBounds
+        "union" => (TSelf) ^-> TSelf
         |> WithComment "Extends this bounds to contain the union of this and the given bounds."
     ]
 
 let Point =
-    let Point = Class "google.maps.Point"
-    Point
+    Class "google.maps.Point"
     |+> Static [
             Ctor [
                 T<float>?x
@@ -90,7 +87,7 @@ let Point =
             ]
         ]
     |+> Instance [
-        "equals" => (Point) ^-> T<bool>
+        "equals" => TSelf ^-> T<bool>
         |> WithComment "Compares two Points"
 
         "toString" => T<unit -> string>
@@ -102,8 +99,7 @@ let Point =
     ]
 
 let Size =
-    let Size = Class "google.maps.Size"
-    Size
+    Class "google.maps.Size"
     |+> Static [
             Ctor [
                 T<float>?Width
@@ -114,7 +110,7 @@ let Size =
             |> WithComment "Two-dimensonal size, where width is the distance on the x-axis, and height is the distance on the y-axis."
         ]
     |+> Instance [
-        "equals" => (Size) ^-> T<bool>
+        "equals" => (TSelf) ^-> T<bool>
         |> WithComment "Compares two Sizes."
 
         "toString" => T<unit -> string>

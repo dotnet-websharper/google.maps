@@ -19,31 +19,25 @@ let CloudLayer =
     ]
 
 let TemperatureUnit =
-    let t = Type.New()
     Class "google.maps.weather.TemperatureUnit"
-    |=> t
     |+> Static [
-        "CELSIUS" =? t
-        "FAHRENHEIT" =? t
+        "CELSIUS" =? TSelf
+        "FAHRENHEIT" =? TSelf
     ]
 
 let WindSpeedUnit =
-    let t = Type.New()
     Class "google.maps.weather.WindSpeedUnit"
-    |=> t
     |+> Static [
-        "KILOMETERS_PER_HOUR" =? t
-        "METERS_PER_SECOND" =? t
-        "MILES_PER_HOUR" =? t
+        "KILOMETERS_PER_HOUR" =? TSelf
+        "METERS_PER_SECOND" =? TSelf
+        "MILES_PER_HOUR" =? TSelf
     ]
 
 let LabelColor =
-    let t = Type.New()
     Class "google.maps.weather.LabelColor"
-    |=> t
     |+> Static [
-        "BLACK" =? t
-        "WHITE" =? t
+        "BLACK" =? TSelf
+        "WHITE" =? TSelf
     ]
 
 let WeatherLayerOptions =
