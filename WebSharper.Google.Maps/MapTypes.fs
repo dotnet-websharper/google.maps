@@ -23,7 +23,6 @@ let Visibility =
 
 let MapTypeStyler =
     Config "MapTypeStyler"
-    |+> Static [Constructor T<unit>]
     |+> Instance [
         "color" =@ T<string>
         |> WithComment "Sets the color of the feature. Valid values: An RGB hex string, i.e. '#ff0000'."

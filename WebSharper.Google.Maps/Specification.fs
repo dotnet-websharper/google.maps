@@ -1837,10 +1837,6 @@ let PathElevationRequest =
 
 let LocationElevationRequest =
     Config "LocationElevationRequest"
-    |+> Static [
-        Constructor T<unit>
-        |> WithInline "{}"
-    ]
     |+> Instance [
         "locations" =@ Type.ArrayOf LatLng
         |> WithComment "The discrete locations for which to retrieve elevations."
