@@ -87,7 +87,7 @@ module SamplesInternals =
                     markerOptions.Map <- map
                     new Marker(markerOptions) |> ignore
 
-            Event.AddListener(map, "bounds_changed", addMarkers) |> ignore
+            Event.AddListener(map, "bounds_changed", As addMarkers) |> ignore
 
     [<JavaScript>]
     let InfoWindow() =
@@ -191,7 +191,11 @@ module SamplesInternals =
             let itOptions = new ImageMapTypeOptions()
 
             itOptions.GetTileUrl <-
+#if ZAFIR
+                ThisFunc<_,_,_,_>(fun _ coord zoom ->
+#else
                 (fun _ (coord, zoom) ->
+#endif
                     getHorizontallyRepeatingTileUrl (coord, zoom,
                         (fun (coord, zoom) ->
                             let bound = Math.Pow(float 2, float zoom)
@@ -245,7 +249,7 @@ module SamplesInternals =
                     markerOptions.Map <- map
                     new Marker(markerOptions) |> ignore
 
-            Event.AddListener(map, "bounds_changed", addMarkers) |> ignore
+            Event.AddListener(map, "bounds_changed", As addMarkers) |> ignore
 
 // Not supported in v3.
 //
@@ -299,7 +303,7 @@ module SamplesInternals =
     let PrimitiveEvent () =
         Sample <| fun map ->
             let clickAction (_:obj) = Util.Alert "Map Clicked!" // Window.Alert "Map Clicked!"
-            Event.AddListener(map, "click", clickAction)
+            Event.AddListener(map, "click", As clickAction)
             |> ignore
 
     [<JavaScript>]
