@@ -95,7 +95,7 @@ module SamplesInternals =
             let center = map.GetCenter()
             let helloWorldElement = Span [Text "Hello World"]
             let iwOptions = new InfoWindowOptions()
-            iwOptions.Content <- Choice1Of2 helloWorldElement.Body
+            iwOptions.Content <- Union1Of2 helloWorldElement.Body
             iwOptions.Position <- center
             let iw = new InfoWindow(iwOptions)
             iw.Open(map)
