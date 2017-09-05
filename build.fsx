@@ -9,16 +9,16 @@ let bt =
         .References(fun r -> [r.Assembly "System.Web"])
 
 let main =
-    bt.WebSharper.Extension("WebSharper.Google.Maps")
+    bt.WebSharper4.Extension("WebSharper.Google.Maps")
         .SourcesFromProject()
 
 let test =
-    bt.WebSharper.HtmlWebsite("WebSharper.Google.Maps.Tests")
+    bt.WebSharper4.HtmlWebsite("WebSharper.Google.Maps.Tests")
         .SourcesFromProject()
         .References(fun r ->
             [
                 r.Project main
-                r.NuGet("WebSharper.Html").Reference()
+                r.NuGet("WebSharper.Html").Latest(true).ForceFoundVersion().Reference()
             ])
 
 bt.Solution [
