@@ -56,6 +56,8 @@ let Assembly =
             MapTypes.ImageMapType
             MapTypes.ImageMapTypeOptions
             MapTypes.MapType
+            MapTypes.StyledMapTypeOptions
+            MapTypes.StyledMapType
             MapTypes.MapTypeRegistry
             MapTypes.MapTypeStyle
             MapTypes.MapTypeStyleElementType
@@ -201,8 +203,6 @@ let Assembly =
             Rectangle
             RectangleOptions
             StrokePosition
-            StyledMapType
-            StyledMapTypeOptions
             Symbol
             SymbolPath
             Time

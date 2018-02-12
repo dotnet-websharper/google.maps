@@ -179,28 +179,33 @@ let MapType =
             |> WithComment "The dimensions of each tile. Required."
         ]
 
+let StyledMapType =
+    Class "google.maps.StyledMapType"
+    |=> Inherits MapType
+
 let StyledMapTypeOptions =
-    Class "google.maps.StyledMapTypeOptions"
-    |+> Static [Constructor T<unit>]
+    Config "StyledMapTypeOptions"
     |+> Instance [
         "alt" =@ T<string>
         |> WithComment "Text to display when this MapType's button is hovered over in the map type control."
+
+        "baseMapType" =@ StyledMapType.Type
+        |> WithComment "A StyledMapType whose style should be used as a base for defining a StyledMapType's style. The MapTypeStyle rules will be appended to the base's styles."
 
         "maxZoom" =@ T<string>
         |> WithComment "The maximum zoom level for the map when displaying this MapType. Optional."
 
         "minZoom" =@ T<string>
         |> WithComment "The minimum zoom level for the map when displaying this MapType. Optional."
+
+        "name" =@ T<string>
+        |> WithComment "Name to display in the map type control."
     ]
 
-let StyledMapType =
-    Class "google.maps.StyledMapType"
-    |=> Inherits MapType
+do 
+    StyledMapType
     |+> Static [
-        Ctor [
-            (Type.ArrayOf MapTypeStyle)?Styles
-            StyledMapTypeOptions?Options
-        ]
+        Constructor (Type.ArrayOf MapTypeStyle * !? StyledMapTypeOptions)
         |> WithComment "Creates a styled MapType with the specified options. The StyledMapType takes an array of MapTypeStyles, where each MapTypeStyle is applied to the map consecutively. A later MapTypeStyle that applies the same MapTypeStylers to the same selectors as an earlier MapTypeStyle will override the earlier MapTypeStyle."
     ]
 

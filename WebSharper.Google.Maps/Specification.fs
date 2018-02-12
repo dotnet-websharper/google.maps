@@ -102,34 +102,6 @@ let MapCanvasProjection =
         |> WithComment "The width of the world in pixels in the current zoom level. For projections with a heading angle of either 90 or 270 degrees, this corresponds to the pixel span in the Y-axis."
     ]
 
-
-let StyledMapType, StyledMapTypeOptions =
-    let StyledMapType = Class "google.maps.StyledMapType"
-    let StyledMapTypeOptions =
-        Pattern.Config "StyledMapTypeOptions" {
-            Required = []
-            Optional =
-                [
-                    // Alt text to display when this MapType's button is hovered over in the map type control.
-                    "alt", T<string>
-                    // A StyledMapType whose style should be used as a base for defining a StyledMapType's style. The MapTypeStyle rules will be appended to the base's styles.
-                    "baseMapType", StyledMapType.Type
-                    // The maximum zoom level for the map when displaying this MapType. Optional.
-                    "maxZoom", T<int>
-                    // The minimum zoom level for the map when displaying this MapType. Optional.
-                    "minZoom", T<int>
-                    // Name to display in the map type control.
-                    "name", T<string>
-                ]
-        }
-
-    let StyledMapType =
-        StyledMapType
-        |=> Implements [MapTypes.MapType]
-        |+> Static [Constructor (Type.ArrayOf MapTypes.MapTypeStyle * !? StyledMapTypeOptions)]
-        |=> Inherits MVC.MVCObject
-    (StyledMapType, StyledMapTypeOptions)
-
 let StrokePosition =
     Class "google.maps.StrokePosition"
     |+> Static [
