@@ -11,9 +11,11 @@ description
 tags
     Web JavaScript F# C#
 files
+    ../WebSharper.Google.Maps/bin/Release/net461/WebSharper.Google.Maps.dll ==> lib/net461
+    ../WebSharper.Google.Maps/bin/Release/net461/WebSharper.Google.Maps.xml ==> lib/net461
     ../WebSharper.Google.Maps/bin/Release/netstandard2.0/WebSharper.Google.Maps.dll ==> lib/netstandard2.0
     ../WebSharper.Google.Maps/bin/Release/netstandard2.0/WebSharper.Google.Maps.xml ==> lib/netstandard2.0
 dependencies
-        WebSharper ~> 4.2.0-alpha
+        WebSharper ~> 4.2.2-beta
 frameworkAssemblies
         System.Web
