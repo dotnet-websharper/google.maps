@@ -46,17 +46,19 @@ module SamplesInternals =
 
     open WebSharper.JavaScript
     open WebSharper.Google.Maps
-    open WebSharper.Html.Client
-    open WebSharper.JQuery
+    open WebSharper.UI.Html
+    open WebSharper.UI.Client
 
     [<JavaScript>]
     let Sample buildMap =
-        Div [Attr.Style "padding-bottom:20px; width:500px; height:300px;"]
-        |>! OnAfterRender (fun mapElement ->
-            let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(center, 8)
-            let map = new Google.Maps.Map(mapElement.Body, options)
-            buildMap map)
+        div [
+            attr.style "padding-bottom:20px; width:500px; height:300px;"
+            on.afterRender (fun mapElement ->
+                let center = new LatLng(37.4419, -122.1419)
+                let options = new MapOptions(center, 8)
+                let map = new Google.Maps.Map(mapElement, options)
+                buildMap map)
+        ] []
 
     [<JavaScript>]
     let SimpleMap() =
@@ -102,9 +104,9 @@ module SamplesInternals =
     let InfoWindow() =
         Sample <| fun map ->
             let center = map.GetCenter()
-            let helloWorldElement = Span [Text "Hello World"]
+            let helloWorldElement = Elt.span [] [text "Hello World"]
             let iwOptions = new InfoWindowOptions()
-            iwOptions.Content <- Union1Of2 helloWorldElement.Body
+            iwOptions.Content <- Union1Of2 helloWorldElement.Dom
             iwOptions.Position <- center
             let iw = new InfoWindow(iwOptions)
             iw.Open(map)
@@ -132,9 +134,8 @@ module SamplesInternals =
             let a = DirectionsRendererOptions()
             directionsDisplay.SetMap(map)
             let mapDiv = map.GetDiv()
-            let dirPanel = Div [ Attr.Name "directionsDiv"]
-            let j = JQuery.Of(mapDiv)
-            j.After(dirPanel.Dom).Ignore
+            let dirPanel = Elt.div [ attr.name "directionsDiv"] []
+            mapDiv.After(dirPanel.Dom :> Dom.Node)
             directionsDisplay.SetPanel dirPanel.Dom
             let calcRoute () =
                 let start = "chicago, il"
@@ -156,9 +157,8 @@ module SamplesInternals =
             let a = DirectionsRendererOptions()
             directionsDisplay.SetMap(map)
             let mapDiv = map.GetDiv()
-            let dirPanel = Div [Attr.Name "directionsDiv"]
-            let j = JQuery.Of mapDiv
-            j.After(dirPanel.Dom).Ignore
+            let dirPanel = Elt.div [attr.name "directionsDiv"] []
+            mapDiv.After(dirPanel.Dom :> Dom.Node)
             directionsDisplay.SetPanel dirPanel.Dom
             let calcRoute () =
                 let start = "chicago, il"
@@ -325,8 +325,8 @@ module SamplesInternals =
 
     [<JavaScript>]
     let Samples () =
-        Div [
-            H1 [Text "Google Maps Samples"]
+        div [] [
+            h1 [] [text "Google Maps Samples"]
             SimpleMap ()
             PanTo ()
             RandomMarkers ()
@@ -340,17 +340,9 @@ module SamplesInternals =
             StreetView ()
             PrimitiveEvent ()
             SimplePolyline ()
-            H1 [Text "HeatMaps"]
-            Div [HeatMapSample.Sample()]
+            h1 [] [text "HeatMaps"]
+            div [] [HeatMapSample.Sample()]
         ]
-
-[<Sealed>]
-type Samples() =
-    inherit Web.Control()
-
-    [<JavaScript>]
-    override this.Body = SamplesInternals.Samples () :> _
-
 
 open WebSharper.Sitelets
 
@@ -358,12 +350,12 @@ type Action = | Index
 
 module Site =
 
-    open WebSharper.Html.Server
+    open WebSharper.UI.Html
 
     let HomePage ctx =
         Content.Page(
             Title = "WebSharper Google Maps Tests",
-            Body = [Div [new Samples()]]
+            Body = [div [] [client <@ SamplesInternals.Samples () @>]]
         )
 
     let Main = Sitelet.Content "/" Index HomePage

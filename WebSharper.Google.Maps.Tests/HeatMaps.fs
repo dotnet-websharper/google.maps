@@ -22,8 +22,7 @@ module WebSharper.Google.Maps.Tests.HeatMapSample
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.Html.Client
-open WebSharper.JQuery
+open WebSharper.UI.Html
 open WebSharper.Google.Maps
 
 type TaxiData =
@@ -57,14 +56,20 @@ let Draw (div: Dom.Element) (rawData: array<double*double>) : unit =
 
 [<JavaScript>]
 let Sample () =
-    Div [Attr.Style "height: 480px; width: 640px"]
-    |>! OnAfterRender (fun self ->
-        async {
-            let! data =
-                Async.FromContinuations(fun (ok, _, cancel) ->
-                    JQuery.GetJSON("taxi.js", fun (data, _) ->
-                        ok (As<TaxiData> data))
-                    |> ignore)
-            do Draw self.Dom data.coordinates
-        }
-        |> Async.Start)
+    div [
+        attr.style "height: 480px; width: 640px"
+        on.afterRender (fun self ->
+            async {
+                let! data =
+                    Async.FromContinuations(fun (ok, _, cancel) ->
+                        (JS.Fetch "taxi.js")
+                            .Then(fun (resp: Response) ->
+                                resp.Json().Then(fun (json: obj) ->
+                                    ok <| (As<TaxiData>) json
+                                ) |> ignore
+                            ) |> ignore
+                        )
+                do Draw self data.coordinates
+            }
+            |> Async.Start)
+    ] []

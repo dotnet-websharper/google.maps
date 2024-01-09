@@ -17,11 +17,13 @@
 // permissions and limitations under the License.
 //
 // $end{copyright}
-/// Definitions for the Events part of the API. See:
-/// http://developers.google.com/maps/documentation/javascript/reference
-module WebSharper.Google.Maps.Events
+// Definitions for the Events part of the API. See:
+// http://developers.google.com/maps/documentation/javascript/reference
+namespace WebSharper.Google.Maps.Definition
 
-open WebSharper.InterfaceGenerator
+module Events =
 
-let MapsEventListener =
-    Class "MapsEventListener"
+    open WebSharper.InterfaceGenerator
+
+    let MapsEventListener =
+        Class "MapsEventListener"

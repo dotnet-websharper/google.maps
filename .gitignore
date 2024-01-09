@@ -12,3 +12,4 @@ obj/
 /paket-files/
 /.vscode/
 /.vs
+websharper.log

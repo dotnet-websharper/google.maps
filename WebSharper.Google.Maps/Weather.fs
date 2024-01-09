@@ -17,139 +17,141 @@
 // permissions and limitations under the License.
 //
 // $end{copyright}
-/// Definitions for the Weather part of the API. See:
-/// http://developers.google.com/maps/documentation/javascript/reference
-module WebSharper.Google.Maps.Weather
+// Definitions for the Weather part of the API. See:
+// http://developers.google.com/maps/documentation/javascript/reference
+namespace WebSharper.Google.Maps.Definition
 
-open WebSharper.InterfaceGenerator
-open WebSharper.Google.Maps.Notation
-open WebSharper.Google.Maps.Base
-open WebSharper.Google.Maps.Specification
+module Weather =
 
-let CloudLayer =
-    Class "google.maps.weather.CloudLayer"
-    |+> Static [Constructor T<unit>]
-    |+> Instance [
-        "getMap" => T<unit> ^-> Map.Map
-        |> WithComment "Returns the map on which this layer is displayed."
+    open WebSharper.InterfaceGenerator
+    open Notation
+    open Base
+    open Specification
 
-        "setMap" => Map.Map ^-> T<unit>
-        |> WithComment "Renders the layer on the specified map. If map is set to null, the layer will be removed."
-    ]
+    let CloudLayer =
+        Class "google.maps.weather.CloudLayer"
+        |+> Static [Constructor T<unit>]
+        |+> Instance [
+            "getMap" => T<unit> ^-> Map.Map
+            |> WithComment "Returns the map on which this layer is displayed."
 
-let TemperatureUnit =
-    Class "google.maps.weather.TemperatureUnit"
-    |+> Static [
-        "CELSIUS" =? TSelf
-        "FAHRENHEIT" =? TSelf
-    ]
+            "setMap" => Map.Map ^-> T<unit>
+            |> WithComment "Renders the layer on the specified map. If map is set to null, the layer will be removed."
+        ]
 
-let WindSpeedUnit =
-    Class "google.maps.weather.WindSpeedUnit"
-    |+> Static [
-        "KILOMETERS_PER_HOUR" =? TSelf
-        "METERS_PER_SECOND" =? TSelf
-        "MILES_PER_HOUR" =? TSelf
-    ]
+    let TemperatureUnit =
+        Class "google.maps.weather.TemperatureUnit"
+        |+> Static [
+            "CELSIUS" =? TSelf
+            "FAHRENHEIT" =? TSelf
+        ]
 
-let LabelColor =
-    Class "google.maps.weather.LabelColor"
-    |+> Static [
-        "BLACK" =? TSelf
-        "WHITE" =? TSelf
-    ]
+    let WindSpeedUnit =
+        Class "google.maps.weather.WindSpeedUnit"
+        |+> Static [
+            "KILOMETERS_PER_HOUR" =? TSelf
+            "METERS_PER_SECOND" =? TSelf
+            "MILES_PER_HOUR" =? TSelf
+        ]
 
-let WeatherLayerOptions =
-    Config "google.maps.weather.WeatherLayerOptions"
-    |+> Instance [
-        "clickable" =@ T<bool>
-        |> WithComment "If true, the layer receives mouse events. Default value is true."
+    let LabelColor =
+        Class "google.maps.weather.LabelColor"
+        |+> Static [
+            "BLACK" =? TSelf
+            "WHITE" =? TSelf
+        ]
 
-        "labelColor" =@ LabelColor
-        |> WithComment "The color of labels on the weather layer. If this is not explicitly set, the label color is chosen automatically depending on the map type."
+    let WeatherLayerOptions =
+        Config "google.maps.weather.WeatherLayerOptions"
+        |+> Instance [
+            "clickable" =@ T<bool>
+            |> WithComment "If true, the layer receives mouse events. Default value is true."
 
-        "map" =@ Map.Map
+            "labelColor" =@ LabelColor
+            |> WithComment "The color of labels on the weather layer. If this is not explicitly set, the label color is chosen automatically depending on the map type."
 
-        "suppressInfoWindows" =@ T<bool>
+            "map" =@ Map.Map
 
-        "temperatureUnits" =@ TemperatureUnit
+            "suppressInfoWindows" =@ T<bool>
 
-        "windSpeedUnits" =@ WindSpeedUnit
-    ]
+            "temperatureUnits" =@ TemperatureUnit
 
-let WeatherLayer =
-    Class "google.maps.weather.WeatherLayer"
-    |+> Static [Constructor (!?WeatherLayerOptions)]
-    |+> Instance [
-        "getMap" => T<unit> ^-> Map.Map
-        |> WithComment "Returns the map on which this layer is displayed."
+            "windSpeedUnits" =@ WindSpeedUnit
+        ]
 
-        "setMap" => Map.Map ^-> T<unit>
-        |> WithComment "Renders the layer on the specified map. If map is set to null, the layer will be removed."
+    let WeatherLayer =
+        Class "google.maps.weather.WeatherLayer"
+        |+> Static [Constructor (!?WeatherLayerOptions)]
+        |+> Instance [
+            "getMap" => T<unit> ^-> Map.Map
+            |> WithComment "Returns the map on which this layer is displayed."
 
-        "setOptions" => WeatherLayerOptions ^-> T<unit>
-    ]
+            "setMap" => Map.Map ^-> T<unit>
+            |> WithComment "Renders the layer on the specified map. If map is set to null, the layer will be removed."
 
-let WeatherConditions =
-    Class "google.maps.weather.WeatherConditions"
-    |+> Instance [
-        "day" =? T<string>
-        |> WithComment "The current day of the week in long form, e.g. \"Monday\"."
+            "setOptions" => WeatherLayerOptions ^-> T<unit>
+        ]
 
-        "description" =? T<string>
-        |> WithComment "A description of the conditions, e.g. \"Partly Cloudy\"."
+    let WeatherConditions =
+        Class "google.maps.weather.WeatherConditions"
+        |+> Instance [
+            "day" =? T<string>
+            |> WithComment "The current day of the week in long form, e.g. \"Monday\"."
 
-        "high" =? T<float>
-        |> WithComment "The highest temperature reached during the day."
+            "description" =? T<string>
+            |> WithComment "A description of the conditions, e.g. \"Partly Cloudy\"."
 
-        "humidity" =? T<float>
-        |> WithComment "The current humidity, expressed as a percentage."
+            "high" =? T<float>
+            |> WithComment "The highest temperature reached during the day."
 
-        "low" =? T<float>
-        |> WithComment "The lowest temperature reached during the day."
+            "humidity" =? T<float>
+            |> WithComment "The current humidity, expressed as a percentage."
 
-        "shortDay" =? T<string>
-        |> WithComment "The current day of the week in short form, e.g. \"M\"."
+            "low" =? T<float>
+            |> WithComment "The lowest temperature reached during the day."
 
-        "temperature" =? T<float>
-        "windDirection" =? T<string>
-        "windSpeed" =? T<string>
-    ]
+            "shortDay" =? T<string>
+            |> WithComment "The current day of the week in short form, e.g. \"M\"."
 
-let WeatherForecast =
-    Class "google.maps.weather.WeatherForecast"
-    |+> Instance [
-        "day" =? T<string>
-        |> WithComment "The current day of the week in long form, e.g. \"Monday\"."
+            "temperature" =? T<float>
+            "windDirection" =? T<string>
+            "windSpeed" =? T<string>
+        ]
 
-        "description" =? T<string>
-        |> WithComment "A description of the conditions, e.g. \"Partly Cloudy\"."
+    let WeatherForecast =
+        Class "google.maps.weather.WeatherForecast"
+        |+> Instance [
+            "day" =? T<string>
+            |> WithComment "The current day of the week in long form, e.g. \"Monday\"."
 
-        "high" =? T<float>
-        |> WithComment "The highest temperature reached during the day."
+            "description" =? T<string>
+            |> WithComment "A description of the conditions, e.g. \"Partly Cloudy\"."
 
-        "humidity" =? T<float>
-        |> WithComment "The current humidity, expressed as a percentage."
+            "high" =? T<float>
+            |> WithComment "The highest temperature reached during the day."
 
-        "low" =? T<float>
-        |> WithComment "The lowest temperature reached during the day."
+            "humidity" =? T<float>
+            |> WithComment "The current humidity, expressed as a percentage."
 
-        "shortDay" =? T<string>
-        |> WithComment "The current day of the week in short form, e.g. \"M\"."
-    ]
+            "low" =? T<float>
+            |> WithComment "The lowest temperature reached during the day."
 
-let WeatherFeature =
-    Class "google.maps.weather.WeatherFeature"
-    |+> Instance [
-        "current" =? WeatherConditions
-        |> WithComment "The current weather conditions at this location."
+            "shortDay" =? T<string>
+            |> WithComment "The current day of the week in short form, e.g. \"M\"."
+        ]
 
-        "forecast" =? Type.ArrayOf WeatherForecast
-        |> WithComment "A forecast of weather conditions over the next four days. The forecast array is always in chronological order."
+    let WeatherFeature =
+        Class "google.maps.weather.WeatherFeature"
+        |+> Instance [
+            "current" =? WeatherConditions
+            |> WithComment "The current weather conditions at this location."
 
-        "location" =? T<string>
-        |> WithComment "The location name of this feature, e.g. \"San Francisco, California\"."
+            "forecast" =? Type.ArrayOf WeatherForecast
+            |> WithComment "A forecast of weather conditions over the next four days. The forecast array is always in chronological order."
 
-        "temperatureUnit" =? TemperatureUnit
-        "windSpeedUnit" =? WindSpeedUnit
-    ]
+            "location" =? T<string>
+            |> WithComment "The location name of this feature, e.g. \"San Francisco, California\"."
+
+            "temperatureUnit" =? TemperatureUnit
+            "windSpeedUnit" =? WindSpeedUnit
+        ]

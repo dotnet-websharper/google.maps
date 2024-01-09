@@ -17,94 +17,96 @@
 // permissions and limitations under the License.
 //
 // $end{copyright}
-/// Definitions for the Drawing part of the API. See:
-/// http://developers.google.com/maps/documentation/javascript/reference
-module WebSharper.Google.Maps.Drawing
+// Definitions for the Drawing part of the API. See:
+// http://developers.google.com/maps/documentation/javascript/reference
+namespace WebSharper.Google.Maps.Definition
 
-open WebSharper.InterfaceGenerator
-open WebSharper.Google.Maps.Notation
-open WebSharper.Google.Maps.Base
-open WebSharper.Google.Maps.Specification
+module Drawing =
 
-let OverlayType =
-    Class "google.maps.drawing.OverlayType"
-    |+> Static [
-        "CIRCLE" =? TSelf
-        |> WithComment "Specifies that the DrawingManager creates circles, and that the overlay given in the overlaycomplete event is a circle."
+    open WebSharper.InterfaceGenerator
+    open Notation
+    open Base
+    open Specification
 
-        "MARKER" =? TSelf
-        |> WithComment "Specifies that the DrawingManager creates markers, and that the overlay given in the overlaycomplete event is a marker."
+    let OverlayType =
+        Class "google.maps.drawing.OverlayType"
+        |+> Static [
+            "CIRCLE" =? TSelf
+            |> WithComment "Specifies that the DrawingManager creates circles, and that the overlay given in the overlaycomplete event is a circle."
 
-        "POLYGON" =? TSelf
-        |> WithComment "Specifies that the DrawingManager creates polygons, and that the overlay given in the overlaycomplete event is a polygon."
+            "MARKER" =? TSelf
+            |> WithComment "Specifies that the DrawingManager creates markers, and that the overlay given in the overlaycomplete event is a marker."
 
-        "POLYLINE" =? TSelf
-        |> WithComment "Specifies that the DrawingManager creates polylines, and that the overlay given in the overlaycomplete event is a polyline."
+            "POLYGON" =? TSelf
+            |> WithComment "Specifies that the DrawingManager creates polygons, and that the overlay given in the overlaycomplete event is a polygon."
 
-        "RECTANGLE" =? TSelf
-        |> WithComment "Specifies that the DrawingManager creates rectangles, and that the overlay given in the overlaycomplete event is a rectangle."
-    ]
+            "POLYLINE" =? TSelf
+            |> WithComment "Specifies that the DrawingManager creates polylines, and that the overlay given in the overlaycomplete event is a polyline."
 
-let DrawingControlOptions =
-    Config "google.maps.drawing.DrawingControlOptions"
-    |+> Instance [
-        "drawingModes" =@ Type.ArrayOf OverlayType
-        |> WithComment "The drawing modes to display in the drawing control, in the order in which they are to be displayed. The hand icon (which corresponds to the null drawing mode) is always available and is not to be specified in this array. Defaults to [MARKER, POLYLINE, RECTANGLE, CIRCLE, POLYGON]."
+            "RECTANGLE" =? TSelf
+            |> WithComment "Specifies that the DrawingManager creates rectangles, and that the overlay given in the overlaycomplete event is a rectangle."
+        ]
 
-        "position" =@ Controls.ControlPosition
-        |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
-    ]
+    let DrawingControlOptions =
+        Config "google.maps.drawing.DrawingControlOptions"
+        |+> Instance [
+            "drawingModes" =@ Type.ArrayOf OverlayType
+            |> WithComment "The drawing modes to display in the drawing control, in the order in which they are to be displayed. The hand icon (which corresponds to the null drawing mode) is always available and is not to be specified in this array. Defaults to [MARKER, POLYLINE, RECTANGLE, CIRCLE, POLYGON]."
 
-let DrawingManagerOptions =
-    Config "google.maps.drawing.DrawingManagerOptions"
-    |+> Instance [
-        "circleOptions" =@ CircleOptions
-        |> WithComment "Options to apply to any new circles created with this DrawingManager. The center and radius properties are ignored, and the map property of a new circle is always set to the DrawingManager's map."
+            "position" =@ Controls.ControlPosition
+            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
+        ]
 
-        "drawingControl" =@ T<bool>
-        |> WithComment "The enabled/disabled state of the drawing control. Defaults to true."
+    let DrawingManagerOptions =
+        Config "google.maps.drawing.DrawingManagerOptions"
+        |+> Instance [
+            "circleOptions" =@ CircleOptions
+            |> WithComment "Options to apply to any new circles created with this DrawingManager. The center and radius properties are ignored, and the map property of a new circle is always set to the DrawingManager's map."
 
-        "drawingControlOptions" =@ DrawingControlOptions
-        |> WithComment "The display options for the drawing control."
+            "drawingControl" =@ T<bool>
+            |> WithComment "The enabled/disabled state of the drawing control. Defaults to true."
 
-        "drawingMode" =@ OverlayType
-        |> WithComment "The DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are MARKER, POLYGON, POLYLINE, RECTANGLE, CIRCLE, or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
+            "drawingControlOptions" =@ DrawingControlOptions
+            |> WithComment "The display options for the drawing control."
 
-        "map" =@ Map.Map
-        |> WithComment "The Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
+            "drawingMode" =@ OverlayType
+            |> WithComment "The DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are MARKER, POLYGON, POLYLINE, RECTANGLE, CIRCLE, or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
 
-        "markerOptions" =@ MarkerOptions
-        |> WithComment "Options to apply to any new markers created with this DrawingManager. The position property is ignored, and the map property of a new marker is always set to the DrawingManager's map."
+            "map" =@ Map.Map
+            |> WithComment "The Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
 
-        "polygonOptions" =@ PolygonOptions
-        |> WithComment "Options to apply to any new polygons created with this DrawingManager. The paths property is ignored, and the map property of a new polygon is always set to the DrawingManager's map."
+            "markerOptions" =@ MarkerOptions
+            |> WithComment "Options to apply to any new markers created with this DrawingManager. The position property is ignored, and the map property of a new marker is always set to the DrawingManager's map."
 
-        "polylineOptions" =@ PolylineOptions
-        |> WithComment "Options to apply to any new polylines created with this DrawingManager. The path property is ignored, and the map property of a new polyline is always set to the DrawingManager's map."
+            "polygonOptions" =@ PolygonOptions
+            |> WithComment "Options to apply to any new polygons created with this DrawingManager. The paths property is ignored, and the map property of a new polygon is always set to the DrawingManager's map."
 
-        "rectangleOptions" =@ RectangleOptions
-        |> WithComment "Options to apply to any new rectangles created with this DrawingManager. The bounds property is ignored, and the map property of a new rectangle is always set to the DrawingManager's map."
-    ]
+            "polylineOptions" =@ PolylineOptions
+            |> WithComment "Options to apply to any new polylines created with this DrawingManager. The path property is ignored, and the map property of a new polyline is always set to the DrawingManager's map."
 
-let DrawingManager =
-    Class "google.maps.drawing.DrawingManager"
-    |+> Static [
-        Constructor !?DrawingManagerOptions
-        |> WithComment "Creates a DrawingManager that allows users to draw overlays on the map, and switch between the type of overlay to be drawn with a drawing control."
-    ]
-    |+> Instance [
-        "getDrawingMode" => T<unit> ^-> OverlayType
-        |> WithComment "Returns the DrawingManager's drawing mode."
+            "rectangleOptions" =@ RectangleOptions
+            |> WithComment "Options to apply to any new rectangles created with this DrawingManager. The bounds property is ignored, and the map property of a new rectangle is always set to the DrawingManager's map."
+        ]
 
-        "getMap" => T<unit> ^-> Map.Map
-        |> WithComment "Returns the Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
+    let DrawingManager =
+        Class "google.maps.drawing.DrawingManager"
+        |+> Static [
+            Constructor !?DrawingManagerOptions
+            |> WithComment "Creates a DrawingManager that allows users to draw overlays on the map, and switch between the type of overlay to be drawn with a drawing control."
+        ]
+        |+> Instance [
+            "getDrawingMode" => T<unit> ^-> OverlayType
+            |> WithComment "Returns the DrawingManager's drawing mode."
 
-        "setDrawingMode" => OverlayType ^-> T<unit>
-        |> WithComment "Changes the DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are MARKER, POLYGON, POLYLINE, RECTANGLE, CIRCLE, or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
+            "getMap" => T<unit> ^-> Map.Map
+            |> WithComment "Returns the Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
 
-        "setMap" => Map.Map ^-> T<unit>
-        |> WithComment "Attaches the DrawingManager object to the specified Map."
+            "setDrawingMode" => OverlayType ^-> T<unit>
+            |> WithComment "Changes the DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are MARKER, POLYGON, POLYLINE, RECTANGLE, CIRCLE, or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
 
-        "setOptions" => DrawingManagerOptions ^-> T<unit>
-        |> WithComment "Sets the DrawingManager's options."
-    ]
+            "setMap" => Map.Map ^-> T<unit>
+            |> WithComment "Attaches the DrawingManager object to the specified Map."
+
+            "setOptions" => DrawingManagerOptions ^-> T<unit>
+            |> WithComment "Sets the DrawingManager's options."
+        ]

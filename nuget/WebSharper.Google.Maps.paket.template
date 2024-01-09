@@ -4,18 +4,17 @@ authors
     IntelliFactory
 owners
     IntelliFactory
-licenseUrl http://websharper.com/licensing
-projectUrl https://github.com/intellifactory/websharper.google.maps
+repositoryUrl https://github.com/dotnet-websharper/google.maps/
+licenseUrl https://github.com/dotnet-websharper/google.maps/blob/master/LICENSE.md
+iconUrl https://github.com/dotnet-websharper/core/raw/websharper50/tools/WebSharper.png
+projectUrl https://github.com/dotnet-websharper/google.maps
 description
     WebSharper Extensions for Google Maps 3.13
 tags
     Web JavaScript F# C#
 files
-    ../WebSharper.Google.Maps/bin/Release/net461/WebSharper.Google.Maps.dll ==> lib/net461
-    ../WebSharper.Google.Maps/bin/Release/net461/WebSharper.Google.Maps.xml ==> lib/net461
     ../WebSharper.Google.Maps/bin/Release/netstandard2.0/WebSharper.Google.Maps.dll ==> lib/netstandard2.0
     ../WebSharper.Google.Maps/bin/Release/netstandard2.0/WebSharper.Google.Maps.xml ==> lib/netstandard2.0
 dependencies
         WebSharper ~> LOCKEDVERSION:[3]
-frameworkAssemblies
-        System.Web
+

@@ -16,7 +16,7 @@ nuget Fake.Tools.Git
 nuget Fake.DotNet.Cli
 nuget Fake.DotNet.AssemblyInfoFile
 nuget Fake.DotNet.Paket
-nuget Paket.Core //"
+nuget Paket.Core prerelease //"
 #endif
 
 #load "paket-files/wsbuild/github.com/dotnet-websharper/build-script/WebSharper.Fake.fsx"

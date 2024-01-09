@@ -17,93 +17,95 @@
 // permissions and limitations under the License.
 //
 // $end{copyright}
-/// Definitions for the MVC part of the API. See:
-/// http://developers.google.com/maps/documentation/javascript/reference
-module WebSharper.Google.Maps.MVC
+// Definitions for the MVC part of the API. See:
+// http://developers.google.com/maps/documentation/javascript/reference
+namespace WebSharper.Google.Maps.Definition
 
-open WebSharper.InterfaceGenerator
-open WebSharper.Google.Maps.Notation
+module MVC =
 
-let MVCObject =
-    Class "google.maps.MVCObject"
-    |+> Instance [
-        "addListener" => (T<string>?eventName * T<obj->unit>) ^-> Events.MapsEventListener
-        |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with google.maps.event.removeListener."
+    open WebSharper.InterfaceGenerator
+    open Notation
 
-        "bindTo" =>
-            Fun T<unit> [
-                T<string>?key
-                TSelf?target
-                T<string>?targetKey
-                T<bool>?noNotify
-            ]
-        |> WithComment "Binds a View to a Model."
-
-        "changed" => T<string> ^-> T<unit>
-        |> WithComment "Generic handler for state changes. Override this in derived classes to handle arbitrary state changes."
-
-        // Gets a value.
-        "get" => T<string>?key ^-> T<obj>
-        |> WithComment "Gets a value."
-
-        "notify" => T<string>?key ^-> T<unit>
-        |> WithComment "Notify all observers of a change on this property. This notifies both objects that are bound to the object's property as well as the object that it is bound to."
-
-        "set" => Fun T<unit> [T<string>?key; T<obj>?value]
-        |> WithComment "Sets a value."
-
-        "setValues" => T<obj>?values ^-> T<unit>
-        |> WithComment "Sets a collection of key-value pairs."
-
-        "unbind" => T<string>?key ^-> T<unit>
-        |> WithComment "Removes a binding. Unbinding will set the unbound property to the current value. The object will not be notified, as the value has not changed."
-
-        "unbindAll" => T<unit> ^-> T<unit>
-        |> WithComment "Removes all bindings."
-    ]
-    |+> Static [
-        Constructor T<unit>
-    ]
-
-let MVCArray = Generic - fun t ->
-    (
-        Class "google.maps.MVCArray"
+    let MVCObject =
+        Class "google.maps.MVCObject"
         |+> Instance [
-            "clear" => T<unit->unit>
-            |> WithComment "Removes all elements from the array."
+            "addListener" => (T<string>?eventName * T<obj->unit>) ^-> Events.MapsEventListener
+            |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with google.maps.event.removeListener."
 
-            "forEach" => (t * T<int> ^-> T<unit>) ^-> T<unit>
-            |> WithComment "Iterate over each element, calling the provided callback. The callback is called for each element like: callback(element, index)."
+            "bindTo" =>
+                Fun T<unit> [
+                    T<string>?key
+                    TSelf?target
+                    T<string>?targetKey
+                    T<bool>?noNotify
+                ]
+            |> WithComment "Binds a View to a Model."
 
-            "getArray" => T<unit> ^-> Type.ArrayOf t
-            |> WithComment "Returns a reference to the underlying Array. Warning: if the Array is mutated, no events will be fired by this object."
+            "changed" => T<string> ^-> T<unit>
+            |> WithComment "Generic handler for state changes. Override this in derived classes to handle arbitrary state changes."
 
-            "getAt" => T<int> ^-> t
-            |> WithComment "Returns the element at the specified index."
+            // Gets a value.
+            "get" => T<string>?key ^-> T<obj>
+            |> WithComment "Gets a value."
 
-            "getLength" => T<unit->int>
-            |> WithComment "Returns the number of elements in this array."
+            "notify" => T<string>?key ^-> T<unit>
+            |> WithComment "Notify all observers of a change on this property. This notifies both objects that are bound to the object's property as well as the object that it is bound to."
 
-            "insertAt" => T<int> * t ^-> T<unit>
-            |> WithComment "Inserts an element at the specified index."
+            "set" => Fun T<unit> [T<string>?key; T<obj>?value]
+            |> WithComment "Sets a value."
 
-            "pop" => T<unit> ^-> t
-            |> WithComment "Removes the last element of the array and returns that element."
+            "setValues" => T<obj>?values ^-> T<unit>
+            |> WithComment "Sets a collection of key-value pairs."
 
-            "push" => t ^-> T<unit>
-            |> WithComment "Adds one element to the end of the array and returns the new length of the array."
+            "unbind" => T<string>?key ^-> T<unit>
+            |> WithComment "Removes a binding. Unbinding will set the unbound property to the current value. The object will not be notified, as the value has not changed."
 
-            "removeAt" => T<int> ^-> T<obj>
-            |> WithComment "Removes an element from the specified index."
-
-            "setAt" => T<int> * t ^-> T<unit>
-            |> WithComment "Sets an element at the specified index."
-
-            /// TODO: "insert_at", "remove_at", "set_at" events
+            "unbindAll" => T<unit> ^-> T<unit>
+            |> WithComment "Removes all bindings."
         ]
         |+> Static [
-                Constructor (!? (Type.ArrayOf t))
+            Constructor T<unit>
+        ]
+
+    let MVCArray = Generic - fun t ->
+        (
+            Class "google.maps.MVCArray"
+            |+> Instance [
+                "clear" => T<unit->unit>
+                |> WithComment "Removes all elements from the array."
+
+                "forEach" => (t * T<int> ^-> T<unit>) ^-> T<unit>
+                |> WithComment "Iterate over each element, calling the provided callback. The callback is called for each element like: callback(element, index)."
+
+                "getArray" => T<unit> ^-> Type.ArrayOf t
+                |> WithComment "Returns a reference to the underlying Array. Warning: if the Array is mutated, no events will be fired by this object."
+
+                "getAt" => T<int> ^-> t
+                |> WithComment "Returns the element at the specified index."
+
+                "getLength" => T<unit->int>
+                |> WithComment "Returns the number of elements in this array."
+
+                "insertAt" => T<int> * t ^-> T<unit>
+                |> WithComment "Inserts an element at the specified index."
+
+                "pop" => T<unit> ^-> t
+                |> WithComment "Removes the last element of the array and returns that element."
+
+                "push" => t ^-> T<unit>
+                |> WithComment "Adds one element to the end of the array and returns the new length of the array."
+
+                "removeAt" => T<int> ^-> T<obj>
+                |> WithComment "Removes an element from the specified index."
+
+                "setAt" => T<int> * t ^-> T<unit>
+                |> WithComment "Sets an element at the specified index."
+
+                // TODO: "insert_at", "remove_at", "set_at" events
             ]
-        |=> Inherits MVCObject
-    )
+            |+> Static [
+                    Constructor (!? (Type.ArrayOf t))
+                ]
+            |=> Inherits MVCObject
+        )
 

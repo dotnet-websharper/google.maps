@@ -17,21 +17,23 @@
 // permissions and limitations under the License.
 //
 // $end{copyright}
-/// Forward type declarations.
-module WebSharper.Google.Maps.Forward
+// Forward type declarations.
+namespace WebSharper.Google.Maps.Definition
 
-open WebSharper.InterfaceGenerator
+module Forward =
 
-let Map = Class "google.maps.Map"
+    open WebSharper.InterfaceGenerator
 
-let MapTypeId =
-    Pattern.EnumInlines "MapTypeId" [
-        // This map type displays a transparent layer of major streets on satellite images.
-        "HYBRID", "google.maps.MapTypeId.HYBRID"
-        // This map type displays a normal street map.
-        "ROADMAP", "google.maps.MapTypeId.ROADMAP"
-        // This map type displays satellite images.
-        "SATELLITE", "google.maps.MapTypeId.SATELLITE"
-        // This map type displays maps with physical features such as terrain and vegetation.
-        "TERRAIN", "google.maps.MapTypeId.TERRAIN"
-    ]
+    let Map = Class "google.maps.Map"
+
+    let MapTypeId =
+        Pattern.EnumInlines "MapTypeId" [
+            // This map type displays a transparent layer of major streets on satellite images.
+            "HYBRID", "google.maps.MapTypeId.HYBRID"
+            // This map type displays a normal street map.
+            "ROADMAP", "google.maps.MapTypeId.ROADMAP"
+            // This map type displays satellite images.
+            "SATELLITE", "google.maps.MapTypeId.SATELLITE"
+            // This map type displays maps with physical features such as terrain and vegetation.
+            "TERRAIN", "google.maps.MapTypeId.TERRAIN"
+        ]
