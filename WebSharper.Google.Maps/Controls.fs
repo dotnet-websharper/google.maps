@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -27,51 +27,94 @@ module Controls =
     open Notation
 
     let ControlPosition =
-        Class "ControlPosition"
+        Class "google.maps.ControlPosition"
         |+> Static [
+            "BLOCK_END_INLINE_CENTER" =? TSelf
+            |> WithComment "Equivalent to BOTTOM_CENTER in both LTR and RTL."
+
+            "BLOCK_END_INLINE_END" =? TSelf
+            |> WithComment "Equivalent to BOTTOM_RIGHT in LTR, or BOTTOM_LEFT in RTL."
+
+            "BLOCK_END_INLINE_START" =? TSelf
+            |> WithComment "Equivalent to BOTTOM_LEFT in LTR, or BOTTOM_RIGHT in RTL."
+
+            "BLOCK_START_INLINE_CENTER" =? TSelf
+            |> WithComment "Equivalent to TOP_CENTER in both LTR and RTL."
+
+            "BLOCK_START_INLINE_END" =? TSelf
+            |> WithComment "Equivalent to TOP_RIGHT in LTR, or TOP_LEFT in RTL."
+
+            "BLOCK_START_INLINE_START" =? TSelf
+            |> WithComment "Equivalent to TOP_LEFT in LTR, or TOP_RIGHT in RTL."
+
             "BOTTOM_CENTER" =? TSelf
-            |> WithComment "Elements are positioned in the center of the bottom row."
+            |> WithComment "Elements are positioned in the center of the bottom row. Consider using BLOCK_END_INLINE_CENTER instead."
 
             "BOTTOM_LEFT" =? TSelf
-            |> WithComment "Elements are positioned in the bottom left and flow towards the middle. Elements are positioned to the right of the Google logo."
+            |> WithComment "Elements are positioned in the bottom left and flow towards the middle. Elements are positioned to the right of the Google logo. Consider using BLOCK_END_INLINE_START instead."
 
             "BOTTOM_RIGHT" =? TSelf
-            |> WithComment "Elements are positioned in the bottom right and flow towards the middle. Elements are positioned to the left of the copyrights."
+            |> WithComment "Elements are positioned in the bottom right and flow towards the middle. Elements are positioned to the left of the copyrights. Consider using BLOCK_END_INLINE_END instead."
+
+            "INLINE_END_BLOCK_CENTER" =? TSelf
+            |> WithComment "Equivalent to RIGHT_CENTER in LTR, or LEFT_CENTER in RTL."
+
+            "INLINE_END_BLOCK_END" =? TSelf
+            |> WithComment "Equivalent to RIGHT_BOTTOM in LTR, or LEFT_BOTTOM in RTL."
+
+            "INLINE_END_BLOCK_START" =? TSelf
+            |> WithComment "Equivalent to RIGHT_TOP in LTR, or LEFT_TOP in RTL."
+
+            "INLINE_START_BLOCK_CENTER" =? TSelf
+            |> WithComment "Equivalent to LEFT_CENTER in LTR, or RIGHT_CENTER in RTL."
+
+            "INLINE_START_BLOCK_END" =? TSelf
+            |> WithComment "Equivalent to LEFT_BOTTOM in LTR, or RIGHT_BOTTOM in RTL."
+
+            "INLINE_START_BLOCK_START" =? TSelf
+            |> WithComment "Equivalent to LEFT_TOP in LTR, or RIGHT_TOP in RTL."
 
             "LEFT_BOTTOM" =? TSelf
-            |> WithComment "Elements are positioned on the left, above bottom-left elements, and flow upwards."
+            |> WithComment "Elements are positioned on the left, above bottom-left elements, and flow upwards. Consider using INLINE_START_BLOCK_END instead."
 
             "LEFT_CENTER" =? TSelf
-            |> WithComment "Elements are positioned in the center of the left side."
+            |> WithComment "Elements are positioned in the center of the left side. Consider using INLINE_START_BLOCK_CENTER instead."
 
             "LEFT_TOP" =? TSelf
-            |> WithComment "Elements are positioned on the left, below top-left elements, and flow downwards."
+            |> WithComment "Elements are positioned on the left, below top-left elements, and flow downwards. Consider using INLINE_START_BLOCK_START instead."
 
             "RIGHT_BOTTOM" =? TSelf
-            |> WithComment "Elements are positioned on the right, above bottom-right elements, and flow upwards."
+            |> WithComment "Elements are positioned on the right, above bottom-right elements, and flow upwards. Consider using INLINE_END_BLOCK_END instead."
 
             "RIGHT_CENTER" =? TSelf
-            |> WithComment "Elements are positioned in the center of the right side."
+            |> WithComment "Elements are positioned in the center of the right side. Consider using INLINE_END_BLOCK_CENTER instead."
 
             "RIGHT_TOP" =? TSelf
-            |> WithComment "Elements are positioned on the right, below top-right elements, and flow downwards."
+            |> WithComment " 	Elements are positioned on the right, below top-right elements, and flow downwards. Consider using INLINE_END_BLOCK_START instead."
 
             "TOP_CENTER" =? TSelf
-            |> WithComment "Elements are positioned in the center of the top row."
+            |> WithComment "Elements are positioned in the center of the top row. Consider using BLOCK_START_INLINE_CENTER instead."
 
             "TOP_LEFT" =? TSelf
-            |> WithComment "Elements are positioned in the top left and flow towards the middle."
+            |> WithComment "Elements are positioned in the top left and flow towards the middle. Consider using BLOCK_START_INLINE_START instead."
 
             "TOP_RIGHT" =? TSelf
-            |> WithComment "Elements are positioned in the top right and flow towards the middle."
+            |> WithComment "Elements are positioned in the top right and flow towards the middle. Consider using BLOCK_START_INLINE_END instead."
         ]
+
+    let FullscreenControlOptions =
+        Config "google.maps.FullscreenControlOptions"
+        |+> Instance [
+                "position" =@ ControlPosition
+                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is INLINE_END_BLOCK_START."
+            ]
 
     let MapTypeControlStyle =
         Class "google.maps.MapTypeControlStyle"
         |+> Static [
             "DEFAULT" =? TSelf
-            |> WithComment "Uses the default map type control. The control which DEFAULT maps to will vary according to window size and other factors. It may change in future versions of the API."
-            
+            |> WithComment "Uses the default map type control. When the DEFAULT control is shown, it will vary according to window size and other factors. The DEFAULT control may change in future versions of the API."
+
             "DROPDOWN_MENU" =? TSelf
             |> WithComment "A dropdown menu for the screen realestate conscious."
 
@@ -80,37 +123,37 @@ module Controls =
         ]
 
     let MapTypeControlOptions =
-        Config "MapTypeControlOptions"
+        Config "google.maps.MapTypeControlOptions"
         |+> Instance [
-                "mapTypeIds" =@ Type.ArrayOf Forward.MapTypeId
+                "mapTypeIds" =@ Type.ArrayOf (Forward.MapTypeId + T<string>)
                 |> WithComment "IDs of map types to show in the control."
 
                 "position" =@ ControlPosition
-                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_RIGHT."
+                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is BLOCK_START_INLINE_START."
 
                 "style" =@ MapTypeControlStyle
                 |> WithComment "Style id. Used to select what style of map type control to display."
             ]
 
-    let OverviewMapControlOptions =
-        Config "OverviewMapControlOptions"
+    let MotionTrackingControlOptions =
+        Config "google.maps.MotionTrackingControlOptions"
         |+> Instance [
-                "opened" =@ T<bool>
-                |> WithComment "Whether the control should display in opened mode or collapsed (minimized) mode. By default, the control is closed."
+                "position" =@ ControlPosition
+                |> WithComment "Position id. This is used to specify the position of this control on the panorama. The default position is INLINE_END_BLOCK_START."
             ]
 
     let PanControlOptions =
-        Config "PanControlOptions"
+        Config "google.maps.PanControlOptions"
         |+> Instance [
                 "position" =@ ControlPosition
-                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
+                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is INLINE_END_BLOCK_END."
             ]
 
     let RotateControlOptions =
-        Config "RotateControlOptions"
+        Config "google.maps.RotateControlOptions"
         |+> Instance [
                 "position" =@ ControlPosition
-                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
+                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is INLINE_END_BLOCK_END."
             ]
 
     let ScaleControlStyle =
@@ -121,41 +164,39 @@ module Controls =
         ]
 
     let ScaleControlOptions =
-        Config "ScaleControlOptions"
+        Config "google.maps.ScaleControlOptions"
         |+> Instance [
-                "position" =@ ControlPosition
-                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is BOTTOM_LEFT when google.maps.visualRefresh is set to false. When google.maps.visualRefresh is true the scale control will be fixed at the BOTTOM_RIGHT."
-
                 "style" =@ ScaleControlStyle
                 |> WithComment "Style id. Used to select what style of scale control to display."
             ]
 
+    let StreetViewSource =
+        Class "google.maps.StreetViewSource"
+        |+> Static [
+            "DEFAULT" =? TSelf
+            |> WithComment "Uses the default sources of Street View, searches will not be limited to specific sources."
+
+            "GOOGLE" =? TSelf
+            |> WithComment "Limits Street View searches to official Google collections."
+
+            "OUTDOOR" =? TSelf
+            |> WithComment "Limits Street View searches to outdoor collections. Indoor collections are not included in search results. Note also that the search only returns panoramas where it's possible to determine whether they're indoors or outdoors. For example, PhotoSpheres are not returned because it's unknown whether they are indoors or outdoors."
+        ]
+
     let StreetViewControlOptions =
-        Config "StreetViewControlOptions"
+        Config "google.maps.StreetViewControlOptions"
         |+> Instance [
                 "position" =@ ControlPosition
                 |> WithComment "Position id. Used to specify the position of the control on the map. The default position is embedded within the navigation (zoom and pan) controls. If this position is empty or the same as that specified in the zoomControlOptions or panControlOptions, the Street View control will be displayed as part of the navigation controls. Otherwise, it will be displayed separately."
+
+                "sources" =@ T<System.Collections.Generic.IEnumerable<_>>.[StreetViewSource]
+                |> WithComment "Specifies the sources of panoramas to search. This allows a restriction to search for just official Google panoramas for example. Setting multiple sources will be evaluated as the intersection of those sources. Note: the StreetViewSource.OUTDOOR source is not supported at this time. Default: [StreetViewSource.DEFAULT]"
             ]
-
-    let ZoomControlStyle =
-        Class "google.maps.ZoomControlStyle"
-        |+> Static [
-            "DEFAULT" =? TSelf
-            |> WithComment "The default zoom control. The control which DEFAULT maps to will vary according to map size and other factors. It may change in future versions of the API."
-
-            "LARGE" =? TSelf
-            |> WithComment "The larger control, with the zoom slider in addition to +/- buttons."
-
-            "SMALL" =? TSelf
-            |> WithComment "A small control with buttons to zoom in and out."
-        ]
 
     let ZoomControlOptions =
-        Config "ZoomControlOptions"
+        Config "google.maps.ZoomControlOptions"
         |+> Instance [
                 "position" =@ ControlPosition
-                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
-
-                "style" =@ ZoomControlStyle
-                |> WithComment "Style id. Used to select what style of zoom control to display."
+                |> WithComment "Position id. Used to specify the position of the control on the map. The default position is INLINE_END_BLOCK_END."
             ]
+

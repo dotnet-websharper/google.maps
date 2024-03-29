@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -25,7 +25,6 @@ module Drawing =
 
     open WebSharper.InterfaceGenerator
     open Notation
-    open Base
     open Specification
 
     let OverlayType =
@@ -51,7 +50,7 @@ module Drawing =
         Config "google.maps.drawing.DrawingControlOptions"
         |+> Instance [
             "drawingModes" =@ Type.ArrayOf OverlayType
-            |> WithComment "The drawing modes to display in the drawing control, in the order in which they are to be displayed. The hand icon (which corresponds to the null drawing mode) is always available and is not to be specified in this array. Defaults to [MARKER, POLYLINE, RECTANGLE, CIRCLE, POLYGON]."
+            |> WithComment "The drawing modes to display in the drawing control, in the order in which they are to be displayed. The hand icon (which corresponds to the null drawing mode) is always available and is not to be specified in this array. Default: [OverlayType.MARKER, OverlayType.POLYLINE, OverlayType.RECTANGLE, OverlayType.CIRCLE, OverlayType.POLYGON]."
 
             "position" =@ Controls.ControlPosition
             |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
@@ -70,7 +69,7 @@ module Drawing =
             |> WithComment "The display options for the drawing control."
 
             "drawingMode" =@ OverlayType
-            |> WithComment "The DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are MARKER, POLYGON, POLYLINE, RECTANGLE, CIRCLE, or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
+            |> WithComment "The DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are 'marker', 'polygon', 'polyline', 'rectangle', 'circle', or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
 
             "map" =@ Map.Map
             |> WithComment "The Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
@@ -88,8 +87,19 @@ module Drawing =
             |> WithComment "Options to apply to any new rectangles created with this DrawingManager. The bounds property is ignored, and the map property of a new rectangle is always set to the DrawingManager's map."
         ]
 
+    let OverlayCompleteEvent =
+        Class "google.maps.drawing.OverlayCompleteEvent"
+        |+> Instance [
+            "overlay" =@ Marker + Polygon + Polyline + Rectangle + Circle
+            |> WithComment "The completed overlay."
+
+            "type" =@ OverlayType
+            |> WithComment "The completed overlay's type."
+        ]
+
     let DrawingManager =
         Class "google.maps.drawing.DrawingManager"
+        |=> Inherits MVC.MVCObject
         |+> Static [
             Constructor !?DrawingManagerOptions
             |> WithComment "Creates a DrawingManager that allows users to draw overlays on the map, and switch between the type of overlay to be drawn with a drawing control."
@@ -102,11 +112,30 @@ module Drawing =
             |> WithComment "Returns the Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
 
             "setDrawingMode" => OverlayType ^-> T<unit>
-            |> WithComment "Changes the DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are MARKER, POLYGON, POLYLINE, RECTANGLE, CIRCLE, or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
+            |> WithComment "Changes the DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are 'marker', 'polygon', 'polyline', 'rectangle', 'circle', or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
 
             "setMap" => Map.Map ^-> T<unit>
             |> WithComment "Attaches the DrawingManager object to the specified Map."
 
             "setOptions" => DrawingManagerOptions ^-> T<unit>
             |> WithComment "Sets the DrawingManager's options."
+
+            // EVENTS
+            "circlecomplete" =@ T<obj> -* Circle ^-> T<unit>
+            |> WithComment "This event is fired when the user has finished drawing a circle."
+
+            "markercomplete" =@ T<obj> -* Marker ^-> T<unit>
+            |> WithComment "This event is fired when the user has finished drawing a marker."
+
+            "overlaycomplete" =@ T<obj> -* OverlayCompleteEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user has finished drawing an overlay of any type."
+
+            "polygoncomplete" =@ T<obj> -* Polygon ^-> T<unit>
+            |> WithComment "This event is fired when the user has finished drawing a polygon."
+
+            "polylinecomplete" =@ T<obj> -* Polyline ^-> T<unit>
+            |> WithComment "This event is fired when the user has finished drawing a polyline."
+
+            "rectanglecomplete" =@ T<obj> -* Rectangle ^-> T<unit>
+            |> WithComment "This event is fired when the user has finished drawing a rectangle."
         ]

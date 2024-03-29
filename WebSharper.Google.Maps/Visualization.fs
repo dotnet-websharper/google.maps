@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -42,7 +42,7 @@ module Visualization =
             "layerKey" =@ T<string>
             |> WithComment "The key of the layer to display. Maps Engine layer keys are only unique within a single map, and can be changed by map owners."
 
-            "map" =@ Map.Map
+            "map" =@ M.Map
             |> WithComment "The map on which to display the layer."
 
             "mapId" =@ T<string>
@@ -76,7 +76,7 @@ module Visualization =
             "getLayerKey" => T<unit -> string>
             |> WithComment "Returns the key of the layer to be displayed."
 
-            "getMap" => Map.Map
+            "getMap" => M.Map
 
             "getMapId" => T<unit -> string>
             |> WithComment "Returns the ID of the Maps Engine map to which the layer belongs."
@@ -208,12 +208,8 @@ module Visualization =
         |=> Inherits MVC.MVCObject
         |+> Instance [
 
-                "getData" => T<unit> ^-> MVC.MVCArray.[Base.LatLng]
+                "getData" => T<unit> ^-> MVC.MVCArray.[loc]
                 |> WithSourceName "GetData"
-                |> WithComment "Returns the data points currently displayed by this heatmap."
-
-                "getData" => T<unit> ^-> MVC.MVCArray.[WeightedLocation]
-                |> WithSourceName "GetWeightedData"
                 |> WithComment "Returns the data points currently displayed by this heatmap."
 
                 "getMap" => T<unit> ^-> M.Map
@@ -222,8 +218,9 @@ module Visualization =
                 |> WithComment "Sets the data points to be displayed by this heatmap."
 
                 "setMap" => M.Map ^-> T<unit>
+                |> WithComment "Renders the heatmap on the specified map. If map is set to null, the heatmap will be removed."
 
-                "data" =@ MVC.MVCArray.[Base.LatLng]
+                "setOptions" => !? HeatmapLayerOptions ^-> T<unit>
 
             ]
         |+> Instance [
