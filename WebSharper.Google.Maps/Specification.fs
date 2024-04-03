@@ -1789,7 +1789,7 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
         // |=> Inherits MVC.MVCObject
         |+> Static [Constructor T<unit>]
         |+> Instance [
-            "geocode" => GeocoderRequest * ((Type.ArrayOf GeocoderResult * GeocoderStatus) ^-> T<unit>) ^-> Promise[GeocoderResponse]
+            "geocode" => GeocoderRequest * !? ((Type.ArrayOf GeocoderResult * GeocoderStatus) ^-> T<unit>) ^-> Promise[GeocoderResponse]
             |> WithComment "Geocode a request."
         ]
 
@@ -2540,10 +2540,10 @@ If any of the input waypoints has stopover set to false, this field will be empt
             |> WithComment "Creates a new instance of a ElevationService that sends elevation queries to Google servers."
         ]
         |+> Instance [
-            "getElevationAlongPath" => (PathElevationRequest * (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> Promise[PathElevationResponse]
+            "getElevationAlongPath" => (PathElevationRequest * !? (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> Promise[PathElevationResponse]
             |> WithComment "Makes an elevation request along a path, where the elevation data are returned as distance-based samples along that path."
 
-            "getElevationForLocations" => (LocationElevationRequest * (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> Promise[LocationElevationResponse]
+            "getElevationForLocations" => (LocationElevationRequest * !? (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> Promise[LocationElevationResponse]
             |> WithComment "Makes an elevation request for a list of discrete locations."
         ]
 

@@ -135,7 +135,7 @@ module Places =
             "weekday_text" =@ T<string[]>
             |> WithComment "An array of seven strings representing the formatted opening hours for each day of the week. The Places Service will format and localize the opening hours appropriately for the current language. The ordering of the elements in this array depends on the language. Some languages start the week on Monday while others start on Sunday. Only available with PlacesService.getDetails. Other calls may return an empty array."
 
-            "isOpen" =@ !?Date ^-> T<bool>
+            "isOpen" => !?Date ^-> T<bool>
             |> WithComment "Check whether the place is open now (when no date is passed), or at the given date. If this place does not have PlaceResult.utc_offset_minutes or PlaceOpeningHours.periods then undefined is returned (PlaceOpeningHours.periods is only available via PlacesService.getDetails). This method does not take exceptional hours, such as holiday hours, into consideration."
         ]
 

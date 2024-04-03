@@ -367,8 +367,7 @@ module StreetView =
     let StreetViewService =
         Class "google.maps.StreetViewService"
         |+> Instance [
-            // "getPanorama" => ((StreetViewLocationRequest + StreetViewPanoRequest) * (StreetViewPanoramaData * StreetViewStatus ^-> T<unit>)) ^-> T<Promise<_>>[StreetViewResponse]
-            "getPanorama" => ((StreetViewLocationRequest + StreetViewPanoRequest) * (StreetViewPanoramaData * StreetViewStatus ^-> T<unit>)) ^-> Promise[StreetViewResponse]
+            "getPanorama" => ((StreetViewLocationRequest + StreetViewPanoRequest) * !? (StreetViewPanoramaData * StreetViewStatus ^-> T<unit>)) ^-> Promise[StreetViewResponse]
             |> WithComment "Retrieves the StreetViewPanoramaData for a panorama that matches the supplied Street View query request. The StreetViewPanoramaData is passed to the provided callback."
         ]
 
