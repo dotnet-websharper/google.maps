@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -9,10 +10,18 @@
   <ItemGroup>
     <Compile Include="HeatMaps.fs" />
     <Compile Include="Samples.fs" />
+	<None Include="extra.files" />
+	<None Include="package.json" />
+    <None Include="esbuild.config.mjs" />
+	<None Include="wsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../WebSharper.Google.Maps\WebSharper.Google.Maps.fsproj" />
   </ItemGroup>
   <Import Project="..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets" Condition="Exists('..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets')" />
+  <Target Name="ESBuildBundle" AfterTargets="WebSharperCompile" Condition=" '$(Configuration)' == 'Release' ">
+    <Exec Command="npm install" />
+    <Exec Command="node ./esbuild.config.mjs" />
+  </Target>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
