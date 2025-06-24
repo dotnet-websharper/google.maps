@@ -27,13 +27,12 @@ module Base =
     open Notation
 
     let LatLngLiteral =
-        Interface "google.maps.LatLngLiteral"
-        |+> [
-              "lat" =@ T<float>
-              |> WithComment "Latitude in degrees. Values will be clamped to the range [-90, 90]. This means that if the value specified is less than -90, it will be set to -90. And if the value is greater than 90, it will be set to 90."
-              "lng" =@ T<float>
-              |> WithComment "Longitude in degrees. Values outside the range [-180, 180] will be wrapped so that they fall within the range. For example, a value of -190 will be converted to 170. A value of 190 will be converted to -170. This reflects the fact that longitudes wrap around the globe."
-            ]
+        Config "google.maps.LatLngLiteral"
+            [
+              "lat", T<float>
+              "lng", T<float>
+            ] 
+            []
 
     let LatLng =
         Class "google.maps.LatLng"
@@ -46,7 +45,7 @@ module Base =
                 |> WithComment "Creates a LatLng object representing a geographic point. Latitude is specified in degrees within the range [-90, 90]. Longitude is specified in degrees within the range [-180, 180). Set noClampNoWrap to true to enable values outside of this range. Note the ordering of latitude and longitude."
             ]
         |+> Instance [
-            "equals" => TSelf?other ^-> T<bool>
+            "equals" => !?TSelf?other ^-> T<bool>
             |> WithComment "Comparison function."
 
             "lat" => T<unit> ^-> T<float>
@@ -66,20 +65,13 @@ module Base =
         ]
 
     let LatLngBoundsLiteral =
-        Class "google.maps.LatLngBoundsLiteral"
-        |+> Instance [
-            "east" =@ T<float>
-            |> WithComment "East longitude in degrees. Values outside the range [-180, 180] will be wrapped to the range [-180, 180). For example, a value of -190 will be converted to 170. A value of 190 will be converted to -170. This reflects the fact that longitudes wrap around the globe."
-
-            "north" =@ T<float>
-            |> WithComment "North latitude in degrees. Values will be clamped to the range [-90, 90]. This means that if the value specified is less than -90, it will be set to -90. And if the value is greater than 90, it will be set to 90."
-
-            "south" =@ T<float>
-            |> WithComment "South latitude in degrees. Values will be clamped to the range [-90, 90]. This means that if the value specified is less than -90, it will be set to -90. And if the value is greater than 90, it will be set to 90."
-
-            "west" =@ T<float>
-            |> WithComment "West longitude in degrees. Values outside the range [-180, 180] will be wrapped to the range [-180, 180). For example, a value of -190 will be converted to 170. A value of 190 will be converted to -170. This reflects the fact that longitudes wrap around the globe."
-        ]
+        Config "google.maps.LatLngBoundsLiteral" [
+                "east", T<float>
+                "north", T<float>
+                "south", T<float>
+                "west", T<float>
+            ]
+            []
 
     let LatLngBounds =
         Class "google.maps.LatLngBounds"
@@ -134,23 +126,16 @@ module Base =
         ]
 
     let LatLngAltitudeLiteral =
-        Interface "google.maps.LatLngAltitudeLiteral"
-        |=> Extends [LatLngLiteral]
-        |+> [
-            "altitude" =@ T<float>
-            |> WithComment "Distance (in meters) above the ground surface. Negative value means underneath the ground surface. Default: 0"
-
-            "lat" =@ T<float>
-            |> WithComment "Latitude in degrees. Values will be clamped to the range [-90, 90]. This means that if the value specified is less than -90, it will be set to -90. And if the value is greater than 90, it will be set to 90."
-
-            "lng" =@ T<float>
-            |> WithComment "Longitude in degrees. Values outside the range [-180, 180] will be wrapped so that they fall within the range. For example, a value of -190 will be converted to 170. A value of 190 will be converted to -170. This reflects the fact that longitudes wrap around the globe."
-            ]
+        Config "google.maps.LatLngAltitudeLiteral"
+            [
+                "altitude", T<float>
+                "lat", T<float>
+                "lng", T<float>
+            ] 
+            []
 
     let LatLngAltitude =
         Class "google.maps.LatLngAltitude"
-        |=> Implements [LatLngAltitudeLiteral]
-        |=> Inherits LatLngLiteral
         |+> Static [
                 Ctor [
                     (TSelf + LatLngAltitudeLiteral + LatLng + LatLngLiteral)?value
@@ -158,7 +143,7 @@ module Base =
                 ]
             ]
         |+> Instance [
-            "equals" => TSelf?other ^-> T<bool>
+            "equals" => !?TSelf?other ^-> T<bool>
             |> WithComment "Comparison function."
 
             "altitude" =@ T<float>
@@ -214,26 +199,20 @@ module Base =
             "toString" => T<unit -> string>
             |> WithComment "Returns a string representation of this Size."
 
-            "height" =@ T<int>
+            "height" =@ T<float>
             |> WithComment "The height along the y-axis, in pixels."
 
-            "width" =@ T<int>
+            "width" =@ T<float>
             |> WithComment "The width along the x-axis, in pixels."
         ]
 
     let Padding =
-        Interface "google.maps.Padding"
-        |+> [
-            "bottom" =@ T<float>
-            |> WithComment "Padding for the bottom, in pixels."
-
-            "left" =@ T<float>
-            |> WithComment "Padding for the left, in pixels."
-
-            "right" =@ T<float>
-            |> WithComment "Padding for the right, in pixels."
-
-            "top" =@ T<float>
-            |> WithComment "Padding for the top, in pixels."
-        ]
-
+        Config "google.maps.Padding"
+            []
+            [
+                "bottom", T<int>
+                "left", T<int>
+                "right", T<int>
+                "top", T<int>
+            ]
+        

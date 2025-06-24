@@ -25,42 +25,28 @@ module Events =
 
     open WebSharper.InterfaceGenerator
 
-    //TODO: confirm if this works (EventListener is a native object)
-    let EventListener =
-        Class "EventListener"
-
     let MapsEventListener =
         Interface "google.maps.MapsEventListener"
         |+> [
             "remove" => T<unit -> unit>
-            |> WithComment "Removes the listener.
-
-Calling listener.remove() is equivalent to google.maps.event.removeListener(listener)."
+            |> WithComment "Removes the listener. Calling listener.remove() is equivalent to google.maps.event.removeListener(listener)."
         ]
 
     let Event =
         Class "google.maps.event"
         |+> Static [
-            "addDomListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
+            "addDomListener" => (T<obj> * T<string> * Notation.Function * !?T<bool>) ^-> MapsEventListener
             |> WithComment "Cross browser event handler registration. This listener is removed by calling removeListener(handle) for the handle that is returned by this function."
             |> ObsoleteWithMessage "Deprecated: google.maps.event.addDomListener() is deprecated, use the standard addEventListener() method instead. The feature will continue to work and there is no plan to decommission it."
 
-            "addDomListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>) * T<bool>) ^-> MapsEventListener
-            |> WithComment "Cross browser event handler registration. This listener is removed by calling removeListener(handle) for the handle that is returned by this function."
-            |> ObsoleteWithMessage "Deprecated: google.maps.event.addDomListener() is deprecated, use the standard addEventListener() method instead. The feature will continue to work and there is no plan to decommission it."
-
-            "addDomListenerOnce" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
+            "addDomListenerOnce" => (T<obj> * T<string> * Notation.Function * !?T<bool>) ^-> MapsEventListener
             |> WithComment "Wrapper around addDomListener that removes the listener after the first event."
             |> ObsoleteWithMessage "Deprecated: google.maps.event.addDomListenerOnce() is deprecated, use the standard addEventListener() method instead. The feature will continue to work and there is no plan to decommission it."
 
-            "addDomListenerOnce" => (T<obj> * T<string> * (T<obj> ^-> T<unit>) * T<bool>) ^-> MapsEventListener
-            |> WithComment "Wrapper around addDomListener that removes the listener after the first event."
-            |> ObsoleteWithMessage "Deprecated: google.maps.event.addDomListenerOnce() is deprecated, use the standard addEventListener() method instead. The feature will continue to work and there is no plan to decommission it."
-
-            "addListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
+            "addListener" => (T<obj> * T<string> * Notation.Function) ^-> MapsEventListener
             |> WithComment "Adds the given listener function to the given event name for the given object instance. Returns an identifier for this listener that can be used with removeListener()."
 
-            "addListenerOnce" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
+            "addListenerOnce" => (T<obj> * T<string> * Notation.Function) ^-> MapsEventListener
             |> WithComment "Like addListener, but the handler removes itself after handling the first event."
 
             "clearInstanceListeners" => T<obj> ^-> T<unit>
@@ -80,8 +66,6 @@ Calling listener.remove() is equivalent to google.maps.event.removeListener(list
         ]
 
     let ErrorEvent =
-        Interface "google.maps.ErrorEvent"
-        |+> [
-            "error" =@ Notation.Error
-            |> WithComment "The Error related to the event."
-        ]
+        Notation.Config "google.maps.ErrorEvent"
+            ["error", Notation.Error]
+            []

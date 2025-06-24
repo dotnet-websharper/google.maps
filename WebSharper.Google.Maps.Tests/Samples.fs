@@ -66,8 +66,8 @@ module SamplesInternals =
             attr.style "padding-bottom:20px; width:500px; height:300px;"
             on.afterRender (fun mapElement ->
                 let center = new LatLng(37.4419, -122.1419)
-                let options = new MapOptions(center, 8)
-                let map = new Google.Maps.Map(mapElement, options)
+                let options = MapOptions(Center = center, Zoom = 8)
+                let map = new Map(mapElement |> As<HTMLElement>, options)
                 buildMap map)
         ] []
 
@@ -75,7 +75,7 @@ module SamplesInternals =
     let SimpleMap() =
         Sample <| fun (map: Google.Maps.Map) ->
             let latLng = new LatLng(-34.397, 150.644)
-            let options = new MapOptions(latLng, 8)
+            let options = MapOptions(Center = latLng, Zoom = 8)
             map.SetOptions options
 
     [<JavaScript>]
@@ -83,7 +83,7 @@ module SamplesInternals =
         Sample <| fun map ->
 
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(center, 8)
+            let options = MapOptions(Center = center, Zoom = 8)
             map.SetOptions options
             let move () = map.PanTo(new LatLng(37.4569, -122.1569))
             // Window.SetTimeout(move, 5000)
@@ -105,7 +105,7 @@ module SamplesInternals =
                 for i in 1 .. 10 do
                     let point = new LatLng(sw.Lat() + (latSpan * rnd()),
                                            sw.Lng() + (lngSpan * rnd()))
-                    let markerOptions = new MarkerOptions(point)
+                    let markerOptions = MarkerOptions(Position = point)
                     markerOptions.Map <- map
                     new Marker(markerOptions) |> ignore
 
@@ -127,13 +127,13 @@ module SamplesInternals =
                 for i in 1 .. 10 do
                     let point = new LatLng(sw.Lat() + (latSpan * rnd()),
                                            sw.Lng() + (lngSpan * rnd()))
-                    let markerOptions = new MarkerOptions(point)
+                    let markerOptions = MarkerOptions(Position = point)
                     markerOptions.Map <- map
                     let marker = new Marker(markerOptions)
                     if i % 2 = 0 then
                         marker.SetLabel (string i)
                     else
-                        let markerLabel = MarkerLabel(Text = string i, Color = "#0000FF")
+                        let markerLabel = MarkerLabel(text = string i, Color = "#0000FF")
                         markerLabel.FontSize <- "10px"
                         marker.SetLabel markerLabel
                     ()
@@ -156,10 +156,10 @@ module SamplesInternals =
                 for i in 1 .. 10 do
                     let point = new LatLng(sw.Lat() + (latSpan * rnd()),
                                            sw.Lng() + (lngSpan * rnd()))
-                    let markerOptions = new MarkerOptions(point)
+                    let markerOptions = new MarkerOptions(Position = point)
                     markerOptions.Map <- map
                     let marker = new Marker(markerOptions)
-                    let newSymbol = new Symbol(SymbolPath.FORWARD_OPEN_ARROW)
+                    let newSymbol = new Symbol(Path = SymbolPath.FORWARD_OPEN_ARROW)
                     newSymbol.Scale <- 8.5
                     newSymbol.FillColor <- "#F00"
                     newSymbol.FillOpacity <- 0.4
@@ -185,7 +185,7 @@ module SamplesInternals =
                 for i in 1 .. 10 do
                     let point = new LatLng(sw.Lat() + (latSpan * rnd()),
                                            sw.Lng() + (lngSpan * rnd()))
-                    let markerOptions = new MarkerOptions(point)
+                    let markerOptions = new MarkerOptions(Position = point)
                     markerOptions.Map <- map
                     let marker = new Marker(markerOptions)
                     let newIcon = 
@@ -214,7 +214,7 @@ module SamplesInternals =
     let Controls() =
         Sample <| fun map ->
             let center = new LatLng(37.4419, -122.1419)
-            let options = new MapOptions(center, 8)
+            let options = new MapOptions(Center = center, Zoom = 8)
             // options.DisableDefaultUI <- true
             let mcOptions = new MapTypeControlOptions()
             mcOptions.Position <- ControlPosition.TOP_CENTER
@@ -234,7 +234,7 @@ module SamplesInternals =
             let directionsDisplay = new DirectionsRenderer();
             map.SetCenter(new LatLng(41.850033, -87.6500523))
             map.SetZoom 7
-            map.SetMapTypeId MapTypeId.ROADMAP
+            map.SetMapTypeId "ROADMAP"
             let a = DirectionsRendererOptions()
             directionsDisplay.SetMap(map)
             let mapDiv = map.GetDiv()
@@ -257,7 +257,7 @@ module SamplesInternals =
             let directionsDisplay = new DirectionsRenderer();
             map.SetCenter(new LatLng(41.850033, -87.6500523))
             map.SetZoom 7
-            map.SetMapTypeId MapTypeId.ROADMAP
+            map.SetMapTypeId "ROADMAP"
             let a = DirectionsRendererOptions()
             directionsDisplay.SetMap(map)
             let mapDiv = map.GetDiv()
@@ -301,20 +301,21 @@ module SamplesInternals =
                     then x <- (x % tileRange + tileRange) % tileRange
                     urlfunc(new Point(x, y), zoom)
 
-            let itOptions = new ImageMapTypeOptions()
-
-            itOptions.GetTileUrl <-
-                ThisFunc<_,_,_,_>(fun _ coord zoom ->
+            let itOptionsGetTileUrl =
+                System.Func<_,_,_>(fun coord zoom ->
                     getHorizontallyRepeatingTileUrl (coord, zoom,
                         (fun (coord, zoom) ->
                             let bound = Math.Pow(float 2, float zoom)
                             ("http://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw/"
                               + (string zoom) + "/" + (string coord.X) + "/" + (string (bound - coord.Y - 1.) + ".jpg")))))
 
-            itOptions.TileSize <- new Size(256., 256.)
-            itOptions.MaxZoom <- 9
-            itOptions.MinZoom <- 0
-            itOptions.Name <- "Moon"
+            let itOptions = ImageMapTypeOptions(
+                GetTileUrl = itOptionsGetTileUrl,
+                TileSize = new Size(256., 256.),
+                MaxZoom = 9,
+                MinZoom = 0,
+                Name = "Moon"
+            )
 
             let it = new ImageMapType(itOptions)
             let center = new LatLng(0., 0.)
@@ -326,7 +327,7 @@ module SamplesInternals =
                 mco.MapTypeIds <- (Array.map (fun m -> box m |> unbox) mapIds)
                 mco
 
-            let options = new MapOptions(center, 0, MapTypeId = mapIds.[0])
+            let options = new MapOptions(Center = center, Zoom = 0, MapTypeId = "SATELLITE")
             options.MapTypeControlOptions <- mapControlOptions
             map.SetOptions options
             // FIXME
@@ -355,7 +356,7 @@ module SamplesInternals =
                 for i in 1..10 do
                     let point = new LatLng(sw.Lat() + (latSpan * rnd()),
                                            sw.Lng() + (lngSpan * rnd()))
-                    let markerOptions = new MarkerOptions(point)
+                    let markerOptions = new MarkerOptions(Position = point)
                     markerOptions.Icon <- getWeatherIcon()
                     markerOptions.Map <- map
                     new Marker(markerOptions) |> ignore
@@ -408,7 +409,7 @@ module SamplesInternals =
             let marker = new Marker()
             marker.SetPosition fenwayPark
             marker.SetMap map
-            let options = new MapOptions(fenwayPark, 14)
+            let options = new MapOptions(Center = fenwayPark, Zoom = 14)
             options.StreetViewControl <- true
             map.SetOptions options
 

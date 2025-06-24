@@ -30,14 +30,14 @@ module LocalContext =
     module M = WebSharper.Google.Maps.Definition.Map
 
     let MapDirectionsOptionsLiteral =
-        Interface "google.maps.journeySharing.MapDirectionsOptionsLiteral"
+        Interface "google.maps.localContext.MapDirectionsOptionsLiteral"
         |+> [
             "origin" =@ LatLng + LatLngLiteral
             |> WithComment "Origin for directions and distance."
         ]
 
     let MapDirectionsOptions =
-        Class "google.maps.journeySharing.MapDirectionsOptions"
+        Class "google.maps.localContext.MapDirectionsOptions"
         |=> Implements [MapDirectionsOptionsLiteral]
         |+> Instance [
             "addListener" => T<string> * T<WebSharper.JavaScript.Function> ^-> Events.MapsEventListener
@@ -45,7 +45,7 @@ module LocalContext =
         ]
 
     let PinOptions =
-        Interface "google.maps.journeySharing.PinOptions"
+        Interface "google.maps.localContext.PinOptions"
         |+> [
             "background" =@ T<string>
             |> WithComment "The color of the icon's shape, can be any valid CSS color."
@@ -57,32 +57,14 @@ module LocalContext =
             |> WithComment "The scale of the icon. The value is absolute, not relative to the default sizes in each state."
         ]
 
-    let PlaceChooserLayoutMode =
-        Class "google.maps.journeySharing.PlaceChooserLayoutMode"
-        |+> Static [
-            "HIDDEN" =? TSelf
-            |> WithComment "Place chooser is hidden."
+    let PlaceChooserLayoutMode = 
+        Pattern.EnumStrings "google.maps.localContext.PlaceChooserLayoutMode" ["HIDDEN"; "SHEET"]
 
-            "SHEET" =? TSelf
-            |> WithComment "Place chooser is shown as a sheet."
-        ]
-
-    let PlaceChooserPosition =
-        Class "google.maps.journeySharing.PlaceChooserPosition"
-        |+> Static [
-            "BLOCK_END" =? TSelf
-            |> WithComment "Place chooser is displayed on a line below the map extending to the end of the container."
-
-            "INLINE_END" =? TSelf
-            |> WithComment "Place chooser is displayed inline with the map at the end of the line. (In a left-to-right language this means that the place chooser is to the right of the map.)"
-
-            "INLINE_START" =? TSelf
-            |> WithComment "Place chooser is displayed inline with the map at the start of the line. (In a left-to-right language this means that the place chooser is to the left of the map.)"
-        ]
-
+    let PlaceChooserPosition = 
+        Pattern.EnumStrings "google.maps.localContext.PlaceChooserPosition" ["BLOCK_END"; "INLINE_END"; "INLINE_START"]
 
     let PlaceChooserViewSetupOptions =
-        Interface "google.maps.journeySharing.PlaceChooserViewSetupOptions"
+        Interface "google.maps.localContext.PlaceChooserViewSetupOptions"
         |+> [
             "layoutMode" =@ PlaceChooserLayoutMode
 
@@ -90,28 +72,14 @@ module LocalContext =
             |> WithComment "Ignored when layoutMode:HIDDEN. If not passed, a position will be determined automatically based on the layoutMode."
         ]
 
-    let PlaceDetailsLayoutMode =
-        Class "google.maps.journeySharing.PlaceDetailsLayoutMode"
-        |+> Static [
-            "INFO_WINDOW" =? TSelf
-            |> WithComment "Place details is displayed in an InfoWindow."
+    let PlaceDetailsLayoutMode = 
+        Pattern.EnumStrings "google.maps.localContext.PlaceDetailsLayoutMode" ["INFO_WINDOW"; "SHEET"]
 
-            "SHEET" =? TSelf
-            |> WithComment "Place details is displayed in a sheet."
-        ]
-
-    let PlaceDetailsPosition =
-        Class "google.maps.journeySharing.PlaceDetailsPosition"
-        |+> Static [
-            "INLINE_END" =? TSelf
-            |> WithComment "Place details is displayed inline with the map at the end of the line. (In a left-to-right language this means that the place details is to the right of the map.)"
-
-            "INLINE_START" =? TSelf
-            |> WithComment "Place details is displayed inline with the map at the start of the line. (In a left-to-right language this means that the place details is to the left of the map.)"
-        ]
+    let PlaceDetailsPosition = 
+        Pattern.EnumStrings "google.maps.localContext.PlaceDetailsPosition" ["INLINE_END"; "INLINE_START"]
 
     let PlaceDetailsViewSetupOptions =
-        Interface "google.maps.journeySharing.PlaceDetailsViewSetupOptions"
+        Interface "google.maps.localContext.PlaceDetailsViewSetupOptions"
         |+> [
             "hidesOnMapClick" =@ T<bool>
 
@@ -121,11 +89,41 @@ module LocalContext =
             |> WithComment "Ignored when layoutMode:INFO_WINDOW. If not passed, a position will be determined automatically based on the layoutMode."
         ]
 
-    //TODO: how to add the namespace? "google.maps.localContext.PlaceTypePreference"
-    let PlaceTypePreference = T<string> + !? T<int>
+    let PlaceTypePreference = 
+        Config 
+            "google.maps.localContext.PlaceTypePreference" 
+            ["type", T<string>] 
+            ["weight", T<int>]
+
+    let PinOptionsSetupObject = 
+        Config 
+            "google.maps.localContext.PinOptionsSetupObject"
+            [
+                "isHighlighted", T<string>
+                "isSelected", T<string>
+            ] 
+            []
+
+    let PlaceChooserViewSetupObject = 
+        Config 
+            "google.maps.localContext.PlaceChooserViewSetupObject"
+            [
+                "defaultLayoutMode", PlaceChooserLayoutMode.Type
+                "defaultPosition", PlaceChooserPosition.Type
+            ] 
+            []
+
+    let PlaceDetailsViewSetup = 
+        Config 
+            "google.maps.localContext.PlaceDetailsViewSetup"
+            [
+                "defaultLayoutMode", PlaceDetailsLayoutMode.Type
+                "defaultPosition", PlaceDetailsPosition.Type
+            ] 
+            []
 
     let LocalContextMapViewOptions =
-        Interface "google.maps.journeySharing.LocalContextMapViewOptions"
+        Interface "google.maps.localContext.LocalContextMapViewOptions"
         |+> [
             "maxPlaceCount" =@ T<int>
             |> WithComment "The maximum number of places to show. When this parameter is 0, the Local Context Library does not load places. [0,24]"
@@ -148,21 +146,18 @@ module LocalContext =
             "map" =@ M.Map
             |> WithComment "An already instantiated Map instance. If passed in, the map will be moved into the LocalContextMapView's DOM, and will not be re-styled. The element associated with the Map may also have styles and classes applied to it by the LocalContextMapView."
 
-            //TODO: confirm how to implement this signature: (function({isSelected:boolean, isHighlighted:boolean}): (PinOptions optional))
-            "pinOptionsSetup" =@ (T<obj> -* (T<bool> + T<bool>) ^-> !? PinOptions) + PinOptions
+            "pinOptionsSetup" =@ (PinOptionsSetupObject ^-> !? PinOptions) + PinOptions
             |> WithComment "Configure the place marker icon based on the icon state. Invoked whenever the input to the callback changes. Pass a function to dynamically override the default setup when the LocalContextMapView draws the place marker. Errors and invalid configurations may be determined asynchronously, and will be ignored (defaults will be used, and errors will be logged to the console)."
 
-            //TODO: confirm how to implement this signature: (function({defaultLayoutMode:PlaceChooserLayoutMode, defaultPosition:PlaceChooserPosition optional}): (PlaceChooserViewSetupOptions optional))|PlaceChooserViewSetupOptions
-            "placeChooserViewSetup" =@ (T<obj> -* (PlaceChooserLayoutMode + !? PlaceChooserPosition) ^-> !? PlaceChooserViewSetupOptions) + PlaceChooserViewSetupOptions
+            "placeChooserViewSetup" =@ (PlaceChooserViewSetupObject ^-> !? PlaceChooserViewSetupOptions) + PlaceChooserViewSetupOptions
             |> WithComment "Overrides the setup of the place chooser view. Pass a function to dynamically override the default setup when the LocalContextMapView might change its layout due to resizing. Errors and invalid configurations may be determined asynchronously, and will be ignored (defaults will be used instead, and errors will be logged to the console). Errors detected at construction will cause errors to be thrown synchronously."
 
-            //TODO: confirm how to implement this signature: (function({defaultLayoutMode:PlaceDetailsLayoutMode, defaultPosition:PlaceDetailsPosition optional}): (PlaceDetailsViewSetupOptions optional))
-            "placeDetailsViewSetup" =@ (T<obj> -* (PlaceDetailsLayoutMode + !? PlaceDetailsPosition) ^-> !? PlaceDetailsViewSetupOptions) + PlaceDetailsViewSetupOptions
+            "placeDetailsViewSetup" =@ (PlaceDetailsViewSetup ^-> !? PlaceDetailsViewSetupOptions) + PlaceDetailsViewSetupOptions
             |> WithComment "Overrides the setup of the place details view. Pass a function to dynamically override the default setup when the LocalContextMapView might change its layout due to resizing. Errors and invalid configurations may be determined asynchronously, and will be ignored (defaults will be used, and errors will be logged to the console). Errors detected at construction will cause errors to be thrown synchronously."
         ]
 
     let LocalContextMapView =
-        Class "google.maps.journeySharing.LocalContextMapView"
+        Class "google.maps.localContext.LocalContextMapView"
         |=> Implements [LocalContextMapViewOptions]
         |+> Static [
             Constructor LocalContextMapViewOptions
@@ -171,7 +166,7 @@ module LocalContext =
             "isTransitioningMapBounds" =@ T<bool>
             |> WithComment "Is set to true before LocalContextMapView begins changing the bounds of the inner Map, and set to false after LocalContextMapView finishes changing the bounds of the inner Map. (Not set when layout mode changes happen due to responsive resizing.)"
 
-            "addListener" => T<string> * T<WebSharper.JavaScript.Function> ^-> Events.MapsEventListener
+            "addListener" => T<string> * Function ^-> Events.MapsEventListener
             |> WithComment "Adds the given listener function to the given event name."
 
             "hidePlaceDetailsView" => T<unit -> unit>
@@ -181,13 +176,13 @@ module LocalContext =
             |> WithComment "Searches for places to show the user based on the current maxPlaceCount, placeTypePreferences, locationRestriction, and locationBias."
 
             // EVENTS
-            "error" => T<obj> -* Events.ErrorEvent ^-> T<unit>
+            "error" => Events.ErrorEvent ^-> T<unit>
             |> WithComment "This event is fired if there is an error while performing search."
 
-            "placedetailsviewhidestart" => T<obj> -* T<unit> ^-> T<unit>
+            "placedetailsviewhidestart" => T<unit> ^-> T<unit>
             |> WithComment "This event is fired before the place details begins animating out."
 
-            "placedetailsviewshowstart" => T<obj> -* T<unit> ^-> T<unit>
+            "placedetailsviewshowstart" => T<unit> ^-> T<unit>
             |> WithComment "This event is fired before the place details begins animating in."
         ]
 

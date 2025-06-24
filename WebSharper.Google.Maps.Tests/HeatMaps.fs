@@ -37,8 +37,11 @@ let Draw (div: Dom.Element) (rawData: array<double*double>) : unit =
     JS.Window?pointArray <- pointArray
     let map =
         let center = LatLng(57.6414, 12.0403)
-        let opts = MapOptions(center, 13)
-        Map(div, opts)
+        let opts = MapOptions(
+            Center = center,
+            Zoom = 8
+        )
+        Map(div |> As<HTMLElement>, opts)
     let heatmap =
         let opts = new HeatmapLayerOptions(pointArray)
         opts.Radius <- 5

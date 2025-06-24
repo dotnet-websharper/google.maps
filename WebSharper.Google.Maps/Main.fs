@@ -36,6 +36,8 @@ module Main =
             ]
             Namespace "WebSharper.Google.Maps" [
 
+                Forward.MapTypeId
+
                 Events.ErrorEvent
                 Events.Event
                 Events.MapsEventListener
@@ -47,6 +49,8 @@ module Main =
                 Base.LatLng
                 Base.LatLngBounds
                 Base.LatLngBoundsLiteral
+                Base.LatLngAltitudeLiteral
+                Base.LatLngAltitude
                 Base.Padding
                 Base.Point
                 Base.Size
@@ -61,7 +65,6 @@ module Main =
                 Controls.ScaleControlOptions
                 Controls.ScaleControlStyle
                 Controls.StreetViewControlOptions
-                Controls.StreetViewSource
                 Controls.ZoomControlOptions
 
                 Drawing.OverlayType
@@ -86,12 +89,12 @@ module Main =
                 StreetView.StreetViewService
                 StreetView.StreetViewStatus
                 StreetView.StreetViewTileData
+                StreetView.StreetViewSource
 
                 Styling.DatasetFeature
                 Styling.Feature
                 Styling.FeatureLayer
                 Styling.FeatureMouseEvent
-                // Styling.FeatureStyleFunction
                 Styling.FeatureStyleFunctionOptions
                 Styling.FeatureStyleOptions
                 Styling.FeatureType
@@ -102,25 +105,28 @@ module Main =
                 LocalContext.MapDirectionsOptions
                 LocalContext.MapDirectionsOptionsLiteral
                 LocalContext.PinOptions
+                LocalContext.PinOptionsSetupObject
                 LocalContext.PlaceChooserLayoutMode
                 LocalContext.PlaceChooserPosition
+                LocalContext.PlaceChooserViewSetupObject
                 LocalContext.PlaceChooserViewSetupOptions
                 LocalContext.PlaceDetailsLayoutMode
                 LocalContext.PlaceDetailsPosition
+                LocalContext.PlaceDetailsViewSetup
                 LocalContext.PlaceDetailsViewSetupOptions
-                // LocalContext.PlaceTypePreference
+                LocalContext.PlaceTypePreference
 
                 MapTypes.ImageMapType
                 MapTypes.ImageMapTypeOptions
                 MapTypes.MapType
-                MapTypes.StyledMapTypeOptions
-                MapTypes.StyledMapType
                 MapTypes.MapTypeRegistry
                 MapTypes.MapTypeStyle
                 MapTypes.MapTypeStyleElementType
                 MapTypes.MapTypeStyleFeatureType
                 MapTypes.MapTypeStyler
                 MapTypes.Projection
+                MapTypes.StyledMapType
+                MapTypes.StyledMapTypeOptions
                 MapTypes.Visibility
 
                 Map.CameraOptions
@@ -132,36 +138,23 @@ module Main =
                 Map.MapMouseEvent
                 Map.MapOptions
                 Map.MapRestriction
-                Map.MapTypeId
                 Map.RenderingType
                 Map.VisibleRegion
                 Map.ZoomChangeEvent
 
-                Visualization.DemographicsLayer
-                Visualization.DemographicsLayerOptions
-                Visualization.DemographicsPolygonOptions
-                Visualization.DemographicsPropertyStyle
-                Visualization.DemographicsQuery
-                Visualization.DemographicsStyle
-                Visualization.DynamicMapsEngineLayer
-                Visualization.FeatureStyle
+                WebGL.CameraParams
+                WebGL.CoordinateTransformer
+                WebGL.WebGLDrawOptions
+                WebGL.WebGLOverlayView
+                WebGL.WebGLStateOptions
+
                 Visualization.HeatmapLayer
                 Visualization.HeatmapLayerOptions
-                Visualization.MapsEngineLayer
-                Visualization.MapsEngineLayerOptions
-                Visualization.MapsEngineLayerProperties
-                Visualization.MapsEngineStatus
                 Visualization.WeightedLocation
 
-                Weather.CloudLayer
-                Weather.LabelColor
-                Weather.TemperatureUnit
-                Weather.WeatherConditions
-                Weather.WeatherForecast
-                Weather.WeatherFeature
-                Weather.WeatherLayerOptions
-                Weather.WeatherLayer
-                Weather.WindSpeedUnit
+                Geometry.Encoding
+                Geometry.Poly
+                Geometry.Spherical
 
                 AdvancedMarkerClickEvent
                 AdvancedMarkerElement
@@ -197,16 +190,6 @@ module Main =
                 ElevationResult
                 ElevationService
                 ElevationStatus
-                FusionTablesCell
-                FusionTablesHeatmap
-                FusionTablesLayer
-                FusionTablesLayerOptions
-                FusionTablesMarkerOptions
-                FusionTablesMouseEvent
-                FusionTablesPolygonOptions
-                FusionTablesPolylineOptions
-                FusionTablesQuery
-                FusionTablesStyle
                 Geocoder
                 GeocoderAddressComponent
                 GeocoderComponentRestrictions
@@ -237,10 +220,8 @@ module Main =
                 MapPanes
                 Marker
                 MarkerLabel
-                MarkerImage
                 MarkerOptions
                 MarkerShape
-                MarkerShapeType
                 MaxZoomResult
                 MaxZoomService
                 MaxZoomStatus
@@ -281,7 +262,6 @@ module Main =
             Namespace "WebSharper.Google.Maps.JournalSharing" [
                 JourneySharing.AuthToken
                 JourneySharing.AuthTokenContext
-                //JourneySharing.AuthTokenFetcher
                 JourneySharing.AuthTokenFetcherOptions
                 JourneySharing.AutomaticViewportMode
                 JourneySharing.DefaultMarkerSetupOptions
@@ -315,13 +295,11 @@ module Main =
                 JourneySharing.JourneySharingMapViewOptions
                 JourneySharing.LocationProvider
                 JourneySharing.MarkerCustomizationFunctionParams
-                // JourneySharing.MarkerSetup
                 JourneySharing.MarkerSetupOptions
                 JourneySharing.PlannedStopMarkerCustomizationFunctionParams
                 JourneySharing.PollingLocationProvider
                 JourneySharing.PollingLocationProviderIsPollingChangeEvent
                 JourneySharing.PolylineCustomizationFunctionParams
-                // JourneySharing.PolylineSetup
                 JourneySharing.PolylineSetupOptions
                 JourneySharing.ShipmentMarkerCustomizationFunctionParams
                 JourneySharing.ShipmentPolylineCustomizationFunctionParams
@@ -368,10 +346,6 @@ module Main =
                 Places.FetchFieldsRequest
                 Places.FindPlaceFromPhoneNumberRequest
                 Places.FindPlaceFromQueryRequest
-                //TODO: fix. //The type 'Type.Type' is not compatible with the 'CodeModel.NamespaceEntity'
-                //Places.LocationBias
-                //TODO: fix. //The type 'Type.Type' is not compatible with the 'CodeModel.NamespaceEntity'
-                //Places.LocationRestriction
                 Places.OpeningHours
                 Places.OpeningHoursPeriod
                 Places.OpeningHoursPoint
@@ -405,7 +379,6 @@ module Main =
                 Places.PriceLevel
                 Places.QueryAutocompletePrediction
                 Places.QueryAutocompletionRequest
-                //Places.RadarSearchRequest
                 Places.RankBy
                 Places.Review
                 Places.SearchBox
@@ -421,23 +394,22 @@ module Main =
                 Data.DataOptions
                 Data.Feature
                 Data.FeatureOptions
-                Data.GeoJsonOptions
                 Data.Geometry
                 Data.GeometryCollection
-                Data.LinearRing
                 Data.LineString
-                Data.MouseEvent
+                Data.LinearRing
                 Data.MultiLineString
                 Data.MultiPoint
                 Data.MultiPolygon
                 Data.Point
+                Data.MouseEvent
                 Data.Polygon
                 Data.RemoveFeatureEvent
                 Data.RemovePropertyEvent
                 Data.SetGeometryEvent
                 Data.SetPropertyEvent
                 Data.StyleOptions
-                // Data.StylingFunction
+                Data.GeoJsonOptions
             ]
         ]
         |> Requires [Res.Js]

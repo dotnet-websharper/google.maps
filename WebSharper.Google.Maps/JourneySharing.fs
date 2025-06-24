@@ -68,34 +68,37 @@ Setting this value to 0, Infinity, or a negative value disables automatic locati
 The default, and minimum, polling interval is 5000 milliseconds. If you set the polling interval to a lower positive value, 5000 is stored and used."
 
             // EVENTS
-            "ispollingchange" => T<obj> -* PollingLocationProviderIsPollingChangeEvent ^-> T<unit>
+            "ispollingchange" => PollingLocationProviderIsPollingChangeEvent ^-> T<unit>
             |> WithComment "Event that is triggered when the polling state of the location provider is updated. Use PollingLocationProvider.isPolling to determine the current polling state."
         ]
 
     let MarkerSetupOptions =
         Config "google.maps.journeySharing.MarkerSetupOptions"
-        |+> Instance [
-            "markerOptions" =@ MarkerOptions
-            |> WithComment "Marker options."
-        ]
+            []
+            [
+                // Marker options.
+                "markerOptions", MarkerOptions.Type
+            ]
 
     let DefaultMarkerSetupOptions =
         Config "google.maps.journeySharing.DefaultMarkerSetupOptions"
-        |+> Instance [
-            "defaultMarkerOptions" =@ MarkerOptions
-            |> WithComment "Default marker options."
-        ]
-        |> ObsoleteWithMessage "Deprecated: Marker setup is deprecated. Use the MarkerCustomizationFunction methods for your location provider instead."
+            []
+            [
+                // Default marker options.
+                "defaultMarkerOptions", MarkerOptions.Type
+            ]
+            |> ObsoleteWithMessage "Deprecated: Marker setup is deprecated. Use the MarkerCustomizationFunction methods for your location provider instead."
 
     let PolylineSetupOptions =
         Config "google.maps.journeySharing.PolylineSetupOptions"
-        |+> Instance [
-            "polylineOptions" =@ PolylineOptions
-            |> WithComment "Polyline options."
+            []
+            [
+                // Polyline options.
+                "polylineOptions", PolylineOptions.Type
 
-            "visible" =@ T<bool>
-            |> WithComment "Polyline visibility."
-        ]
+                // Polyline visibility.
+                "visible", T<bool>
+            ]
         |> ObsoleteWithMessage "Deprecated: Polyline setup is deprecated. Use the PolylineCustomizationFunction methods for your location provider instead."
 
     let DefaultPolylineSetupOptions =
@@ -108,13 +111,9 @@ The default, and minimum, polling interval is 5000 milliseconds. If you set the 
             |> WithComment "Default polyline visibility."
         ]
 
-    //TODO: add namespace: google.maps.journeySharing.MarkerSetup
     let MarkerSetup = MarkerSetupOptions + (DefaultMarkerSetupOptions ^-> MarkerSetupOptions)
-    // |> ObsoleteWithMessage "Deprecated: Marker setup is deprecated. Use the MarkerCustomizationFunction methods for your location provider instead."
 
-    //TODO: add namespace: google.maps.journeySharing.PolylineSetup
     let PolylineSetup = PolylineSetupOptions + (DefaultPolylineSetupOptions ^-> PolylineSetupOptions)
-        // |> ObsoleteWithMessage "Deprecated: Polyline setup is deprecated. Use the PolylineCustomizationFunction methods for your location provider instead."
 
     let JourneySharingMapViewOptions =
         Interface "google.maps.journeySharing.JourneySharingMapViewOptions"
@@ -465,8 +464,17 @@ Do not reuse the same MarkerSetupOptions object in different MarkerSetup functio
             |> WithComment "The Fleet Engine service type."
         ]
 
-    //TODO: how to add the namespace?
     let AuthTokenFetcher = AuthTokenFetcherOptions ^-> Promise[AuthToken]
+
+    let JourneySharing = 
+        Class "google.maps.journeySharing"
+        |+> Static [
+            "MarkerSetup" => MarkerSetup
+            |> ObsoleteWithMessage "Deprecated: Marker setup is deprecated. Use the MarkerCustomizationFunction methods for your location provider instead."
+            "PolylineSetup" => PolylineSetup
+            |> ObsoleteWithMessage "Deprecated: Polyline setup is deprecated. Use the PolylineCustomizationFunction methods for your location provider instead."
+            "AuthTokenFetcher" => AuthTokenFetcher
+        ]
 
     let MarkerCustomizationFunctionParams =
         Interface "google.maps.journeySharing.MarkerCustomizationFunctionParams"
@@ -1067,7 +1075,7 @@ For information about the vehicle servicing this trip, use Trip.latestVehicleLoc
             "projectId" =? T<string>
             |> WithComment "The consumer's project ID from Google Cloud Console."
 
-            "activePolylineCustomization" =? (T<obj> -* TripPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
+            "activePolylineCustomization" =? (TripPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
             |> WithComment "Customization applied to the active polyline. An active polyline corresponds to a portion of the route the vehicle is currently traversing through.
 
 Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
@@ -1077,7 +1085,7 @@ Use this field to specify custom styling (such as polyline color) and interactiv
 
     See TripPolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
 
-            "destinationMarkerCustomization" =? (T<obj> -* TripMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
+            "destinationMarkerCustomization" =? (TripMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
             |> WithComment "Customization applied to the destination marker.
 
 Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
@@ -1087,7 +1095,7 @@ Use this field to specify custom styling (such as marker icon) and interactivity
 
     See TripMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
 
-            "originMarkerCustomization" =? (T<obj> -* TripMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
+            "originMarkerCustomization" =? (TripMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
             |> WithComment "Customization applied to the origin marker.
 
 Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
@@ -1104,7 +1112,7 @@ Setting this value to 0 disables recurring location updates. A new location upda
 
 The default polling interval is 5000 milliseconds, the minimum interval. If you set the polling interval to a lower non-zero value, 5000 is used."
 
-            "remainingPolylineCustomization" =? (T<obj> -* TripPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
+            "remainingPolylineCustomization" =? (TripPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
             |> WithComment "Customization applied to the remaining polyline. A remaining polyline corresponds to a portion of the route the vehicle has not yet started traversing through.
 
 Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
@@ -1114,7 +1122,7 @@ Use this field to specify custom styling (such as polyline color) and interactiv
 
     See TripPolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
 
-            "takenPolylineCustomization" =? (T<obj> -* TripPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
+            "takenPolylineCustomization" =? (TripPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
             |> WithComment "Customization applied to the taken polyline. A taken polyline corresponds to a portion of the route the vehicle has already traversed through.
 
 Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
@@ -1127,7 +1135,7 @@ Use this field to specify custom styling (such as polyline color) and interactiv
             "tripId" =? T<string>
             |> WithComment "The trip ID to track immediately after the location provider is instantiated. If not specified, the location provider does not start tracking any trip; use FleetEngineTripLocationProvider.tripId to set the ID and begin tracking."
 
-            "vehicleMarkerCustomization" =? (T<obj> -* TripMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
+            "vehicleMarkerCustomization" =? (TripMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
             |> WithComment "Customization applied to the vehicle marker.
 
 Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
@@ -1137,7 +1145,7 @@ Use this field to specify custom styling (such as marker icon) and interactivity
 
     See TripMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
 
-            "waypointMarkerCustomization" =? (T<obj> -* TripWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
+            "waypointMarkerCustomization" =? (TripWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
             |> WithComment "Customization applied to a waypoint marker.
 
 Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
@@ -1168,127 +1176,76 @@ Use this field to specify custom styling (such as marker icon) and interactivity
             |> WithComment "Explicitly refreshes the tracked location."
 
             // EVENTS
-            "error" => T<obj> -* Events.ErrorEvent ^-> T<unit>
+            "error" => Events.ErrorEvent ^-> T<unit>
             |> WithComment "Event that is triggered when the location provider encounters an error."
 
-            "update" => T<obj> -* FleetEngineTripLocationProviderUpdateEvent ^-> T<unit>
+            "update" => FleetEngineTripLocationProviderUpdateEvent ^-> T<unit>
             |> WithComment "Event that is triggered when a Fleet Engine data update request has finished."
         ]
 
     let FleetEngineTaskFilterOptions =
         Config "google.maps.journeySharing.FleetEngineTaskFilterOptions"
-        |+> Instance [
-            "completionTimeFrom" =@ Date
-            |> WithComment "Exclusive lower bound for the completion time of the task. Used to filter for tasks that were completed after the specified time."
+            []
+            [
+                // Exclusive lower bound for the completion time of the task.
+                "completionTimeFrom", Date
 
-            "completionTimeTo" =@ Date
-            |> WithComment "Exclusive upper bound for the completion time of the task. Used to filter for tasks that were completed before the specified time."
+                // Exclusive upper bound for the completion time of the task.
+                "completionTimeTo", Date
 
-            "state" =@ T<string>
-            |> WithComment "The state of the task. Valid values are OPEN or CLOSED."
-        ]
+                // The state of the task. Valid values are OPEN or CLOSED.
+                "state", T<string>
+            ]
 
     let FleetEngineDeliveryVehicleLocationProviderOptions =
         Config "google.maps.journeySharing.FleetEngineDeliveryVehicleLocationProviderOptions"
-        |+> Instance [
-            "authTokenFetcher" =@ AuthTokenFetcher
-            |> WithComment "Provides JSON Web Tokens for authenticating the client to Fleet Engine."
+            []
+            [
+                // Provides JSON Web Tokens for authenticating the client to Fleet Engine.
+                "authTokenFetcher", AuthTokenFetcher
 
-            "projectId" =@ T<string>
-            |> WithComment "The consumer's project ID from Google Cloud Console."
+                // The consumer's project ID from Google Cloud Console.
+                "projectId", T<string>
 
-            "activePolylineCustomization" =@ (T<obj> -* DeliveryVehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the active polyline. An active polyline corresponds to a portion of the route the vehicle is currently traversing through.
+                // Customization applied to the active polyline.
+                "activePolylineCustomization", (DeliveryVehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
+                // The delivery vehicle ID to track immediately after instantiation.
+                "deliveryVehicleId", T<string>
 
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
+                // Customization applied to the delivery vehicle marker.
+                "deliveryVehicleMarkerCustomization", (DeliveryVehicleMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-    See DeliveryVehiclePolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
+                // Customization applied to a planned stop marker.
+                "plannedStopMarkerCustomization", (PlannedStopMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-            "deliveryVehicleId" =@ T<string>
-            |> WithComment "The delivery vehicle ID to track immediately after the location provider is instantiated. If not specified, the location provider does not start tracking any vehicle; use FleetEngineDeliveryVehicleLocationProvider.deliveryVehicleId to set the ID and begin tracking."
+                // Minimum time between fetching location updates in milliseconds.
+                "pollingIntervalMillis", T<int>
 
-            "deliveryVehicleMarkerCustomization" =@ (T<obj> -* DeliveryVehicleMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the delivery vehicle marker.
+                // Customization applied to the remaining polyline.
+                "remainingPolylineCustomization", (DeliveryVehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
+                // Boolean to show or hide outcome locations.
+                "shouldShowOutcomeLocations", T<bool>
 
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
+                // Boolean to show or hide tasks.
+                "shouldShowTasks", T<bool>
 
-    See DeliveryVehicleMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
+                // Threshold for stale vehicle location.
+                "staleLocationThresholdMillis", T<int>
 
-            "plannedStopMarkerCustomization" =@ (T<obj> -* PlannedStopMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to a planned stop marker.
+                // Customization applied to the taken polyline.
+                "takenPolylineCustomization", (DeliveryVehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
+                // Filter options when fetching tasks.
+                "taskFilterOptions", FleetEngineTaskFilterOptions.Type
 
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
+                // Customization applied to a task marker.
+                "taskMarkerCustomization", (TaskMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-    See PlannedStopMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "pollingIntervalMillis" =@ T<int>
-            |> WithComment "Minimum time between fetching location updates in milliseconds. If it takes longer than pollingIntervalMillis to fetch a location update, the next location update is not started until the current one finishes.
-
-Setting this value to 0 disables recurring location updates. A new location update is fetched if any of the parameters observed by the location provider changes.
-
-The default polling interval is 5000 milliseconds, the minimum interval. If you set the polling interval to a lower non-zero value, 5000 is used."
-
-            "remainingPolylineCustomization" =@ (T<obj> -* DeliveryVehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the remaining polyline. A remaining polyline corresponds to a portion of the route the vehicle has not yet started traversing through.
-
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
-
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
-
-    See DeliveryVehiclePolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "shouldShowOutcomeLocations" =@ T<bool>
-            |> WithComment "Boolean to show or hide outcome locations for the fetched tasks."
-
-            "shouldShowTasks" =@ T<bool>
-            |> WithComment "Boolean to show or hide tasks. Setting this to false will prevent the ListTasks endpoint from being called to fetch the tasks. Only the upcoming vehicle stops will be displayed."
-
-            "staleLocationThresholdMillis" =@ T<int>
-            |> WithComment "Threshold for stale vehicle location. If the last updated location for the vehicle is older this threshold, the vehicle will not be displayed. Defaults to 24 hours in milliseconds. If the threshold is less than 0, or Infinity, the threshold will be ignored and the vehicle location will not be considered stale."
-
-            "takenPolylineCustomization" =@ (T<obj> -* DeliveryVehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the taken polyline. A taken polyline corresponds to a portion of the route the vehicle has already traversed through.
-
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
-
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
-
-    See DeliveryVehiclePolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "taskFilterOptions" =@ FleetEngineTaskFilterOptions
-            |> WithComment "Filter options to apply when fetching tasks. The options can include specific vehicle, time, and task status."
-
-            "taskMarkerCustomization" =@ (T<obj> -* TaskMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to a task marker. A task marker is rendered at the planned location of each task assigned to the delivery vehicle.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See TaskMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "taskOutcomeMarkerCustomization" =@ (TaskMarkerCustomizationFunctionParams ^-> T<unit>)
-            |> WithComment "Customization applied to a task outcome marker. A task outcome marker is rendered at the actual outcome location of each task assigned to the delivery vehicle.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See TaskMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-        ]
+                // Customization applied to a task outcome marker.
+                "taskOutcomeMarkerCustomization", TaskMarkerCustomizationFunctionParams ^-> T<unit>
+            ]
 
     let FleetEngineDeliveryVehicleLocationProviderUpdateEvent =
         Interface "google.maps.journeySharing.FleetEngineDeliveryVehicleLocationProviderUpdateEvent"
@@ -1327,45 +1284,44 @@ Use this field to specify custom styling (such as marker icon) and interactivity
             |> WithComment "Returns the filter options to apply when fetching tasks."
 
             // EVENTS
-            "error" => T<obj> -* Events.ErrorEvent ^-> T<unit>
+            "error" => Events.ErrorEvent ^-> T<unit>
             |> WithComment "Event that is triggered when the location provider encounters an error."
 
-            "update" => T<obj> -* FleetEngineDeliveryVehicleLocationProviderUpdateEvent ^-> T<unit>
+            "update" => FleetEngineDeliveryVehicleLocationProviderUpdateEvent ^-> T<unit>
             |> WithComment "Event that is triggered when a Fleet Engine data update request has finished."
         ]
 
     let FleetEngineDeliveryFleetLocationProviderOptions =
         Config "google.maps.journeySharing.FleetEngineDeliveryFleetLocationProviderOptions"
-        |+> Instance [
-            "authTokenFetcher" =@ AuthTokenFetcher
-            |> WithComment "Provides JSON Web Tokens for authenticating the client to Fleet Engine."
+            []
+            [
+                // Provides JSON Web Tokens for authenticating the client to Fleet Engine.
+                "authTokenFetcher", AuthTokenFetcher
 
-            "projectId" =@ T<string>
-            |> WithComment "The consumer's project ID from Google Cloud Console."
+                // The consumer's project ID from Google Cloud Console.
+                "projectId", T<string>
 
-            "deliveryVehicleFilter" =@ T<string>
-            |> WithComment "A filter query to apply when fetching delivery vehicles. This filter is passed directly to Fleet Engine.
+                // A filter query to apply when fetching delivery vehicles. This filter is passed directly to Fleet Engine.
+                // See ListDeliveryVehiclesRequest.filter for supported formats.
+                // Note that valid filters for attributes must have the "attributes" prefix.
+                // For example, attributes.x = "y" or attributes."x y" = "z".
+                "deliveryVehicleFilter", T<string>
 
-See ListDeliveryVehiclesRequest.filter for supported formats.
+                // Customization applied to a delivery vehicle marker.
+                // Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
+                // If a MarkerOptions object is specified, the changes specified in it are applied to the marker after creation.
+                // If a function is specified, it is invoked when the marker is created and on data updates.
+                "deliveryVehicleMarkerCustomization", T<obj> ^-> DeliveryVehicleMarkerCustomizationFunctionParams ^-> T<unit>
 
-Note that valid filters for attributes must have the \"attributes\" prefix. For example, attributes.x = \"y\" or attributes.\"x y\" = \"z\"."
+                // The latitude/longitude bounds within which to track vehicles immediately after instantiation.
+                // If not set, no tracking starts. To track all delivery vehicles, set bounds covering the entire earth.
+                "locationRestriction", LatLngBounds + LatLngBoundsLiteral
 
-            "deliveryVehicleMarkerCustomization" =@ T<obj> ^-> DeliveryVehicleMarkerCustomizationFunctionParams ^-> T<unit>
-            |> WithComment "Customization applied to a delivery vehicle marker.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See DeliveryVehicleMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "locationRestriction" =@ LatLngBounds + LatLngBoundsLiteral
-            |> WithComment "The latitude/longitude bounds within which to track vehicles immediately after the location provider is instantiated. If not set, the location provider does not start tracking any vehicles; use FleetEngineDeliveryFleetLocationProvider.locationRestriction to set the bounds and begin tracking. To track all delivery vehicles regardless of location, set bounds equivalent to the entire earth."
-
-            "staleLocationThresholdMillis" =@ T<int>
-            |> WithComment "Threshold for stale vehicle location. If the last updated location for the vehicle is older this threshold, the vehicle will not be displayed. Defaults to 24 hours in milliseconds. If the threshold is less than zero, or Infinity, the threshold will be ignored and the vehicle location will not be considered stale."
-        ]
+                // Threshold for stale vehicle location.
+                // If the last updated location is older than this, the vehicle is hidden.
+                // Defaults to 24 hours in milliseconds. Set to < 0 or Infinity to ignore.
+                "staleLocationThresholdMillis", T<int>
+            ]
 
     let FleetEngineDeliveryFleetLocationProviderUpdateEvent =
         Interface "google.maps.journeySharing.FleetEngineDeliveryFleetLocationProviderUpdateEvent"
@@ -1391,102 +1347,50 @@ Use this field to specify custom styling (such as marker icon) and interactivity
             |> WithComment "This Field is read-only. Threshold for stale vehicle location. If the last updated location for the vehicle is older than this threshold, the vehicle will not be displayed."
 
             // EVENTS
-            "update" => T<obj> -* FleetEngineDeliveryFleetLocationProviderUpdateEvent ^-> T<unit>
+            "update" => FleetEngineDeliveryFleetLocationProviderUpdateEvent ^-> T<unit>
             |> WithComment "Event that is triggered when a Fleet Engine data update request has finished."
         ]
 
     let FleetEngineVehicleLocationProviderOptions =
         Config "google.maps.journeySharing.FleetEngineVehicleLocationProviderOptions"
-        |+> Instance [
-            "authTokenFetcher" =@ AuthTokenFetcher
-            |> WithComment "Provides JSON Web Tokens for authenticating the client to Fleet Engine."
+            []
+            [
+                // Provides JSON Web Tokens for authenticating the client to Fleet Engine.
+                "authTokenFetcher", AuthTokenFetcher
 
-            "projectId" =@ T<string>
-            |> WithComment "The consumer's project ID from Google Cloud Console."
+                // The consumer's project ID from Google Cloud Console.
+                "projectId", T<string>
 
-            "activePolylineCustomization" =@ (T<obj> -* VehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the active polyline. An active polyline corresponds to a portion of the route the vehicle is currently traversing through.
+                // Customization applied to the active polyline.
+                "activePolylineCustomization", (VehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
+                // Customization applied to the vehicle trip destination marker.
+                "destinationMarkerCustomization", (VehicleWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
+                // Customization applied to the vehicle trip intermediate destination markers.
+                "intermediateDestinationMarkerCustomization", (VehicleWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-    See VehiclePolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
+                // Customization applied to the vehicle trip origin marker.
+                "originMarkerCustomization", (VehicleWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-            "destinationMarkerCustomization" =@ (T<obj> -* VehicleWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the vehicle trip destination marker.
+                // Minimum time between fetching location updates in milliseconds.
+                "pollingIntervalMillis", T<int>
 
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
+                // Customization applied to the remaining polyline.
+                "remainingPolylineCustomization", (VehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
+                // Threshold for stale vehicle location.
+                "staleLocationThresholdMillis", T<int>
 
-    See VehicleWaypointMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
+                // Customization applied to the taken polyline.
+                "takenPolylineCustomization", (VehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-            "intermediateDestinationMarkerCustomization" =@ (T<obj> -* VehicleWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the vehicle trip intermediate destination markers.
+                // The vehicle ID to track immediately after the location provider is instantiated.
+                "vehicleId", T<string>
 
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See VehicleWaypointMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "originMarkerCustomization" =@ (T<obj> -* VehicleWaypointMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the vehicle trip origin marker.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See VehicleWaypointMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "pollingIntervalMillis" =@ T<int>
-            |> WithComment "Minimum time between fetching location updates in milliseconds. If it takes longer than pollingIntervalMillis to fetch a location update, the next location update is not started until the current one finishes.
-
-Setting this value to 0 disables recurring location updates. A new location update is fetched if any of the parameters observed by the location provider changes.
-
-The default polling interval is 5000 milliseconds, the minimum interval. If you set the polling interval to a lower non-zero value, 5000 is used."
-
-            "remainingPolylineCustomization" =@ (T<obj> -* VehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the remaining polyline. A remaining polyline corresponds to a portion of the route the vehicle has not yet started traversing through.
-
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
-
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
-
-    See VehiclePolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "staleLocationThresholdMillis" =@ T<int>
-            |> WithComment "Threshold for stale vehicle location. If the last updated location for the vehicle is older this threshold, the vehicle will not be displayed. Defaults to 24 hours in milliseconds. If the threshold is less than 0, or Infinity, the threshold will be ignored and the vehicle location will not be considered stale."
-
-            "takenPolylineCustomization" =@ (T<obj> -* VehiclePolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the taken polyline. A taken polyline corresponds to a portion of the route the vehicle has already traversed through.
-
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
-
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
-
-    See VehiclePolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "vehicleId" =@ T<string>
-            |> WithComment "The vehicle ID to track immediately after the location provider is instantiated. If not specified, the location provider does not start tracking any vehicle; use FleetEngineVehicleLocationProvider.vehicleId to set the ID and begin tracking."
-
-            "vehicleMarkerCustomization" =@ (T<obj> -* VehicleMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the vehicle marker.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See VehicleMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-        ]
+                // Customization applied to the vehicle marker.
+                "vehicleMarkerCustomization", (VehicleMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
+            ]
 
     let FleetEngineVehicleLocationProviderUpdateEvent =
         Interface "google.maps.journeySharing.FleetEngineVehicleLocationProviderUpdateEvent"
@@ -1518,45 +1422,41 @@ Use this field to specify custom styling (such as marker icon) and interactivity
             |> WithComment "ID for the vehicle that this location provider observes. Set this field to track a vehicle."
 
             // EVENTS
-            "error" => T<obj> -* Events.ErrorEvent ^-> T<unit>
+            "error" => Events.ErrorEvent ^-> T<unit>
             |> WithComment "Event that is triggered when the location provider encounters an error."
 
-            "update" => T<obj> -* FleetEngineVehicleLocationProviderUpdateEvent ^-> T<unit>
+            "update" => FleetEngineVehicleLocationProviderUpdateEvent ^-> T<unit>
             |> WithComment "Event that is triggered when a Fleet Engine data update request has finished."
         ]
 
     let FleetEngineFleetLocationProviderOptions =
         Config "google.maps.journeySharing.FleetEngineFleetLocationProviderOptions"
-        |+> Instance [
-            "authTokenFetcher" =@ AuthTokenFetcher
-            |> WithComment "Provides JSON Web Tokens for authenticating the client to Fleet Engine."
+            []
+            [
+                // Provides JSON Web Tokens for authenticating the client to Fleet Engine.
+                "authTokenFetcher", AuthTokenFetcher
 
-            "projectId" =@ T<string>
-            |> WithComment "The consumer's project ID from Google Cloud Console."
+                // The consumer's project ID from Google Cloud Console.
+                "projectId", T<string>
 
-            "locationRestriction" =@ LatLngBounds + LatLngBoundsLiteral
-            |> WithComment "The latitude/longitude bounds within which to track vehicles immediately after the location provider is instantiated. If not set, the location provider does not start tracking any vehicles; use FleetEngineFleetLocationProvider.locationRestriction to set the bounds and begin tracking. To track all vehicles regardless of location, set bounds equivalent to the entire earth."
+                // The latitude/longitude bounds within which to track vehicles immediately after the location provider is instantiated. If not set, the location provider does not start tracking any vehicles; use FleetEngineFleetLocationProvider.locationRestriction to set the bounds and begin tracking. To track all vehicles regardless of location, set bounds equivalent to the entire earth.
+                "locationRestriction", LatLngBounds + LatLngBoundsLiteral
 
-            "staleLocationThresholdMillis" =@ T<int>
-            |> WithComment "Threshold for stale vehicle location. If the last updated location for the vehicle is older than this threshold, the vehicle will not be displayed. Defaults to 24 hours in milliseconds. If the threshold is less than zero, or Infinity, the threshold will be ignored and the vehicle location will not be considered stale."
+                // Threshold for stale vehicle location. If the last updated location for the vehicle is older than this threshold, the vehicle will not be displayed. Defaults to 24 hours in milliseconds. If the threshold is less than zero, or Infinity, the threshold will be ignored and the vehicle location will not be considered stale.
+                "staleLocationThresholdMillis", T<int>
 
-            "vehicleFilter" =@ T<string>
-            |> WithComment "A filter query to apply when fetching vehicles. This filter is passed directly to Fleet Engine.
+                // A filter query to apply when fetching vehicles. This filter is passed directly to Fleet Engine.
+                // See ListVehiclesRequest.filter for supported formats.
+                // Note that valid filters for attributes must have the "attributes" prefix. For example, attributes.x = "y" or attributes."x y" = "z".
+                "vehicleFilter", T<string>
 
-See ListVehiclesRequest.filter for supported formats.
-
-Note that valid filters for attributes must have the \"attributes\" prefix. For example, attributes.x = \"y\" or attributes.\"x y\" = \"z\"."
-
-            "vehicleMarkerCustomization" =@ T<obj> -* VehicleMarkerCustomizationFunctionParams ^-> T<unit>
-            |> WithComment "Customization applied to a vehicle marker.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See VehicleMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-        ]
+                // Customization applied to a vehicle marker.
+                // Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
+                // If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
+                // If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
+                // See VehicleMarkerCustomizationFunctionParams for a list of supplied parameters and their uses.
+                "vehicleMarkerCustomization", VehicleMarkerCustomizationFunctionParams ^-> T<unit>
+            ]
 
     let FleetEngineFleetLocationProviderUpdateEvent =
         Interface "google.maps.journeySharing.FleetEngineFleetLocationProviderUpdateEvent"
@@ -1582,79 +1482,41 @@ Use this field to specify custom styling (such as marker icon) and interactivity
             |> WithComment "The filter applied when fetching the vehicles."
 
             // EVENTS
-            "update" => T<obj> -* FleetEngineFleetLocationProviderUpdateEvent ^-> T<unit>
+            "update" => FleetEngineFleetLocationProviderUpdateEvent ^-> T<unit>
             |> WithComment "Event that is triggered when a Fleet Engine data update request has finished."
         ]
 
     let FleetEngineShipmentLocationProviderOptions =
         Config "google.maps.journeySharing.FleetEngineShipmentLocationProviderOptions"
-        |+> Instance [
-            "authTokenFetcher" =@ AuthTokenFetcher
-            |> WithComment "Provides JSON Web Tokens for authenticating the client to Fleet Engine."
+            []
+            [
+                // Provides JSON Web Tokens for authenticating the client to Fleet Engine.
+                "authTokenFetcher", AuthTokenFetcher
 
-            "projectId" =@ T<string>
-            |> WithComment "The consumer's project ID from Google Cloud Console."
+                // The consumer's project ID from Google Cloud Console.
+                "projectId", T<string>
 
-            "activePolylineCustomization" =@  (T<obj> -* ShipmentPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the active polyline. An active polyline corresponds to a portion of the route the vehicle is currently traversing through.
+                // Customization applied to the active polyline.
+                "activePolylineCustomization", (ShipmentPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
+                // Customization applied to the delivery vehicle marker.
+                "deliveryVehicleMarkerCustomization", (ShipmentMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
+                // Customization applied to the destination marker.
+                "destinationMarkerCustomization", (ShipmentMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
 
-    See ShipmentPolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
+                // Minimum time between fetching location updates in milliseconds.
+                "pollingIntervalMillis", T<int>
 
-            "deliveryVehicleMarkerCustomization" =@ (T<obj> -* ShipmentMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the delivery vehicle marker.
+                // Customization applied to the remaining polyline.
+                "remainingPolylineCustomization", (ShipmentPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
+                // Customization applied to the taken polyline.
+                "takenPolylineCustomization", (ShipmentPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
 
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See ShipmentMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "destinationMarkerCustomization" =@ (T<obj> -* ShipmentMarkerCustomizationFunctionParams ^-> T<unit>) + MarkerOptions
-            |> WithComment "Customization applied to the destination marker.
-
-Use this field to specify custom styling (such as marker icon) and interactivity (such as click handling).
-
-    If a MarkerOptions object is specified, the changes specified in it are applied to the marker after the marker has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the marker is created, before it is added to the map view. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this marker have changed.
-
-    See ShipmentMarkerCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "pollingIntervalMillis" =@ T<int>
-            |> WithComment "Minimum time between fetching location updates in milliseconds. If it takes longer than pollingIntervalMillis to fetch a location update, the next location update is not started until the current one finishes.
-
-Setting this value to 0, Infinity, or a negative value disables automatic location updates. A new location update is fetched once if the tracking ID parameter (for example, the shipment tracking ID of the shipment location provider), or a filtering option (for example, viewport bounds or attribute filters for fleet location providers) changes.
-
-The default, and minimum, polling interval is 5000 milliseconds. If you set the polling interval to a lower positive value, 5000 is stored and used."
-
-            "remainingPolylineCustomization" =@ (T<obj> -* ShipmentPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the remaining polyline. A remaining polyline corresponds to a portion of the route the vehicle has not yet started traversing through.
-
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
-
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
-
-    See ShipmentPolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "takenPolylineCustomization" =@ (T<obj> -* ShipmentPolylineCustomizationFunctionParams ^-> T<unit>) + PolylineOptions
-            |> WithComment "Customization applied to the taken polyline. A taken polyline corresponds to a portion of the route the vehicle has already traversed through.
-
-Use this field to specify custom styling (such as polyline color) and interactivity (such as click handling).
-
-    If a PolylineOptions object is specified, the changes specified in it are applied to the polyline after the polyline has been created, overwriting its default options if they exist.
-    If a function is specified, it is invoked once when the polyline is created. (On this invocation, the isNew parameter in the function parameters object is set to true.) Additionally, this function is invoked when the polyline's coordinates change, or when the location provider receives data from Fleet Engine, regardless of whether the data corresponding to this polyline have changed.
-
-    See ShipmentPolylineCustomizationFunctionParams for a list of supplied parameters and their uses."
-
-            "trackingId" =@ T<string>
-            |> WithComment "The tracking ID of the task to track immediately after the location provider is instantiated. If not specified, the location provider does not start tracking any task; use FleetEngineShipmentLocationProvider.trackingId to set the tracking ID and begin tracking."
-        ]
+                // The tracking ID of the task to track immediately after the location provider is instantiated.
+                "trackingId", T<string>
+            ]
 
     let FleetEngineShipmentLocationProviderUpdateEvent =
         Interface "google.maps.journeySharing.FleetEngineShipmentLocationProviderUpdateEvent"
@@ -1677,9 +1539,9 @@ Use this field to specify custom styling (such as polyline color) and interactiv
             |> WithComment "Explicitly refreshes the tracked location."
 
             // EVENTS
-            "error" => T<obj> -* Events.ErrorEvent ^-> T<unit>
+            "error" => Events.ErrorEvent ^-> T<unit>
             |> WithComment "Event that is triggered when the location provider encounters an error."
 
-            "update" => T<obj> -* FleetEngineShipmentLocationProviderUpdateEvent ^-> T<unit>
+            "update" => FleetEngineShipmentLocationProviderUpdateEvent ^-> T<unit>
             |> WithComment "Event that is triggered when a Fleet Engine data update request has finished."
         ]
