@@ -23,7 +23,6 @@
     <Compile Include="Places.fs" />
     <Compile Include="Styling.fs" />
     <Compile Include="Drawing.fs" />
-    <Compile Include="Weather.fs" />
     <Compile Include="JourneySharing.fs" />
     <Compile Include="LocalContext.fs" />
     <Compile Include="Main.fs" />

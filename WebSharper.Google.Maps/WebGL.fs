@@ -29,39 +29,37 @@ module WebGL =
     module M = WebSharper.Google.Maps.Definition.Map
 
     let CameraParams =
-        Interface "google.maps.CameraParams"
-        |=> Extends [M.CameraOptions]
-        |+> [
-            "center" =@ LatLng
-            "heading" =@ T<string>
-            "tilt" =@ T<int>
-            "zoom" =@ T<int>
-        ]
+        Config "google.maps.CameraParams"
+            []
+            [
+                "center", Base.LatLngLiteral + Base.LatLng
+                "heading", T<float>
+                "tilt", T<float>
+                "zoom", T<float>
+            ]
 
     let CoordinateTransformer =
         Class "google.maps.CoordinateTransformer"
         |+> Instance [
             "fromLatLngAltitude" => (Base.LatLngAltitude + Base.LatLngAltitudeLiteral) * !?Float32Array * !?Float32Array ^-> T<unit>
 
-            "getCameraParams" => T<string> ^-> CameraParams
+            "getCameraParams" => T<unit> ^-> CameraParams
         ]
 
     let WebGLDrawOptions =
-        Class "google.maps.WebGLDrawOptions"
-        |+> Instance [
-            "gl" =@ WebGLRenderingContext
-            |> WithComment "The WebGLRenderingContext on which to render this WebGLOverlayView."
-
-            "transformer" =@ CoordinateTransformer
-            |> WithComment "The matrix transformation from camera space to latitude/longitude coordinates."
-        ]
+        Config "google.maps.WebGLDrawOptions"
+            [
+                "gl", WebGLRenderingContext
+                "transformer", CoordinateTransformer.Type
+            ]
+            []
 
     let WebGLStateOptions =
-        Class "google.maps.WebGLStateOptions"
-        |+> Instance [
-            "gl" =@ WebGLRenderingContext
-            |> WithComment "The WebGLRenderingContext on which to render this WebGLOverlayView."
-        ]
+        Config "google.maps.WebGLStateOptions"
+            [
+                "gl", WebGLRenderingContext
+            ]
+            []
 
     let WebGLOverlayView =
         Class "google.maps.WebGLOverlayView"

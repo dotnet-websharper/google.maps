@@ -25,6 +25,7 @@ module Map =
 
     open WebSharper.InterfaceGenerator
     open Notation
+    open Base
 
     let MapTypeId = Forward.MapTypeId
 
@@ -39,197 +40,99 @@ module Map =
         ]
 
     let MapOptions =
-        Class "google.maps.MapOptions"
-        |+> Static [
-            Ctor [
-                Base.LatLng.Type?Center
-                T<int>?Zoom
+        Config "google.maps.MapOptions" []
+            [
+                "backgroundColor", T<string>
+                "center", LatLng + LatLngLiteral
+                "clickableIcons", T<bool>
+                "controlSize", T<int>
+                "disableDefaultUI", T<bool>
+                "disableDoubleClickZoom", T<bool>
+                "draggable", T<bool>
+                "draggableCursor", T<string>
+                "draggingCursor", T<string>
+                "fullscreenControl", T<bool>
+                "fullscreenControlOptions", T<obj>
+                "gestureHandling", T<string>
+                "heading", T<int>
+                "isFractionalZoomEnabled", T<bool>
+                "keyboardShortcuts", T<bool>
+                "mapId", T<string>
+                "mapTypeControl", T<bool>
+                "mapTypeControlOptions", T<obj>
+                "mapTypeId", T<string>
+                "maxZoom", T<int>
+                "minZoom", T<int>
+                "noClear", T<bool>
+                "panControl", T<bool>
+                "panControlOptions", T<obj>
+                "restriction", T<obj>
+                "rotateControl", T<bool>
+                "rotateControlOptions", T<obj>
+                "scaleControl", T<bool>
+                "scaleControlOptions", T<obj>
+                "scrollwheel", T<bool>
+                "streetView", T<obj>
+                "streetViewControl", T<bool>
+                "streetViewControlOptions", T<obj>
+                "styles", !|T<obj>
+                "tilt", T<int>
+                "zoom", T<int>
+                "zoomControl", T<bool>
+                "zoomControlOptions", T<obj>
             ]
-            |> WithInline "{center: $Center, zoom: $Zoom}"
-        ]
-        |+> Instance [
-            "backgroundColor" =@ T<string>
-            |> WithComment "Color used for the background of the Map div. This color will be visible when tiles have not yet loaded as the user pans. This option can only be set when the map is initialized."
-
-            "center" =@ (Base.LatLng + Base.LatLngLiteral)
-            |> WithComment "The initial Map center. Required."
-
-            "clickableIcons" =@ T<bool>
-            |> WithComment "When false, map icons are not clickable. A map icon represents a point of interest, also known as a POI."
-
-            "controlSize" =@ T<int>
-            |> WithComment "Size in pixels of the controls appearing on the map. This value must be supplied directly when creating the Map, updating this value later may bring the controls into an undefined state. Only governs the controls made by the Maps API itself. Does not scale developer created custom controls."
-
-            "disableDefaultUI" =@ T<bool>
-            |> WithComment "Enables/disables all default UI buttons. May be overridden individually. Does not disable the keyboard controls, which are separately controlled by the MapOptions.keyboardShortcuts option. Does not disable gesture controls, which are separately controlled by the MapOptions.gestureHandling option."
-
-            "disableDoubleClickZoom" =@ T<bool>
-            |> WithComment "Note: This property is not recommended. To disable zooming on double click, you can use the gestureHandling property, and set it to \"none\"."
-
-            "draggable" =@ T<bool>
-            |> WithComment "If false, prevents the map from being dragged. Dragging is enabled by default."
-            |> ObsoleteWithMessage "Deprecated: Deprecated in 2017. To disable dragging on the map, you can use the gestureHandling property, and set it to \"none\"."
-
-            "draggableCursor" =@ T<string>
-            |> WithComment "The name or url of the cursor to display when mousing over a draggable map. This property uses the css cursor attribute to change the icon. As with the css property, you must specify at least one fallback cursor that is not a URL. For example: draggableCursor: 'url(http://www.example.com/icon.png), auto;'."
-
-            "draggingCursor" =@ T<string>
-            |> WithComment "The name or url of the cursor to display when the map is being dragged. This property uses the css cursor attribute to change the icon. As with the css property, you must specify at least one fallback cursor that is not a URL. For example: draggingCursor: 'url(http://www.example.com/icon.png), auto;'."
-
-            "fullscreenControl" =@ T<bool>
-            |> WithComment "The enabled/disabled state of the Fullscreen control."
-
-            "fullscreenControlOptions" =@ Controls.FullscreenControlOptions
-            |> WithComment "The display options for the Fullscreen control."
-
-            "gestureHandling" =@ T<string>
-            |> WithComment """This setting controls how the API handles gestures on the map. Allowed values:
-
-    "cooperative": Scroll events and one-finger touch gestures scroll the page, and do not zoom or pan the map. Two-finger touch gestures pan and zoom the map. Scroll events with a ctrl key or ⌘ key pressed zoom the map.
-    In this mode the map cooperates with the page.
-    "greedy": All touch gestures and scroll events pan or zoom the map.
-    "none": The map cannot be panned or zoomed by user gestures.
-    "auto": (default) Gesture handling is either cooperative or greedy, depending on whether the page is scrollable or in an iframe."""
-
-            "heading" =@ T<float>
-            |> WithComment "The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available."
-
-            "isFractionalZoomEnabled" =@ T<bool>
-            |> WithComment "Whether the map should allow fractional zoom levels. Listen to isfractionalzoomenabled_changed to know when the default has been set. Default: true for vector maps and false for raster maps"
-
-            "keyboardShortcuts" =@ T<bool>
-            |> WithComment "If false, prevents the map from being controlled by the keyboard. Keyboard shortcuts are enabled by default."
-
-            "mapId" =@ T<string>
-            |> WithComment "The Map ID of the map. This parameter cannot be set or changed after a map is instantiated."
-
-            "mapTypeControl" =@ T<bool>
-            |> WithComment "The initial enabled/disabled state of the Map type control."
-
-            "mapTypeControlOptions" =@ Controls.MapTypeControlOptions
-            |> WithComment "The initial display options for the Map type control."
-
-            "mapTypeId" =@ MapTypeId
-            |> WithComment "The initial Map mapTypeId. Defaults to ROADMAP."
-
-            "maxZoom" =@ T<int>
-            |> WithComment "The maximum zoom level which will be displayed on the map. If omitted, or set to null, the maximum zoom from the current map type is used instead. Valid zoom values are numbers from zero up to the supported maximum zoom level."
-
-            "minZoom" =@ T<int>
-            |> WithComment "The minimum zoom level which will be displayed on the map. If omitted, or set to null, the minimum zoom from the current map type is used instead. Valid zoom values are numbers from zero up to the supported maximum zoom level."
-
-            "noClear" =@ T<bool>
-            |> WithComment "If true, do not clear the contents of the Map div."
-
-            "panControl" =@ T<bool>
-            |> WithComment "The enabled/disabled state of the Pan control."
-            |> ObsoleteWithMessage "Deprecated: The Pan control is deprecated as of September 2015."
-
-            "panControlOptions" =@ Controls.PanControlOptions
-            |> WithComment "The display options for the Pan control."
-            |> ObsoleteWithMessage "Deprecated: The Pan control is deprecated as of September 2015."
-
-            "restriction" =@ MapRestriction
-            |> WithComment "Defines a boundary that restricts the area of the map accessible to users. When set, a user can only pan and zoom while the camera view stays inside the limits of the boundary."
-
-            "rotateControl" =@ T<bool>
-            |> WithComment "The enabled/disabled state of the Rotate control."
-
-            "rotateControlOptions" =@ Controls.RotateControlOptions
-            |> WithComment "The display options for the Rotate control."
-
-            "scaleControl" =@ T<bool>
-            |> WithComment "The initial enabled/disabled state of the Scale control."
-
-            "scaleControlOptions" =@ Controls.ScaleControlOptions
-            |> WithComment "The initial display options for the Scale control."
-
-            "scrollwheel" =@ T<bool>
-            |> WithComment "If false, disables zooming on the map using a mouse scroll wheel. The scrollwheel is enabled by default.
-
-Note: This property is not recommended. To disable zooming using scrollwheel, you can use the gestureHandling property, and set it to either \"cooperative\" or \"none\"."
-
-            "streetView" =@ StreetView.StreetViewPanorama
-            |> WithComment "A StreetViewPanorama to display when the Street View pegman is dropped on the map. If no panorama is specified, a default StreetViewPanorama will be displayed in the map's div when the pegman is dropped."
-
-            "streetViewControl" =@ T<bool>
-            |> WithComment "The initial enabled/disabled state of the Street View Pegman control. This control is part of the default UI, and should be set to false when displaying a map type on which the Street View road overlay should not appear (e.g. a non-Earth map type)."
-
-            "streetViewControlOptions" =@ Controls.StreetViewControlOptions
-            |> WithComment "The initial display options for the Street View Pegman control."
-
-            "styles" =@ Type.ArrayOf MapTypes.MapTypeStyle
-            |> WithComment "Styles to apply to each of the default map types. Note that for Satellite/Hybrid and Terrain modes, these styles will only apply to labels and geometry."
-
-            "tilt" =@ T<float>
-            |> WithComment "Controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. The value 0 causes the map to always use a 0° overhead view regardless of the zoom level and viewport. The value 45 causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for SATELLITE and HYBRID map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value specified by this option. Because getTilt and this option refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects."
-
-            "zoom" =@ T<int>
-            |> WithComment "The initial Map zoom level. Valid zoom values are numbers from zero up to the supported maximum zoom level. Larger zoom values correspond to a higher resolution."
-
-            "zoomControl" =@ T<bool>
-            |> WithComment "The enabled/disabled state of the Zoom control."
-
-            "zoomControlOptions" =@ Controls.ZoomControlOptions
-            |> WithComment "The display options for the Zoom control."
-        ]
 
     let CameraOptions =
-        Interface "google.maps.CameraOptions"
-        |+> [
-            "center" =@ Base.LatLngLiteral + Base.LatLng
-            "heading" =@ T<int>
-            "tilt" =@ T<int>
-            "zoom" =@ T<int>
-        ]
+        Config "google.maps.CameraOptions"
+            []
+            [
+                "center", Base.LatLngLiteral + Base.LatLng
+                "heading", T<float>
+                "tilt", T<float>
+                "zoom", T<float>
+            ]
 
     let RenderingType =
-        Class "google.maps.places.RenderingType"
-        |+> Static [
-            "RASTER" =? TSelf
-            |> WithComment "Indicates that the map is a raster map."
-
-            "UNINITIALIZED" =? TSelf
-            |> WithComment "Indicates that it is unknown yet whether the map is vector or raster, because the map has not finished initializing yet."
-
-            "VECTOR" =? TSelf
-            |> WithComment " 	Indicates that the map is a vector map."
+        Pattern.EnumStrings "google.maps.RenderingType" [
+            "RASTER"
+            "UNINITIALIZED"
+            "VECTOR"
         ]
 
     let MapCapabilities =
-        Class "google.maps.MapCapabilities"
-        |+> Instance [
-            "isAdvancedMarkersAvailable" =@ T<bool>
-            |> WithComment "If true, this map is configured properly to allow for the use of advanced markers. Note that you must still import the marker library in order to use advanced markers. See https://goo.gle/gmp-isAdvancedMarkersAvailable for more information."
+        Config "google.maps.MapCapabilities"
+            []
+            [
+                "isAdvancedMarkersAvailable", T<bool>
+                "isDataDrivenStylingAvailable", T<bool>
+            ]
 
-            "isDataDrivenStylingAvailable" =@ T<bool>
-            |> WithComment "If true, this map is configured properly to allow for the use of data-driven styling for at least one FeatureLayer. See https://goo.gle/gmp-data-driven-styling and https://goo.gle/gmp-FeatureLayerIsAvailable for more information."
+    let MapMouseEventProperties = 
+        [
+            "domEvent", MouseEvent + KeyboardEvent + JsEvent + T<obj>
+            "latLng", Base.LatLng.Type
+            "stop", T<unit> ^-> T<unit>
         ]
 
     let MapMouseEvent =
-        Interface "google.maps.MapMouseEvent"
-        |+> [
-            //TODO: locate TouchEvent and PointerEvent
-            // "domEvent" =? T<MouseEvent> + T<TouchEvent> + T<PointerEvent> + T<KeyboardEvent> + T<Event>
-            "domEvent" =? MouseEvent + KeyboardEvent + JsEvent
-            |> WithComment "The corresponding native DOM event. Developers should not rely on target, currentTarget, relatedTarget and path properties being defined and consistent. Developers should not also rely on the DOM structure of the internal implementation of the Maps API. Due to internal event mapping, the domEvent may have different semantics from the MapMouseEvent (e.g. a MapMouseEvent \"click\" may have a domEvent of type KeyboardEvent)."
-
-            "latLng" =@ Base.LatLng
-            |> WithComment "The latitude/longitude that was below the cursor when the event occurred."
-
-            "stop" => T<unit -> unit>
-        ]
+        Config "google.maps.MapMouseEvent"
+            []
+            MapMouseEventProperties            
 
     let IconMouseEvent =
         Class "google.maps.IconMouseEvent"
-        |=> Inherits MapMouseEvent
+        |=> Inherits MapMouseEvent 
+        |+> Instance [
+            "placeId" =@ T<string>
+            |> WithComment "The place ID of the place that was clicked. This place ID can be used to query more information about the feature that was clicked."
+        ]
 
     let Map =
         Forward.Map
         |=> Inherits MVC.MVCObject
         |+> Static [
             Ctor [
-                Node?mapDiv
+                HTMLElement?mapDiv
                 !? MapOptions?options
             ]
             |> WithComment "Creates a new map inside of the given HTML container, which is typically a DIV element."
@@ -254,7 +157,7 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "getDatasetFeatureLayer" => T<string> ^-> Forward.FeatureLayer
                 |> WithComment "Returns the FeatureLayer for the specified datasetId. Dataset IDs must be configured in the Google Cloud Console. If the dataset ID is not associated with the map's map style, or if Data-driven styling is not available (no map ID, no vector tiles, no Data-Driven Styling feature layers or Datasets configured in the Map Style), this logs an error, and the resulting FeatureLayer.isAvailable will be false."
 
-                "getDiv" => T<unit> ^-> Element
+                "getDiv" => T<unit> ^-> HTMLElement
 
                 "getFeatureLayer" => Forward.FeatureType ^-> Forward.FeatureLayer
                 |> WithComment "Returns the FeatureLayer of the specific FeatureType. A FeatureLayer must be enabled in the Google Cloud Console. If a FeatureLayer of the specified FeatureType does not exist on this map, or if Data-driven styling is not available (no map ID, no vector tiles, and no FeatureLayer enabled in the map style), this logs an error, and the resulting FeatureLayer.isAvailable will be false."
@@ -265,7 +168,7 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "getMapCapabilities" => T<unit> ^-> MapCapabilities
                 |> WithComment "Informs the caller of the current capabilities available to the map based on the Map ID that was provided."
 
-                "getMapTypeId" => T<unit> ^-> MapTypeId
+                "getMapTypeId" => T<unit> ^-> T<string>
 
                 "getProjection" => T<unit> ^-> MapTypes.Projection
                 |> WithComment "Returns the current Projection. If the map is not yet initialized then the result is undefined. Listen to the projection_changed event and check its value to ensure it is not undefined."
@@ -291,7 +194,7 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "panTo" => Base.LatLng + Base.LatLngLiteral ^-> T<unit>
                 |> WithComment "Changes the center of the map to the given LatLng. If the change is less than both the width and height of the map, the transition will be smoothly animated."
 
-                "panToBounds" => Base.LatLngBounds + Base.LatLngBoundsLiteral ^-> T<unit> * Base.Padding
+                "panToBounds" => (Base.LatLngBounds + Base.LatLngBoundsLiteral) * !? (T<int> + Padding) ^-> T<unit>
                 |> WithComment "Pans the map by the minimum amount necessary to contain the given LatLngBounds. It makes no guarantee where on the map the bounds will be, except that the map will be panned to show as much of the bounds as possible inside {currentMapSizeInPx} - {padding}. For both raster and vector maps, the map's zoom, tilt, and heading will not be changed."
 
                 "setCenter" => Base.LatLng + Base.LatLngLiteral ^-> T<unit>
@@ -302,7 +205,7 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "setHeading" => T<float> ^-> T<unit>
                 |> WithComment "Sets the compass heading for map measured in degrees from cardinal direction North. For raster maps, this method only applies to aerial imagery."
 
-                "setMapTypeId" => (MapTypeId + T<string>) ^-> T<unit>
+                "setMapTypeId" => (T<string>) ^-> T<unit>
 
                 "setOptions" => MapOptions ^-> T<unit>
 
@@ -315,7 +218,7 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "setZoom" => T<int> ^-> T<unit>
                 |> WithComment "Sets the zoom of the map."
 
-                "controls" =@ (Type.ArrayOf MVC.MVCArray.[Node])
+                "controls" =@ (Type.ArrayOf MVC.MVCArray.[HTMLElement])
                 |> WithComment "Additional controls to attach to the map. To add a control to the map, add the control's <div> to the MVCArray corresponding to the ControlPosition where it should be rendered."
 
                 "data" =@ Forward.Data
@@ -328,90 +231,87 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 |> WithComment "Additional map types to overlay. Overlay map types will display on top of the base map they are attached to, in the order in which they appear in the overlayMapTypes array (overlays with higher index values are displayed in front of overlays with lower index values)."
 
                 // EVENTS
-                "bounds_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "bounds_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the viewport bounds have changed."
 
-                "center_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "center_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the map center property changes."
 
-                "click" =@ T<obj> -* (MapMouseEvent + IconMouseEvent) ^-> T<unit>
+                "click" =@ (MapMouseEvent + IconMouseEvent) ^-> T<unit>
                 |> WithComment "This event is fired when the user clicks on the map. A MapMouseEvent with properties for the clicked location is returned unless a place icon was clicked, in which case an IconMouseEvent with a place ID is returned. IconMouseEvent and MapMouseEvent are identical, except that IconMouseEvent has the place ID field. The event can always be treated as an MapMouseEvent when the place ID is not important. The click event is not fired if a marker or info window was clicked."
 
-                "contextmenu" =@ T<obj> -* MapMouseEvent ^-> T<unit>
+                "contextmenu" =@ MapMouseEvent ^-> T<unit>
                 |> WithComment "This event is fired when the DOM contextmenu event is fired on the map container."
 
-                "dblclick" =@ T<obj> -* MapMouseEvent ^-> T<unit>
+                "dblclick" =@ MapMouseEvent ^-> T<unit>
                 |> WithComment "This event is fired when the user double-clicks on the map. Note that the click event will sometimes fire once and sometimes twice, right before this one."
 
-                "drag" =@ T<obj> -* T<unit> ^-> T<unit>
+                "drag" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is repeatedly fired while the user drags the map."
 
-                "dragend" =@ T<obj> -* T<unit> ^-> T<unit>
+                "dragend" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the user stops dragging the map."
 
-                "dragstart" =@ T<obj> -* T<unit> ^-> T<unit>
+                "dragstart" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the user starts dragging the map."
 
-                "heading_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "heading_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the map heading property changes."
 
-                "idle" =@ T<obj> -* T<unit> ^-> T<unit>
+                "idle" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the map becomes idle after panning or zooming."
 
-                "isfractionalzoomenabled_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "isfractionalzoomenabled_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the isFractionalZoomEnabled property has changed."
 
-                "mapcapabilities_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "mapcapabilities_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the map capabilities change."
 
-                "maptypeid_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "maptypeid_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the mapTypeId property changes."
 
-                "mousemove" =@ T<obj> -* MapMouseEvent ^-> T<unit>
+                "mousemove" =@ MapMouseEvent ^-> T<unit>
                 |> WithComment "This event is fired whenever the user's mouse moves over the map container."
 
-                "mouseout" =@ T<obj> -* MapMouseEvent ^-> T<unit>
+                "mouseout" =@ MapMouseEvent ^-> T<unit>
                 |> WithComment "This event is fired when the user's mouse exits the map container."
 
-                "mouseover" =@ T<obj> -* MapMouseEvent ^-> T<unit>
+                "mouseover" =@ MapMouseEvent ^-> T<unit>
                 |> WithComment "This event is fired when the user's mouse enters the map container."
 
-                "projection_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "projection_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the projection has changed."
 
-                "renderingtype_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "renderingtype_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the renderingType has changed."
 
-                "tilesloaded" =@ T<obj> -* T<unit> ^-> T<unit>
+                "tilesloaded" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the visible tiles have finished loading."
 
-                "tilt_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "tilt_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the map tilt property changes."
 
-                "zoom_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+                "zoom_changed" =@ T<unit> ^-> T<unit>
                 |> WithComment "This event is fired when the map zoom property changes."
 
-                "rightclick" =@ T<obj> -* MapMouseEvent ^-> T<unit>
+                "rightclick" =@ MapMouseEvent ^-> T<unit>
                 |> WithComment "This event is fired when the user right-clicks on the map."
                 |> ObsoleteWithMessage "Deprecated: Use the Map.contextmenu event instead in order to support usage patterns like control-click on macOS."
          ]
 
     let MapElementOptions =
-        Class "google.maps.MapElementOptions"
-        |+> Instance [
-            "center" =@ Base.LatLng + Base.LatLngLiteral
-            |> WithComment "The initial Map center."
-
-            "mapId" =@ T<string>
-            |> WithComment "The Map ID of the map. This parameter cannot be set or changed after a map is instantiated."
-
-            "zoom" =@ T<int>
-            |> WithComment "The initial Map zoom level. Valid zoom values are numbers from zero up to the supported maximum zoom level. Larger zoom values correspond to a higher resolution."
-        ]
+        Config "google.maps.MapElementOptions"
+            []
+            [
+                "center", T<obj>
+                "mapId", T<string>
+                "zoom", T<int>
+            ]
 
     let ZoomChangeEvent =
         Class "google.maps.ZoomChangeEvent"
         |=> Inherits Events.Event
+        |+> Static [Constructor T<unit>]
 
     let MapElement =
         Class "google.maps.MapElement"
@@ -434,19 +334,14 @@ Note: When the map is set to display: none, the fitBounds function reads the map
             "zoom" =@ T<int>
             |> WithComment "The zoom level of the map."
 
-            //TODO: where is EventListener?
-            // "addEventListener" => T<string> * (Events.EventListener + T<EventListenerObject>) * !?(T<bool> + T<AddEventListenerOptions>) ^-> T<unit>
             "addEventListener" => T<string> * T<obj->unit> * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
             |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target. See addEventListener"
 
-            //TODO: where is EventListener?
-            // "removeEventListener" => T<string> * (T<EventListener> + T<EventListenerObject>) * !?(T<bool> + T<EventListenerOptions>) ^-> T<unit>
             "removeEventListener" => T<string> * T<obj->unit> * !?(T<bool> + EventListenerOptions) ^-> T<unit>
             |> WithComment "Removes an event listener previously registered with addEventListener from the target. See removeEventListener"
 
-
             // EVENTS
-            "gmp-zoomchange" => T<obj> -* ZoomChangeEvent ^-> T<unit>
+            "gmp-zoomchange" => ZoomChangeEvent ^-> T<unit>
             |> WithComment "This event is fired when the map zoom property changes."
         ]
 
