@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -18,12 +18,10 @@
 //
 // $end{copyright}
 // The rest of the spec.
-// TODO: this code needs revision to update to the latest 3.11 API
 namespace WebSharper.Google.Maps.Definition
 
 module Specification =
 
-    open WebSharper
     open WebSharper.InterfaceGenerator
     open Base
     open Notation
@@ -33,91 +31,49 @@ module Specification =
         Class "google.maps.Animation"
         |+> Static [
             "BOUNCE" =? TSelf
-            |> WithComment "Marker bounces until animation is stopped."
+            |> WithComment "Marker bounces until animation is stopped by calling Marker.setAnimation with null."
 
             "DROP" =? TSelf
-            |> WithComment "Marker falls from the top of the map ending with a small bounce."
+            |> WithComment "Marker drops from the top of the map to its final location. Animation will cease once the marker comes to rest and Marker.getAnimation will return null. This type of animation is usually specified during creation of the marker."
             ]
-
-    let NavigationControlStyle =
-        Pattern.EnumInlines "NavigationControlStyle" [
-            // The small zoom control similar to the one used by the native Maps application on Android.
-            "ANDROID", "google.maps.NavigationControlStyle.ANDROID"
-            // The default navigation control. The control which DEFAULT maps to will vary according to map size and other factors. It may change in future versions of the API.
-            "DEFAULT", "google.maps.NavigationControlStyle.DEFAULT"
-            // The small, zoom only control.
-            "SMALL", "google.maps.NavigationControlStyle.SMALL"
-            // The larger control, with the zoom slider and pan directional pad.
-            "ZOOM_PAN", "google.maps.NavigationControlStyle.ZOOM_PAN"
-        ]
-
-    let NavigationControlOptions =
-        Pattern.Config "NavigationControlOptions" {
-            Required = []
-            Optional =
-                [
-                    // Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT.
-                    "position", Controls.ControlPosition.Type
-                    // Style id. Used to select what style of navigation control to display.
-                    "style", NavigationControlStyle.Type
-                ]
-        }
-
-    let ScaleControlStyle =
-        Pattern.EnumInlines "ScaleControlStyle" ["DEFAULT", "google.maps.ScaleControlStyle"]
-
-    let ScaleControlOptions =
-        Pattern.Config "ScaleControlOptions" {
-            Required = []
-            Optional =
-                [
-                    // Position id. Used to specify the position of the control on the map. The default position is BOTTOM_LEFT.
-                    "position", Controls.ControlPosition.Type
-                    // Style id. Used to select what style of scale control to display.
-                    "style", ScaleControlStyle.Type
-                ]
-        }
 
     let MapPanes =
         Config "google.maps.MapPanes"
         |+> Instance [
             "floatPane" =@ Node
-            |> WithComment "This pane contains the info window. It is above all map overlays. (Pane 6)."
-
-            "floatShadow" =@ Node
-            |> WithComment "This pane contains the info window shadow. It is above the overlayImage, so that markers can be in the shadow of the info window. (Pane 4)."
+            |> WithComment "This pane contains the info window. It is above all map overlays. (Pane 4)."
 
             "mapPane" =@ Node
-            |> WithComment "This pane is the lowest pane and is above the tiles. It may not receive DOM events. (Pane 0)."
+            |> WithComment "This pane is the lowest pane and is above the tiles. It does not receive DOM events. (Pane 0)."
 
-            "overlayImage" =@ Node
-            |> WithComment "This pane contains the marker foreground images. (Pane 3)."
+            "markerLayer" =@ Node
+            |> WithComment "This pane contains markers. It does not receive DOM events. (Pane 2)."
 
             "overlayLayer" =@ Node
-            |> WithComment "This pane contains polylines, polygons, ground overlays and tile layer overlays. It may not receive DOM events. (Pane 1)."
+            |> WithComment "This pane contains polylines, polygons, ground overlays and tile layer overlays. It does not receive DOM events. (Pane 1)."
 
             "overlayMouseTarget" =@ Node
-            |> WithComment "This pane contains elements that receive DOM mouse events, such as the transparent targets for markers. It is above the floatShadow, so that markers in the shadow of the info window can be clickable. (Pane 5)."
-
-            "overlayShadow" =@ Node
-            |> WithComment "This pane contains the marker shadows. It may not receive DOM events. (Pane 2)."
+            |> WithComment "This pane contains elements that receive DOM events. (Pane 3)."
         ]
 
 
     let MapCanvasProjection =
         Class "google.maps.MapCanvasProjection"
         |+> Instance [
-            "fromContainerPixelToLatLng" => Point ^-> LatLng
+            "fromContainerPixelToLatLng" => !? Point + !? T<bool> ^-> LatLng
             |> WithComment "Computes the geographical coordinates from pixel coordinates in the map's container."
 
-            "fromDivPixelToLatLng" => Point ^-> LatLng
+            "fromDivPixelToLatLng" => !? Point + !? T<bool> ^-> LatLng
             |> WithComment "Computes the geographical coordinates from pixel coordinates in the div that holds the draggable map."
 
-            "fromLatLngToContainerPixel" => LatLng ^-> Point
+            "fromLatLngToContainerPixel" => LatLng + LatLngLiteral ^-> Point
             |> WithComment "Computes the pixel coordinates of the given geographical location in the map's container element."
 
-            "fromLatLngToDivPixel" => LatLng ^-> Point
+            "fromLatLngToDivPixel" => LatLng + LatLngLiteral ^-> Point
             |> WithComment "Computes the pixel coordinates of the given geographical location in the DOM element that holds the draggable map."
+
+            "getVisibleRegion" => T<unit> ^-> M.VisibleRegion
+            |> WithComment "The visible region of the map. Returns null if the map has no size. Returns null if the OverlayView is on a StreetViewPanorama."
 
             "getWorldWidth" => T<unit> ^-> T<int>
             |> WithComment "The width of the world in pixels in the current zoom level. For projections with a heading angle of either 90 or 270 degrees, this corresponds to the pixel span in the Y-axis."
@@ -137,9 +93,9 @@ module Specification =
         ]
 
     let RectangleOptions =
-        Config "RectangleOptions"
+        Config "google.maps.RectangleOptions"
         |+> Instance [
-            "bounds" =@ LatLngBounds
+            "bounds" =@ LatLngBounds + LatLngBoundsLiteral
             |> WithComment "The bounds."
 
             "clickable" =@ T<bool>
@@ -167,7 +123,7 @@ module Specification =
             |> WithComment "The stroke opacity between 0.0 and 1.0"
 
             "strokePosition" =@ StrokePosition
-            |> WithComment "The stroke position. Defaults to CENTER. This property is not supported on Internet Explorer 8 and earlier."
+            |> WithComment "The stroke position."
 
             "strokeWeight" =@ T<int>
             |> WithComment "The stroke width in pixels."
@@ -180,9 +136,9 @@ module Specification =
         ]
 
     let CircleOptions =
-        Config "CircleOptions"
-        |+> Instance [
-            "center" =@ LatLng
+        Interface "google.maps.CircleOptions"
+        |+> [
+            "center" =@ LatLng + LatLngLiteral
             |> WithComment "The center"
 
             "clickable" =@ T<bool>
@@ -213,7 +169,7 @@ module Specification =
             |> WithComment "The stroke opacity between 0.0 and 1.0."
 
             "strokePosition" =@ StrokePosition
-            |> WithComment "The stroke position. Defaults to CENTER. This property is not supported on Internet Explorer 8 and earlier."
+            |> WithComment "The stroke position. Defaults to CENTER."
 
             "strokeWeight" =@ T<int>
             |> WithComment "The stroke width in pixels."
@@ -225,10 +181,22 @@ module Specification =
             |> WithComment "The zIndex compared to other polys."
         ]
 
+    let CircleLiteral =
+        Interface "google.maps.CircleLiteral"
+        |=> Extends [CircleOptions]
+        |+> [
+            // "center" =@ LatLng + LatLngLiteral
+            // |> WithComment "The center of the Circle."
+
+            // "radius" =@ T<float>
+            // |> WithComment "The radius in meters on the Earth's surface."
+        ]
+
     let Circle =
         Class "google.maps.Circle"
+        |=> Inherits MVC.MVCObject
         |+> Static [
-            Constructor CircleOptions
+            Constructor (TSelf + CircleLiteral + CircleOptions)
             |> WithComment "Create a circle using the passed CircleOptions, which specify the center, radius, and style."
         ]
         |+> Instance [
@@ -250,7 +218,10 @@ module Specification =
             "getRadius" => T<unit> ^-> T<float>
             |> WithComment "Returns the radius of this circle (in meters)."
 
-            "setCenter" => LatLng ^-> T<unit>
+            "getVisible" => T<unit -> bool>
+            |> WithComment "Returns whether this circle is visible on the map."
+
+            "setCenter" => (LatLng + LatLngLiteral) ^-> T<unit>
             |> WithComment "Sets the center of this circle."
 
             "setDraggable" => T<bool -> unit>
@@ -269,10 +240,48 @@ module Specification =
 
             "setVisible" => T<bool -> unit>
             |> WithComment "Hides this circle if set to false."
+
+            // EVENTS
+            "center_changed" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the circle's center is changed."
+
+            "click" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM click event is fired on the circle."
+
+            "dblclick" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM dblclick event is fired on the circle."
+
+            "drag" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is repeatedly fired while the user drags the circle."
+
+            "dragend" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user stops dragging the circle."
+
+            "dragstart" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user starts dragging the circle."
+
+            "mousedown" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousedown event is fired on the circle."
+
+            "mousemove" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousemove event is fired on the circle."
+
+            "mouseout" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on circle mouseout."
+
+            "mouseover" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on circle mouseover."
+
+            "mouseup" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mouseup event is fired on the circle."
+
+            "rightclick" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the circle is right-clicked on."
         ]
 
     let Rectangle =
         Class "google.maps.Rectangle"
+        |=> Inherits MVC.MVCObject
         |+> Static [
             Constructor RectangleOptions
             |> WithComment "Create a rectangle using the passed RectangleOptions, which specify the bounds and style."
@@ -293,7 +302,7 @@ module Specification =
             "getVisible" => T<unit -> bool>
             |> WithComment "Returns whether this rectangle is visible on the map."
 
-            "setBounds" => LatLngBounds ^-> T<unit>
+            "setBounds" => LatLngBounds + LatLngBoundsLiteral ^-> T<unit>
             |> WithComment "Sets the bounds of this rectangle."
 
             "setDraggable" => T<bool -> unit>
@@ -309,10 +318,51 @@ module Specification =
 
             "setVisible" => T<bool -> unit>
             |> WithComment "Hides this rectangle if set to false."
+
+            // EVENTS
+            "bounds_changed" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the rectangle's bounds are changed."
+
+            "click" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM click event is fired on the rectangle."
+
+            "contextmenu" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM contextmenu event is fired on the rectangle."
+
+            "dblclick" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM dblclick event is fired on the rectangle."
+
+            "drag" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is repeatedly fired while the user drags the rectangle."
+
+            "dragend" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user stops dragging the rectangle."
+
+            "dragstart" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user starts dragging the rectangle."
+
+            "mousedown" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousedown event is fired on the rectangle."
+
+            "mousemove" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousemove event is fired on the rectangle."
+
+            "mouseout" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on rectangle mouseout."
+
+            "mouseover" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on rectangle mouseover."
+
+            "mouseup" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mouseup event is fired on the rectangle."
+
+            "rightclick" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the rectangle is right-clicked on."
+            |> ObsoleteWithMessage "Deprecated: Use the Rectangle.contextmenu event instead in order to support usage patterns like control-click on macOS."
         ]
 
     let GroundOverlayOptions =
-        Config "GroundOverlayOptions"
+        Config "google.maps.GroundOverlayOptions"
         |+> Instance [
             "clickable" =@ T<bool>
             |> WithComment "If true, the ground overlay can receive mouse events."
@@ -321,7 +371,7 @@ module Specification =
             |> WithComment "The map on which to display the overlay."
 
             "opacity" =@ T<float>
-            |> WithComment "The opacity of the overlay, expressed as a number between 0 and 1. Optional. Defaults to 1."
+            |> WithComment "The opacity of the overlay, expressed as a number between 0 and 1. Optional. Defaults to 1.0"
         ]
 
     let GroundOverlay =
@@ -329,7 +379,7 @@ module Specification =
         |+> Static [
             Ctor [
                 T<string>?Url
-                LatLngBounds?Bounds
+                (LatLngBounds + LatLngBoundsLiteral)?Bounds
                 !? GroundOverlayOptions
             ]
             |> WithComment "Creates a ground overlay from the provided image URL and its LatLngBounds. The image is scaled to fit the current bounds, and projected using the current map projection."
@@ -353,6 +403,13 @@ module Specification =
 
             "setOpacity" => T<float -> unit>
             |> WithComment "Sets the opacity of this ground overlay."
+
+            // EVENTS
+            "click" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM click event is fired on the GroundOverlay."
+
+            "dblclick" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM dblclick event is fired on the GroundOverlay."
         ]
 
     let BicyclingLayer =
@@ -588,7 +645,7 @@ module Specification =
         ]
 
     let KmlLayerOptions =
-        Config "KmlLayerOptions"
+        Config "google.maps.KmlLayerOptions"
         |+> Instance [
             "clickable" =@ T<bool>
             |> WithComment "If true, the layer receives mouse events. Default value is true."
@@ -597,7 +654,7 @@ module Specification =
             |> WithComment "The map on which to display the layer."
 
             "preserveViewport" =@ T<bool>
-            |> WithComment "By default, the input map is centered and zoomed to the bounding box of the contents of the layer. If this option is set to true, the viewport is left unchanged, unless the map's center and zoom were never set."
+            |> WithComment "If this option is set to true or if the map's center and zoom were never set, the input map is centered and zoomed to the bounding box of the contents of the layer. Default: false."
 
             "screenOverlays" =@ T<bool>
             |> WithComment "Whether to render the screen overlays. Default true."
@@ -607,6 +664,9 @@ module Specification =
 
             "url" =@ T<string>
             |> WithComment "The URL of the KML document to display."
+
+            "zIndex" =@ T<int>
+            |> WithComment "The z-index of the layer."
         ]
 
     let KmlLayerStatus =
@@ -615,7 +675,7 @@ module Specification =
             "DOCUMENT_NOT_FOUND" =? TSelf
             |> WithComment "The document could not be found. Most likely it is an invalid URL, or the document is not publicly available."
 
-            "DOCUMENT_TOO_LARGA" =? TSelf
+            "DOCUMENT_TOO_LARGE" =? TSelf
             |> WithComment "The document exceeds the file size limits of KmlLayer."
 
             "FETCH_ERROR" =? TSelf
@@ -663,16 +723,47 @@ module Specification =
             "getUrl" => T<unit> ^-> T<string>
             |> WithComment "The URL of the KML file being displayed."
 
+            "getZIndex" => T<unit> ^-> T<int>
+            |> WithComment "Gets the z-index of the KML Layer."
+
             "setMap" => (M.Map) ^-> T<unit>
             |> WithComment "Renders the KML Layer on the specified map. If map is set to null, the layer is removed."
 
+            "setOptions" => KmlLayerOptions ^-> T<unit>
+
             "setUrl" => T<string -> unit>
             |> WithComment "Set the URL of the KML file to display."
+
+            "setZIndex" => T<int> ^-> T<unit>
+            |> WithComment "Sets the z-index of the KML Layer."
+
+            // EVENTS
+            "click" =@ T<obj> -* KmlMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when a feature in the layer is clicked."
+
+            "defaultviewport_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the KML layers default viewport has changed."
+
+            "status_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the KML layer has finished loading. At this point it is safe to read the status property to determine if the layer loaded successfully."
+        ]
+
+    let TrafficLayerOptions =
+        Config "google.maps.TrafficLayerOptions"
+        |+> Instance [
+            "autoRefresh" =@ T<bool>
+            |> WithComment "Whether the traffic layer refreshes with updated information automatically."
+
+            "map" =@ M.Map
+            |> WithComment "Map on which to display the traffic layer."
         ]
 
     let TrafficLayer =
         Class "google.maps.TrafficLayer"
-        |+> Static [Constructor T<unit>]
+        |+> Static [
+            Constructor TrafficLayerOptions
+            |> WithComment "A layer that displays current road traffic."
+        ]
         |=> Inherits MVC.MVCObject
         |+> Instance [
             "getMap" => T<unit> ^-> M.Map
@@ -680,6 +771,9 @@ module Specification =
 
             "setMap" => M.Map ^-> T<unit>
             |> WithComment "Renders the layer on the specified map. If map is set to null, the layer will be removed."
+
+            "setOptions" =>  TrafficLayerOptions ^-> T<unit>
+            |> WithComment ""
         ]
 
     let TransitLayer =
@@ -698,11 +792,13 @@ module Specification =
         Interface "MarkerImage"
 
     let Icon =
-        Config "Icon"
-        |=> Implements [MarkerImage]
+        Config "google.maps.Icon"
         |+> Instance [
             "anchor" =@ Point
             |> WithComment "The position at which to anchor an image in correspondance to the location of the marker on the map. By default, the anchor is located along the center point of the bottom of the image."
+
+            "labelOrigin" =@ Point
+            |> WithComment "The origin of the label relative to the top-left corner of the icon image, if a label is supplied by the marker. By default, the origin is located in the center point of the image."
 
             "origin" =@ Point
             |> WithComment "The position of the image within a sprite, if any. By default, the origin is located at the top left corner of the image (0, 0)."
@@ -734,18 +830,14 @@ module Specification =
 
             "FORWARD_OPEN_ARROW" =? TSelf
             |> WithComment "A forward-pointing open arrow."
-
-            "Custom" => T<string>?path ^-> TSelf
-            |> WithInline "$path"
         ]
 
     let Symbol =
         Class "google.maps.Symbol"
-        |=> Implements [MarkerImage]
         |+> Static [
             Constructor SymbolPath?Path
             |> WithInline "{path:$Path}"
-            ]
+        ]
         |+> Instance [
             "anchor" =@ Point
             |> WithComment "The position of the symbol relative to the marker or polyline. The coordinates of the symbol's path are translated left and up by the anchor's x and y coordinates respectively. By default, a symbol is anchored at (0, 0). The position is expressed in the same coordinate system as the symbol's path."
@@ -755,6 +847,9 @@ module Specification =
 
             "fillOpacity" =@ T<float>
             |> WithComment "The symbol's fill opacity. Defaults to 0."
+
+            "labelOrigin" =@ Point
+            |> WithComment "The origin of the label relative to the origin of the path, if label is supplied by the marker. The origin is expressed in the same coordinate system as the symbol's path. This property is unused for symbols on polylines. Default: google.maps.Point(0,0)."
 
             "path" =@ SymbolPath
             |> WithComment "The symbol's path, which is a built-in symbol path, or a custom path expressed using SVG path notation. Required."
@@ -775,6 +870,16 @@ module Specification =
             |> WithComment "The symbol's stroke weight. Defaults to the scale of the symbol."
         ]
 
+    let CollisionBehavior =
+        Pattern.EnumInlines "CollisionBehavior" [
+            // Display the marker only if it does not overlap with other markers. If two markers of this type would overlap, the one with the higher zIndex is shown. If they have the same zIndex, the one with the lower vertical screen position is shown.
+            "OPTIONAL_AND_HIDES_LOWER_PRIORITY", "google.maps.CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY"
+            // Always display the marker regardless of collision. This is the default behavior.
+            "REQUIRED", "google.maps.CollisionBehavior.REQUIRED"
+            //  	Always display the marker regardless of collision, and hide any OPTIONAL_AND_HIDES_LOWER_PRIORITY markers or labels that would overlap with the marker.
+            "REQUIRED_AND_HIDES_OPTIONAL", "google.maps.CollisionBehavior.REQUIRED_AND_HIDES_OPTIONAL"
+        ]
+
     let MarkerShapeType =
         Pattern.EnumStrings "MarkerShapeType" ["circle"; "poly"; "rect"]
 
@@ -783,10 +888,39 @@ module Specification =
             Optional = []
             Required =
             [
-                "coord", Type.ArrayOf T<int>
+                "coords", Type.ArrayOf T<int>
                 "type", MarkerShapeType.Type
             ]
         }
+
+    let MarkerLabel =
+        // Interface "MarkerLabel"
+        Class "MarkerLabel"
+        |+> Static [
+            Ctor [
+                T<string>?Text
+            ]
+            |> WithInline "{text: $Text}"
+        ]
+        |+> Instance [
+              "text" =@ T<string>
+              |> WithComment "The text to be displayed in the label."
+
+              "className" =@ T<string>
+              |> WithComment "The className property of the label's element (equivalent to the element's class attribute). Multiple space-separated CSS classes can be added. The font color, size, weight, and family can only be set via the other properties of MarkerLabel. CSS classes should not be used to change the position nor orientation of the label (e.g. using translations and rotations) if also using marker collision management."
+
+              "color" =@ T<string>
+              |> WithComment "The color of the label text."
+
+              "fontFamily" =@ T<string>
+              |> WithComment "The font family of the label text (equivalent to the CSS font-family property)."
+
+              "fontSize" =@ T<string>
+              |> WithComment "The font size of the label text (equivalent to the CSS font-size property)."
+
+              "fontWeight" =@ T<string>
+              |> WithComment "The font weight of the label text (equivalent to the CSS font-weight property)."
+            ]
 
     let MarkerOptions =
         Class "google.maps.MarkerOptions"
@@ -805,8 +939,12 @@ module Specification =
             "clickable" =@ T<bool>
             |> WithComment "If true, the marker receives mouse and touch events. Default value is true."
 
+            "collisionBehavior" =@ !? (T<string> + CollisionBehavior)
+            |> WithComment "Set a collision behavior for markers on vector maps."
+            |> ObsoleteWithMessage "Deprecated: collisionBehavior is deprecated as of July 2023. Use AdvancedMarkerElement.collisionBehavior instead."
+
             "crossOnDrag" =@ T<bool>
-            |> WithComment "If false, disables cross that appears beneath the marker when dragging. This option is true by default. This option is only enabled when google.maps.visualRefresh is set to true. For backwards compatibility, if raiseOnDrag is set to false then the default for crossOnDrag changes to false."
+            |> WithComment "If false, disables cross that appears beneath the marker when dragging."
 
             "cursor" =@ T<string>
             |> WithComment "Mouse cursor to show on hover"
@@ -814,32 +952,29 @@ module Specification =
             "draggable" =@ T<bool>
             |> WithComment "If true, the marker can be dragged. Default value is false."
 
-            "flat" =@ T<bool>
-            |> WithComment "If true, the marker shadow will not be displayed."
-
-            "icon" =@ MarkerImage
+            "icon" =@ T<string> + Icon + Symbol
             |> WithComment "Icon for the foreground. If a string is provided, it is treated as though it were an Icon with the string as url."
 
+            "label" =@ T<string> + MarkerLabel
+            |> WithComment "Adds a label to the marker. A marker label is a letter or number that appears inside a marker. The label can either be a string, or a MarkerLabel object. If provided and MarkerOptions.title is not provided, an accessibility text (e.g. for use with screen readers) will be added to the marker with the provided label's text. Please note that the label is currently only used for accessibility text for non-optimized markers."
+
             "map" =@ M.Map + StreetView.StreetViewPanorama
-            |> WithComment "Map on which to display Marker."
+            |> WithComment "Map on which to display Marker. The map is required to display the marker and can be provided with Marker.setMap if not provided at marker construction."
+
+            "opacity" =@ T<float>
+            |> WithComment "A number between 0.0, transparent, and 1.0, opaque."
 
             "optimized" =@ T<bool>
-            |> WithComment "Optimization renders many markers as a single static element. Optimized rendering is enabled by default. Disable optimized rendering for animated GIFs or PNGs, or when each marker must be rendered as a separate DOM element (advanced usage only)."
+            |> WithComment "Optimization enhances performance by rendering many markers as a single static element. This is useful in cases where a large number of markers is required. Read more about marker optimization."
 
-            "position" =@ LatLng
-            |> WithComment "Marker position. Required."
-
-            "raiseOnDrag" =@ T<bool>
-            |> WithComment "If false, disables raising and lowering the marker on drag. This option is true by default. This option is disabled when google.maps.visualRefresh is set to true. Instead, a cross will appear beneath the marker icon while dragging. Please refer to the crossOnDrag property for new code. For backwards compatibility, if this is set to false then the default for crossOnDrag changes to false."
-
-            "shadow" =@ MarkerImage
-            |> WithComment "Shadow image. If a string is provided, it is treated as though it were an Icon with the string as url. Shadows are not rendered when google.maps.visualRefresh is set to true."
+            "position" =@ LatLng + LatLngLiteral
+            |> WithComment "Sets the marker position. A marker may be constructed but not displayed until its position is provided - for example, by a user's actions or choices. A marker position can be provided with Marker.setPosition if not provided at marker construction."
 
             "shape" =@ MarkerShape
             |> WithComment "Image map region definition used for drag/click."
 
             "title" =@ T<string>
-            |> WithComment "Rollover text."
+            |> WithComment "Rollover text. If provided, an accessibility text (e.g. for use with screen readers) will be added to the marker with the provided value. Please note that the title is currently only used for accessibility text for non-optimized markers."
 
             "visible" =@ T<bool>
             |> WithComment "If true, the marker is visible."
@@ -847,8 +982,8 @@ module Specification =
             "zIndex" =@ T<int>
             |> WithComment "All markers are displayed on the map in order of their zIndex, with higher values displaying in front of markers with lower values. By default, markers are displayed according to their vertical position on screen, with lower markers appearing in front of markers further up the screen."
         ]
+        |> ObsoleteWithMessage "Deprecated: As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. Please see https://developers.google.com/maps/deprecations for deprecation details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide."
 
-    // TODO: Events
     let Marker =
         Class "google.maps.Marker"
         |=> Inherits MVC.MVCObject
@@ -861,61 +996,155 @@ module Specification =
             ]
         |+> Instance [
             "getAnimation" => T<unit> ^-> Animation
+            |> WithComment "Get the currently running animation."
 
             "getClickable" => T<unit> ^-> T<bool>
+            |> WithComment "Get the clickable status of the Marker."
 
             "getCursor" => T<unit> ^-> T<string>
+            |> WithComment "Get the mouse cursor type shown on hover."
 
             "getDraggable" => T<unit> ^-> T<bool>
+            |> WithComment "Get the draggable status of the Marker."
 
-            "getFlat" => T<unit> ^-> T<bool>
+            "getIcon" => T<unit> ^-> (T<string> + Icon + Symbol)
+            |> WithComment "Get the icon of the Marker. See MarkerOptions.icon."
 
-            "getIcon" => T<unit> ^-> MarkerImage
+            "getLabel" => T<unit> ^-> (MarkerLabel + T<string>)
+            |> WithComment "Get the label of the Marker. See MarkerOptions.label."
 
             "getMap" => T<unit> ^-> M.Map + StreetView.StreetViewPanorama
+            |> WithComment "Get the map or panaroama the Marker is rendered on."
+
+            "getOpacity" => T<unit> ^-> T<int>
+            |> WithComment "Get the opacity of the Marker."
 
             "getPosition" => T<unit> ^-> LatLng
-
-            "getShadow" => T<unit> ^-> MarkerImage
+            |> WithComment "Get the position of the Marker."
 
             "getShape" => T<unit> ^-> MarkerShape
+            |> WithComment "Get the shape of the Marker used for interaction. See MarkerOptions.shape and MarkerShape."
 
             "getTitle" => T<unit> ^-> T<string>
+            |> WithComment "Get the title of the Marker tooltip. See MarkerOptions.title."
 
             "getVisible" => T<unit> ^-> T<bool>
+            |> WithComment "Get the visibility of the Marker."
 
             "getZIndex" => T<unit> ^-> T<int>
+            |> WithComment "Get the zIndex of the Marker. See MarkerOptions.zIndex."
 
-            "setAnimation" => Animation ^-> T<unit>
-            |> WithComment "Start an animation. Any ongoing animation will be cancelled. Currently supported animations are: BOUNCE, DROP. Passing in null will cause any animation to stop."
+            "setAnimation" => !? Animation ^-> T<unit>
+            |> WithComment "Start an animation. Any ongoing animation will be cancelled. Currently supported animations are: Animation.BOUNCE, Animation.DROP. Passing in null will cause any animation to stop."
 
             "setClickable" => T<bool> ^-> T<unit>
+            |> WithComment "Set if the Marker is clickable."
 
-            "setCursor" => T<string> ^-> T<unit>
+            "setCursor" => !? T<string> ^-> T<unit>
+            |> WithComment "Set the mouse cursor type shown on hover."
 
-            "setDraggable" => T<bool> ^-> T<unit>
+            "setDraggable" => !? T<bool> ^-> T<unit>
+            |> WithComment "Set if the Marker is draggable."
 
-            "setFlat" => T<bool> ^-> T<unit>
+            "setIcon" => !? (T<string> + Icon + Symbol) ^-> T<unit>
+            |> WithComment "Set the icon for the Marker. See MarkerOptions.icon."
 
-            "setIcon" => MarkerImage ^-> T<unit>
+            "setLabel" => !? (MarkerLabel + T<string>) ^-> T<unit>
+            |> WithComment "Set the label for the Marker. See MarkerOptions.label."
 
             "setMap" => (M.Map + StreetView.StreetViewPanorama) ^-> T<unit>
             |> WithComment "Renders the marker on the specified map or panorama. If map is set to null, the marker will be removed."
 
+            "setOpacity" => !? T<int> ^-> T<unit>
+            |> WithComment "Set the opacity of the Marker."
+
             "setOptions" => MarkerOptions ^-> T<unit>
+            |> WithComment "Set the options for the Marker."
 
-            "setPosition" => LatLng ^-> T<unit>
+            "setPosition" => !? (LatLng + LatLngLiteral) ^-> T<unit>
+            |> WithComment "Set the postition for the Marker."
 
-            "setShadow" => MarkerImage ^-> T<unit>
+            "setShape" => !? MarkerShape ^-> T<unit>
+            |> WithComment "Set the shape of the Marker used for interaction. See MarkerOptions.shape and MarkerShape."
 
-            "setShape" => MarkerShape ^-> T<unit>
-
-            "setTitle" => T<string> ^-> T<unit>
+            "setTitle" => !? T<string> ^-> T<unit>
+            |> WithComment "Set the title of the Marker tooltip. See MarkerOptions.title."
 
             "setVisible" => T<bool> ^-> T<unit>
+            |> WithComment "Set if the Marker is visible."
 
-            "setZIndex" => T<int> ^-> T<unit>
+            "setZIndex" => !? T<int> ^-> T<unit>
+            |> WithComment "Set the zIndex of the Marker. See MarkerOptions.zIndex."
+
+            // EVENTS
+            "animation_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker animation property changes."
+
+            "click" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the Marker icon was clicked."
+
+            "clickable_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker clickable property changes."
+
+            "contextmenu" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM contextmenu event is fired on the Marker"
+
+            "cursor_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker cursor property changes."
+
+            "dblclick" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the Marker icon was double clicked."
+
+            "drag" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is repeatedly fired while the user drags the Marker."
+
+            "dragend" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user stops dragging the Marker."
+
+            "draggable_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker draggable property changes."
+
+            "dragstart" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user starts dragging the Marker."
+
+            "flat_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker flat property changes."
+
+            "icon_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker icon property changes."
+
+            "mousedown" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired for a mousedown on the Marker."
+
+            "mouseout" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the mouse leaves the area of the Marker icon."
+
+            "mouseover" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the mouse enters the area of the Marker icon."
+
+            "mouseup" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired for a mouseup on the Marker."
+
+            "position_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker position property changes."
+
+            "shape_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker shape property changes."
+
+            "title_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker title property changes."
+
+            "visible_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker visible property changes."
+
+            "zindex_changed" =@ T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the Marker zIndex property changes."
+
+            "rightclick" =@ T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired for a rightclick on the Marker."
+            |> ObsoleteWithMessage "Deprecated: Use the Marker.contextmenu event instead in order to support usage patterns like control-click on macOS."
         ]
+        |> ObsoleteWithMessage "Deprecated: As of February 21st, 2024, google.maps.Marker is deprecated. Please use AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide."
 
     let IconSequence =
         Config "IconSequence"
@@ -933,8 +1162,22 @@ module Specification =
             |> WithComment "The distance between consecutive icons on the line. This distance may be expressed as a percentage of the line's length (e.g. '50%') or in pixels (e.g. '50px'). To disable repeating of the icon, specify '0'. Defaults to '0'."
         ]
 
+    let PolyMouseEvent =
+        Class "google.maps.PolyMouseEvent"
+        |=> Inherits M.MapMouseEvent
+        |+> Instance [
+            "edge" =@ T<int>
+            |> WithComment "The index of the edge within the path beneath the cursor when the event occurred, if the event occurred on a mid-point on an editable polygon."
+
+            "path" =@ T<int>
+            |> WithComment "The index of the path beneath the cursor when the event occurred, if the event occurred on a vertex and the polygon is editable. Otherwise undefined."
+
+            "vertex" =@ T<int>
+            |> WithComment "The index of the vertex beneath the cursor when the event occurred, if the event occurred on a vertex and the polyline or polygon is editable. If the event does not occur on a vertex, the value is undefined."
+        ]
+
     let PolylineOptions =
-        Config "PolylineOptions"
+        Config "google.maps.PolylineOptions"
         |+> Instance [
             "clickable" =@ T<bool>
             |> WithComment "Indicates whether this Polyline handles mouse events. Defaults to true."
@@ -954,7 +1197,8 @@ module Specification =
             "map" =@ M.Map.Type
             |> WithComment "Map on which to display Polyline."
 
-            "path" =@ Type.ArrayOf LatLng
+            // "path" =@ MVC.MVCArray.[LatLng] + Type.ArrayOf (LatLng + LatLngLiteral)
+            "path" =@ MVC.MVCArray.[LatLng] + Type.ArrayOf LatLng + Type.ArrayOf LatLngLiteral
             |> WithComment "The ordered sequence of coordinates of the Polyline. This path may be specified using either a simple array of LatLngs, or an MVCArray of LatLngs. Note that if you pass a simple array, it will be converted to an MVCArray Inserting or removing LatLngs in the MVCArray will automatically update the polyline on the map."
 
             "strokeColor" =@ T<string>
@@ -973,7 +1217,6 @@ module Specification =
             |> WithComment "The zIndex compared to other polys."
         ]
 
-    // TODO: Events
     let Polyline =
         Class "google.maps.Polyline"
         |=> Inherits MVC.MVCObject
@@ -1005,15 +1248,53 @@ module Specification =
 
             "setOptions" => PolylineOptions ^-> T<unit>
 
-            "setPath" => (MVC.MVCArray.[LatLng] + Type.ArrayOf LatLng) ^-> T<unit>
+            "setPath" => (MVC.MVCArray.[LatLng] + Type.ArrayOf (LatLng + LatLngLiteral)) ^-> T<unit>
             |> WithComment "Sets the first path. See PolylineOptions for more details."
 
             "setVisible" => T<bool -> unit>
             |> WithComment "Hides this poly if set to false."
+
+            // EVENTS
+            "click" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM click event is fired on the Polyline."
+
+            "contextmenu" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM contextmenu event is fired on Poyline."
+
+            "dblclick" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM dblclick event is fired on the Polyline."
+
+            "drag" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is repeatedly fired while the user drags the polyline."
+
+            "dragend" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user stops dragging the polyline."
+
+            "dragstart" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user starts dragging the polyline."
+
+            "mousedown" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousedown event is fired on the Polyline."
+
+            "mousemove" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousemove event is fired on the Polyline."
+
+            "mouseout" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on Polyline mouseout."
+
+            "mouseover" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on Polyline mouseover."
+
+            "mouseup" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mouseup event is fired on the Polyline."
+
+            "rightclick" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the Polyline is right-clicked on."
+            |> ObsoleteWithMessage "Deprecated: Use the Polyline.contextmenu event instead in order to support usage patterns like control-click on macOS."
         ]
 
     let PolygonOptions =
-        Config "PolygonOptions"
+        Config "google.maps.PolygonOptions"
         |+> Instance [
             "clickable" =@ T<bool>
             |> WithComment "Indicates whether this Polygon handles mouse events. Defaults to true."
@@ -1037,7 +1318,7 @@ module Specification =
             |> WithComment "Map on which to display Polygon."
 
             "paths" =@ (MVC.MVCArray.[LatLng] + MVC.MVCArray.[MVC.MVCArray.[LatLng]]
-                        + Type.ArrayOf LatLng + Type.ArrayOf (Type.ArrayOf LatLng))
+                        + Type.ArrayOf (LatLng + LatLngLiteral) + Type.ArrayOf (Type.ArrayOf (LatLng + LatLngLiteral)))
             |> WithComment "The ordered sequence of coordinates that designates a closed loop. Unlike polylines, a polygon may consist of one or more paths. As a result, the paths property may specify one or more arrays of LatLng coordinates. Paths are closed automatically; do not repeat the first vertex of the path as the last vertex. Simple polygons may be defined using a single array of LatLngs. More complex polygons may specify an array of arrays. Any simple arrays are converted into MVCArrays. Inserting or removing LatLngs from the MVCArray will automatically update the polygon on the map."
 
             "strokeColor" =@ T<string>
@@ -1047,7 +1328,7 @@ module Specification =
             |> WithComment "The stroke opacity between 0.0 and 1.0"
 
             "strokePosition" => StrokePosition
-            |> WithComment "The stroke position. Defaults to CENTER. This property is not supported on Internet Explorer 8 and earlier."
+            |> WithComment "The stroke position. Default: StrokePosition.CENTER."
 
             "strokeWeight" =@ T<int>
             |> WithComment "The stroke width in pixels."
@@ -1059,7 +1340,6 @@ module Specification =
             |> WithComment "The zIndex compared to other polys."
         ]
 
-    // TODO: Events
     let Polygon =
         Class "google.maps.Polygon"
         |=> Inherits MVC.MVCObject
@@ -1097,20 +1377,164 @@ module Specification =
 
             "setOptions" => PolygonOptions ^-> T<unit>
 
-            "setPath" => MVC.MVCArray.[LatLng] + Type.ArrayOf LatLng ^-> T<unit>
+            "setPath" => MVC.MVCArray.[LatLng] + Type.ArrayOf (LatLng + LatLngLiteral) ^-> T<unit>
             |> WithComment "Sets the first path. See PolylineOptions for more details."
 
             "setPaths" => (MVC.MVCArray.[MVC.MVCArray.[LatLng]] + MVC.MVCArray.[LatLng]
-                            + Type.ArrayOf (Type.ArrayOf LatLng) + Type.ArrayOf LatLng) ^-> T<unit>
+                            + Type.ArrayOf (Type.ArrayOf (LatLng  + LatLngLiteral)) + Type.ArrayOf (LatLng + LatLngLiteral)) ^-> T<unit>
             |> WithComment "Sets the path for this polygon."
 
             "setVisible" => T<bool -> unit>
             |> WithComment "Hides this poly if set to false."
+
+            // EVENTS
+            "click" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM click event is fired on the Polygon."
+
+            "contextmenu" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM contextmenu event is fired on the Polygon."
+
+            "dblclick" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM dblclick event is fired on the Polygon."
+
+            "drag" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is repeatedly fired while the user drags the polygon."
+
+            "dragend" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user stops dragging the polygon."
+
+            "dragstart" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user starts dragging the polygon."
+
+            "mousedown" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousedown event is fired on the Polygon."
+
+            "mousemove" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mousemove event is fired on the Polygon."
+
+            "mouseout" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on Polygon mouseout."
+
+            "mouseover" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired on Polygon mouseover."
+
+            "mouseup" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the DOM mouseup event is fired on the Polygon."
+
+            "rightclick" => T<obj> -* PolyMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the Polygon is right-clicked on."
+            |> ObsoleteWithMessage "Deprecated: Use the Polygon.contextmenu event instead in order to support usage patterns like control-click on macOS."
+        ]
+
+    let AdvancedMarkerClickEvent =
+        Class "google.maps.marker.AdvancedMarkerClickEvent"
+        |=> Inherits Events.Event
+
+    let AdvancedMarkerElementOptions =
+        Interface "google.maps.marker.AdvancedMarkerElementOptions"
+        |+> [
+            "collisionBehavior" =@ CollisionBehavior
+            |> WithComment """An enumeration specifying how an AdvancedMarkerElement should behave when it collides with another AdvancedMarkerElement or with the basemap labels on a vector map.
+
+Note: AdvancedMarkerElement to AdvancedMarkerElement collision works on both raster and vector maps, however, AdvancedMarkerElement to base map's label collision only works on vector maps."""
+
+            "content" =@ Node
+            |> WithComment """The DOM Element backing the visual of an AdvancedMarkerElement.
+
+Note: AdvancedMarkerElement does not clone the passed-in DOM element. Once the DOM element is passed to an AdvancedMarkerElement, passing the same DOM element to another AdvancedMarkerElement will move the DOM element and cause the previous AdvancedMarkerElement to look empty. Default: PinElement.element"""
+
+            "gmpClickable" =@ T<bool>
+            |> WithComment "If true, the AdvancedMarkerElement will be clickable and trigger the gmp-click event, and will be interactive for accessibility purposes (e.g. allowing keyboard navigation via arrow keys). Default: false"
+
+            "gmpDraggable" =@ T<bool>
+            |> WithComment "If true, the AdvancedMarkerElement can be dragged. Note: AdvancedMarkerElement with altitude is not draggable. Default: false"
+
+            "map" =@ M.Map.Type
+            |> WithComment "Map on which to display the AdvancedMarkerElement. The map is required to display the AdvancedMarkerElement and can be provided by setting AdvancedMarkerElement.map if not provided at the construction."
+
+            "position" =@ (LatLng + LatLngLiteral + LatLngAltitude + LatLngAltitudeLiteral)
+            |> WithComment """Sets the AdvancedMarkerElement's position. An AdvancedMarkerElement may be constructed without a position, but will not be displayed until its position is provided - for example, by a user's actions or choices. An AdvancedMarkerElement's position can be provided by setting AdvancedMarkerElement.position if not provided at the construction.
+
+Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
+
+            "title" =@ T<string>
+            |> WithComment "Rollover text. If provided, an accessibility text (e.g. for use with screen readers) will be added to the AdvancedMarkerElement with the provided value."
+
+            "zIndex" =@ T<int>
+            |> WithComment "All AdvancedMarkerElements are displayed on the map in order of their zIndex, with higher values displaying in front of AdvancedMarkerElements with lower values. By default, AdvancedMarkerElements are displayed according to their vertical position on screen, with lower AdvancedMarkerElements appearing in front of AdvancedMarkerElements farther up the screen. Note that zIndex is also used to help determine relative priority between CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY Advanced Markers. A higher zIndex value indicates higher priority."
+        ]
+
+    let AdvancedMarkerElement =
+        Class "google.maps.marker.AdvancedMarkerElement"
+        |=> Inherits HTMLElement
+        |=> Implements [AdvancedMarkerElementOptions]
+        |+> Static [
+            Ctor [
+                !? AdvancedMarkerElementOptions?options
+            ]
+        ]
+        |+> Instance [
+            // "collisionBehavior" =@ CollisionBehavior
+            // |> WithComment "See AdvancedMarkerElementOptions.collisionBehavior."
+
+            // "content" =@ Node
+            // |> WithComment "See AdvancedMarkerElementOptions.content."
+
+            "element" =? HTMLElement
+            |> WithComment "This field is read-only. The DOM Element backing the view."
+
+            // "gmpClickable" =@ T<bool>
+            // |> WithComment "See BetaAdvancedMarkerElementOptions.gmpClickable."
+
+            // "gmpDraggable" =@ T<bool>
+            // |> WithComment "See AdvancedMarkerElementOptions.gmpDraggable."
+
+            // "map" =@ M.Map.Type
+            // |> WithComment "See AdvancedMarkerElementOptions.map."
+
+            // "position" =@ (LatLng + LatLngLiteral + LatLngAltitude + LatLngAltitudeLiteral)
+            // |> WithComment "See AdvancedMarkerElementOptions.position."
+
+            // "title" =@ T<string>
+            // |> WithComment "See AdvancedMarkerElementOptions.title."
+
+            // "zIndex" =@ T<int>
+            // |> WithComment "See AdvancedMarkerElementOptions.zIndex."
+
+            // METHODS
+            //TODO: where is EventListener?
+            // "addEventListener" => T<string> * (EventListener + EventListenerObject) * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
+            "addEventListener" => T<string> * T<obj -> unit> * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
+            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target. See addEventListener"
+
+            //TODO: where is EventListener?
+            // "removeEventListener" => T<string> * (EventListener + EventListenerObject) * !?(T<bool> + EventListenerOptions) ^-> T<unit>
+            "removeEventListener" => T<string> * T<obj -> unit> * !?(T<bool> + EventListenerOptions) ^-> T<unit>
+            |> WithComment "Removes an event listener previously registered with addEventListener from the target. See removeEventListener"
+
+            // EVENTS
+            "click" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the AdvancedMarkerElement element is clicked. Not available with addEventListener() (use gmp-click instead)."
+
+            "drag" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is repeatedly fired while the user drags the AdvancedMarkerElement. Not available with addEventListener()."
+
+            "dragend" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user stops dragging the AdvancedMarkerElement. Not available with addEventListener()."
+
+            "dragstart" => T<obj> -* M.MapMouseEvent ^-> T<unit>
+            |> WithComment "This event is fired when the user starts dragging the AdvancedMarkerElement. Not available with addEventListener()."
+
+            "gmp-click" => T<obj> -* AdvancedMarkerClickEvent ^-> T<unit>
+            |> WithComment "This event is fired when the AdvancedMarkerElement element is clicked. Best used with addEventListener() (instead of addListener())."
         ]
 
     let InfoWindowOptions =
-        Config "InfoWindowOptions"
+        Config "google.maps.InfoWindowOptions"
         |+> Instance [
+                    "ariaLabel" =@ T<string>
+                    |> WithComment "AriaLabel to assign to the InfoWindow."
+
                     "content" =@ (T<string> + Node)
                     |> WithComment "Content to display in the InfoWindow. This can be an HTML element, a plain-text string, or a string containing HTML. The InfoWindow will be sized according to the content. To set an explicit size for the content, set content to be a HTML element with that size."
 
@@ -1118,19 +1542,34 @@ module Specification =
                     |> WithComment "Disable auto-pan on open. By default, the info window will pan the map so that it is fully visible when it opens."
 
                     "maxWidth" =@ T<int>
-                    |> WithComment "Maximum width of the infowindow, regardless of content's width. This value is only considered if it is set before a call to open. To change the maximum width when changing content, call close, setOptions, and then open."
+                    |> WithComment "Maximum width of the InfoWindow, regardless of content's width. This value is only considered if it is set before a call to open(). To change the maximum width when changing content, call close(), setOptions(), and then open()."
+
+                    "minWidth" =@ T<int>
+                    |> WithComment "Minimum width of the InfoWindow, regardless of the content's width. When using this property, it is strongly recommended to set the minWidth to a value less than the width of the map (in pixels). This value is only considered if it is set before a call to open(). To change the minimum width when changing content, call close(), setOptions(), and then open()."
 
                     "pixelOffset" =@ Size
                     |> WithComment "The offset, in pixels, of the tip of the info window from the point on the map at whose geographical coordinates the info window is anchored. If an InfoWindow is opened with an anchor, the pixelOffset will be calculated from the anchor's anchorPoint property."
 
-                    "position" =@ LatLng
+                    "position" =@ LatLng + LatLngLiteral
                     |> WithComment "The LatLng at which to display this InfoWindow. If the InfoWindow is opened with an anchor, the anchor's position will be used instead."
 
                     "zIndex" =@ T<int>
                     |> WithComment "All InfoWindows are displayed on the map in order of their zIndex, with higher values displaying in front of InfoWindows with lower values. By default, InfoWindows are displayed according to their latitude, with InfoWindows of lower latitudes appearing in front of InfoWindows at higher latitudes. InfoWindows are always displayed in front of markers."
                 ]
 
-    // TODO: Events
+    let InfoWindowOpenOptions =
+        Config "google.maps.InfoWindowOpenOptions"
+        |+> Instance [
+            "ariaLabel" =@ MVC.MVCObject + AdvancedMarkerElement
+            |> WithComment "The anchor to which this InfoWindow will be positioned. If the anchor is non-null, the InfoWindow will be positioned at the top-center of the anchor. The InfoWindow will be rendered on the same map or panorama as the anchor (when available)."
+
+            "map" =@ M.Map + StreetView.StreetViewPanorama
+            |> WithComment "The map or panorama on which to render this InfoWindow."
+
+            "shouldFocus" =@ T<bool>
+            |> WithComment "Whether or not focus should be moved inside the InfoWindow when it is opened. When this property is unset or when it is set to null or undefined, a heuristic is used to decide whether or not focus should be moved. It is recommended to explicitly set this property to fit your needs as the heuristic is subject to change and may not work well for all use cases."
+        ]
+
     let InfoWindow =
         Class "google.maps.InfoWindow"
         |=> Inherits MVC.MVCObject
@@ -1143,42 +1582,61 @@ module Specification =
             "close" => T<unit> ^-> T<unit>
             |> WithComment "Closes this InfoWindow by removing it from the DOM structure."
 
+            "focus" => T<unit> ^-> T<unit>
+            |> WithComment "Sets focus on this InfoWindow. You may wish to consider using this method along with a visible event to make sure that InfoWindow is visible before setting focus on it. An InfoWindow that is not visible cannot be focused."
+
             "getContent" => T<unit> ^-> T<string> + Node
 
             "getPosition" => T<unit> ^-> LatLng
 
             "getZIndex" => T<unit> ^-> T<int>
 
-            "open" => ((M.Map + StreetView.StreetViewPanorama) * !? MVC.MVCObject) ^-> T<unit>
-            |> WithComment "Opens this InfoWindow on the given map. Optionally, an InfoWindow can be associated with an anchor. In the core API, the only anchor is the Marker class. However, an anchor can be any MVCObject that exposes a LatLng position property and optionally a Point anchorPoint property for calculating the pixelOffset (see InfoWindowOptions). The anchorPoint is the offset from the anchor's position to the tip of the InfoWindow."
+            "open" => ((InfoWindowOpenOptions + M.Map + StreetView.StreetViewPanorama) * !? (AdvancedMarkerElement + MVC.MVCObject)) ^-> T<unit>
+            |> WithComment "Opens this InfoWindow on the given map. Optionally, an InfoWindow can be associated with an anchor. In the core API, the only anchor is the Marker class. However, an anchor can be any MVCObject that exposes a LatLng position property and optionally a Point anchorPoint property for calculating the pixelOffset (see InfoWindowOptions). The anchorPoint is the offset from the anchor's position to the tip of the InfoWindow. It is recommended to use the InfoWindowOpenOptions interface as the single argument for this method. To prevent changing browser focus on open, set InfoWindowOpenOptions.shouldFocus to false."
 
             "setContent" => (T<string>  + Node) ^-> T<unit>
 
             "setOptions" => InfoWindowOptions ^-> T<unit>
 
-            "setPosition" => LatLng ^-> T<unit>
+            "setPosition" => LatLng + LatLngLiteral ^-> T<unit>
 
             "setZIndex" => T<int> ^-> T<unit>
+
+            // EVENTS
+            "closeclick" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the close button was clicked."
+
+            "content_changed" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the content property changes."
+
+            "domready" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the <div> containing the InfoWindow's content is attached to the DOM. You may wish to monitor this event if you are building out your info window content dynamically."
+
+            "position_changed" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the position property changes."
+
+            "visible" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the InfoWindow is fully visible. This event is not fired when InfoWindow is panned off and then back on screen."
+
+            "zindex_changed" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the InfoWindow's zIndex changes."
         ]
 
-    let GeocoderRequest =
-        Config "GeocoderRequest"
-        |+> Instance [
-            "address" =@ T<string>
-            |> WithComment "Address. Optional."
+    let Place =
+        Interface "google.maps.Place"
+        |+> [
+            "location" =@ LatLng + LatLngLiteral
+            |> WithComment "The LatLng of the entity described by this place."
 
-            "bounds" =@ LatLngBounds.Type
-            |> WithComment "LatLngBounds within which to search. Optional."
+            "placeId" =@ T<string>
+            |> WithComment "The place ID of the place (such as a business or point of interest). The place ID is a unique identifier of a place in the Google Maps database. Note that the placeId is the most accurate way of identifying a place. If possible, you should specify the placeId rather than a query. A place ID can be retrieved from any request to the Places API, such as a TextSearch. Place IDs can also be retrieved from requests to the Geocoding API. For more information, see the overview of place IDs."
 
-            "location" =@ LatLng.Type
-            |> WithComment "LatLng about which to search. Optional."
-
-            "region" =@ T<string>
-            |> WithComment "Country code used to bias the search, specified as a Unicode region subtag / CLDR identifier. Optional."
+            "query" =@ T<string>
+            |> WithComment "A search query describing the place (such as a business or point of interest). An example query is \"Quay, Upper Level, Overseas Passenger Terminal 5 Hickson Road, The Rocks NSW\". If possible, you should specify the placeId rather than a query. The API does not guarantee the accuracy of resolving the query string to a place. If both the placeId and query are provided, an error occurs."
         ]
 
     let GeocoderComponentRestrictions =
-        Config "GeocoderComponentRestrictions"
+        Config "google.maps.GeocoderComponentRestrictions"
         |+> Instance [
             "administrativeArea" =@ T<string>
             |> WithComment "Matches all the administrative_area levels. Optional."
@@ -1194,6 +1652,31 @@ module Specification =
 
             "route" =@ T<string>
             |> WithComment "Matches the long or short name of a route. Optional."
+        ]
+
+    let GeocoderRequest =
+        Config "GeocoderRequest"
+        |+> Instance [
+            "address" =@ T<string>
+            |> WithComment "Address to geocode. One, and only one, of address, location and placeId must be supplied."
+
+            "bounds" =@ LatLngBounds + LatLngBoundsLiteral
+            |> WithComment "LatLngBounds within which to search. Optional."
+
+            "componentRestrictions" =@ GeocoderComponentRestrictions
+            |> WithComment "Components are used to restrict results to a specific area. A filter consists of one or more of: route, locality, administrativeArea, postalCode, country. Only the results that match all the filters will be returned. Filter values support the same methods of spelling correction and partial matching as other geocoding requests. Optional."
+
+            "language" =@ T<string>
+            |> WithComment "A language identifier for the language in which results should be returned, when possible. See the list of supported languages."
+
+            "location" =@ LatLng + LatLngLiteral
+            |> WithComment "LatLng (or LatLngLiteral) for which to search. The geocoder performs a reverse geocode. See Reverse Geocoding for more information. One, and only one, of address, location and placeId must be supplied."
+
+            "placeId" =@ T<string>
+            |> WithComment "The place ID associated with the location. Place IDs uniquely identify a place in the Google Places database and on Google Maps. Learn more about place IDs in the Places API developer guide. The geocoder performs a reverse geocode. See Reverse Geocoding for more information. One, and only one, of address, location and placeId must be supplied."
+
+            "region" =@ T<string>
+            |> WithComment "Country code used to bias the search, specified as a two-character (non-numeric) Unicode region subtag / CLDR identifier. Optional. See Google Maps Platform Coverage Details for supported regions."
         ]
 
     let GeocoderStatus =
@@ -1237,7 +1720,6 @@ module Specification =
             |> WithComment "The returned result reflects a precise geocode."
         ]
 
-
     let GeocoderAddressComponent =
         Class "google.maps.GeocoderAddressComponent"
         |+> Instance [
@@ -1248,7 +1730,7 @@ module Specification =
             |> WithComment "The abbreviated, short text of the given address component"
 
             "types" =@ Type.ArrayOf T<string>
-            |> WithComment "An array of strings denoting the type of this address component. A list of valid types can be found at https://developers.google.com/maps/documentation/geocoding/#Types"
+            |> WithComment "An array of strings denoting the type of this address component. A list of valid types can be found at https://developers.google.com/maps/documentation/javascript/geocoding#GeocodingAddressTypes"
         ]
 
     let GeocoderGeometry =
@@ -1279,22 +1761,35 @@ module Specification =
             "geometry" =@ GeocoderGeometry
             |> WithComment "A GeocoderGeometry object"
 
+            "place_id" =@ T<string>
+            |> WithComment "The place ID associated with the location. Place IDs uniquely identify a place in the Google Places database and on Google Maps. Learn more about Place IDs in the Places API developer guide."
+
+            "types" =@ T<string[]>
+            |> WithComment "An array of strings denoting the type of the returned geocoded element. For a list of possible strings, refer to the Address Component Types section of the Developer's Guide."
+
             "partial_match" =@ T<bool>
-            |> WithComment "Whether the geocoder did not return an exact match for the original request, though it was able to match part of the requested address."
+            |> WithComment "Whether the geocoder did not return an exact match for the original request, though it was able to match part of the requested address. If an exact match, the value will be undefined."
+
+            "plus_code" =@ Forward.PlacePlusCode
+            |> WithComment "The plus code associated with the location."
 
             "postcode_localities" =@ T<string[]>
             |> WithComment "An array of strings denoting all the localities contained in a postal code. This is only present when the result is a postal code that contains multiple localities."
+        ]
 
-            "types" =@ T<string[]>
-            |> WithComment "An array of strings denoting the type of the returned geocoded element. For a list of possible strings, refer to https://developers.google.com/maps/documentation/javascript/geocoding#GeocodingAddressTypes"
+    let GeocoderResponse =
+        Config "google.maps.GeocoderResponse"
+        |+> Instance [
+            "results" =@ Type.ArrayOf GeocoderResult
+            |> WithComment "The list of GeocoderResults."
         ]
 
     let Geocoder =
         Class "google.maps.Geocoder"
-        |=> Inherits MVC.MVCObject
+        // |=> Inherits MVC.MVCObject
         |+> Static [Constructor T<unit>]
         |+> Instance [
-            "geocode" => GeocoderRequest * ((Type.ArrayOf GeocoderResult * GeocoderStatus) ^-> T<unit>) ^-> T<unit>
+            "geocode" => GeocoderRequest * !? ((Type.ArrayOf GeocoderResult * GeocoderStatus) ^-> T<unit>) ^-> Promise[GeocoderResponse]
             |> WithComment "Geocode a request."
         ]
 
@@ -1327,7 +1822,7 @@ module Specification =
             "time_zone" =? T<string>
             |> WithComment "The time zone in which this stop lies. The value is the name of the time zone as defined in the IANA Time Zone Database, e.g. \"America/New_York\"."
 
-            "value" =? T<JavaScript.Date>
+            "value" =? Date
             |> WithComment "The time of this departure or arrival, specified as a JavaScript Date object."
         ]
 
@@ -1479,6 +1974,9 @@ module Specification =
 
             "num_stops" =? T<int>
             |> WithComment "The number of stops on this step. Includes the arrival stop, but not the departure stop."
+
+            "trip_short_name" =? T<string>
+            |> WithComment "The text that appears in schedules and sign boards to identify a transit trip to passengers, for example, to identify train numbers for commuter rail trips. The text uniquely identifies a trip within a service day."
         ]
 
     let TravelMode =
@@ -1497,9 +1995,29 @@ module Specification =
             |> WithComment "Specifies a walking directions request."
         ]
 
+    let TransitFare =
+        Interface "google.maps.TransitFare"
+        |+> [
+            "currency" =@ T<string>
+            |> WithComment "An ISO 4217 currency code indicating the currency in which the fare is expressed."
+
+            "value" =@ T<float>
+            |> WithComment "The numerical value of the fare, expressed in the given currency."
+        ]
+
+    let DirectionsPolyline =
+        Interface "google.maps.DirectionsPolyline"
+        |+> [
+            "points" =@ T<string>
+            |> WithComment "An encoded polyline."
+        ]
+
     let DirectionsStep =
         Class "google.maps.DirectionsStep"
         |+> Instance [
+            "encoded_lat_lngs" =? T<string>
+            |> WithComment "An encoded polyline representation of the step. This is an approximate (smoothed) path of the step."
+
             "distance" =? Distance
             |> WithComment "The distance covered by this step. This property may be undefined as the distance may be unknown."
 
@@ -1509,20 +2027,42 @@ module Specification =
             "end_location" =? LatLng
             |> WithComment "The ending location of this step."
 
+            "end_point" =? LatLng
+            |> WithComment "The ending location of this step."
+            |> ObsoleteWithMessage "Deprecated: Please use DirectionsStep.end_location."
+
             "instructions" =? T<string>
             |> WithComment "Instructions for this step."
 
+            "lat_lngs" =? Type.ArrayOf LatLng
+            |> WithComment "A sequence of LatLngs describing the course of this step. This is an approximate (smoothed) path of the step."
+            |> ObsoleteWithMessage "Deprecated: Please use DirectionsStep.path."
+
+            "maneuver" =? T<string>
+            |> WithComment "Contains the action to take for the current step (turn-left, merge, straight, etc.). Values are subject to change, and new values may be introduced without prior notice."
+
             "path" =? Type.ArrayOf LatLng
-            |> WithComment "A sequence of LatLngs describing the course of this step."
+            |> WithComment "A sequence of LatLngs describing the course of this step. This is an approximate (smoothed) path of the step."
+
+            "polyline" =? DirectionsPolyline
+            |> WithComment "Contains an object with a single property, 'points', that holds an encoded polyline representation of the step. This polyline is an approximate (smoothed) path of the step."
+            |> ObsoleteWithMessage "Deprecated: Please use DirectionsStep.encoded_lat_lngs."
 
             "start_location" =? LatLng
             |> WithComment "The starting location of this step."
+
+            "start_point" =? LatLng
+            |> WithComment "The starting location of this step."
+            |> ObsoleteWithMessage "Deprecated: Please use DirectionsStep.start_location."
 
             "steps" =? TSelf
             |> WithComment "Sub-steps of this step. Specified for non-transit sections of transit routes."
 
             "transit" =? TransitDetails
             |> WithComment "Transit-specific details about this step. This property will be undefined unless the travel mode of this step is TRANSIT."
+
+            "transit_details" =? TransitDetails
+            |> WithComment "Details pertaining to this step if the travel mode is TRANSIT."
 
             "travel_mode" =? TravelMode
             |> WithComment "The mode of travel used in this step."
@@ -1547,13 +2087,13 @@ module Specification =
             |> WithComment "The total duration of this leg, taking into account current traffic conditions. This property may be undefined as the duration may be unknown. Only available to Maps API for Business customers when durationInTraffic is set to true when making the request."
 
             "end_address" =? T<string>
-            |> WithComment "The address of the destination of this leg."
+            |> WithComment "The address of the destination of this leg. This content is meant to be read as-is. Do not programmatically parse the formatted address."
 
             "end_location" =? LatLng
             |> WithComment "The DirectionsService calculates directions between locations by using the nearest transportation option (usually a road) at the start and end locations. end_location indicates the actual geocoded destination, which may be different than the end_location of the last step if, for example, the road is not near the destination of this leg."
 
             "start_address" =? T<string>
-            |> WithComment "The address of the origin of this leg."
+            |> WithComment "The address of the origin of this leg. This content is meant to be read as-is. Do not programmatically parse the formatted address."
 
             "start_location" =? LatLng
             |> WithComment "The DirectionsService calculates directions between locations by using the nearest transportation option (usually a road) at the start and end locations. start_location indicates the actual geocoded origin, which may be different than the start_location of the first step if, for example, the road is not near the origin of this leg."
@@ -1561,8 +2101,16 @@ module Specification =
             "steps" =? Type.ArrayOf DirectionsStep
             |> WithComment "An array of DirectionsSteps, each of which contains information about the individual steps in this leg."
 
+            "traffic_speed_entry" =? T<obj[]>
+            |> WithComment "Information about traffic speed along the leg."
+            |> ObsoleteWithMessage "Deprecated: This array will always be empty."
+
             "via_waypoints" =? Type.ArrayOf LatLng
-            |> WithComment "An array of waypoints along this leg that were not specified in the original request, either as a result of a user dragging the polyline or selecting an alternate route."
+            |> WithComment "An array of non-stopover waypoints along this leg, which were specified in the original request.
+
+Deprecated in alternative routes. Version 3.27 will be the last version of the API that adds extra via_waypoints in alternative routes.
+
+When using the Directions Service to implement draggable directions, it is recommended to disable dragging of alternative routes. Only the main route should be draggable. Users can drag the main route until it matches an alternative route."
         ]
 
     let DirectionsRoute =
@@ -1580,18 +2128,43 @@ module Specification =
             "overview_path" =? Type.ArrayOf LatLng
             |> WithComment "An array of LatLngs representing the entire course of this route. The path is simplified in order to make it suitable in contexts where a small number of vertices is required (such as Static Maps API URLs)."
 
+            "overview_polyline" =? T<string>
+            |> WithComment "An encoded polyline representation of the route in overview_path. This polyline is an approximate (smoothed) path of the resulting directions."
+
+            "summary" =? T<string>
+            |> WithComment "Contains a short textual description for the route, suitable for naming and disambiguating the route from alternatives."
+
             "warnings" =? Type.ArrayOf T<string>
             |> WithComment "Warnings to be displayed when showing these directions."
 
             "waypoint_order" =? Type.ArrayOf T<int>
-            |> WithComment "If optimizeWaypoints was set to true, this field will contain the re-ordered permutation of the input waypoints. For example, if the input was: 'Origin: Los Angeles; Waypoints: Dallas, Bangor, Phoenix; Destination: New York' and the optimized output was ordered as follows: 'Origin: Los Angeles; Waypoints: Phoenix, Dallas, Bangor; Destination: New York' then this field will be an Array containing the values [2, 0, 1]. Note that the numbering of waypoints is zero-based. If any of the input waypoints has stopover set to false, this field will be empty, since route optimization is not available for such queries."
+            |> WithComment "If optimizeWaypoints was set to true, this field will contain the re-ordered permutation of the input waypoints. For example, if the input was:
+  Origin: Los Angeles
+  Waypoints: Dallas, Bangor, Phoenix
+  Destination: New York
+and the optimized output was ordered as follows:
+  Origin: Los Angeles
+  Waypoints: Phoenix, Dallas, Bangor
+  Destination: New York
+then this field will be an Array containing the values [2, 0, 1]. Note that the numbering of waypoints is zero-based.
+If any of the input waypoints has stopover set to false, this field will be empty, since route optimization is not available for such queries.
+            "
+
+            "fare" =? TransitFare
+            |> WithComment "The total fare for the whole transit trip. Only applicable to transit requests."
         ]
 
-    let DirectionsResult =
-        Class "google.maps.DirectionsResult"
-        |+> Instance [
-            "routes" =? Type.ArrayOf DirectionsRoute
-            |> WithComment "An array of DirectionsRoutes, each of which contains information about the legs and steps of which it is composed. There will only be one route unless the DirectionsRequest was made with provideRouteAlternatives set to true."
+    let DirectionsGeocodedWaypoint =
+        Interface "google.maps.DirectionsGeocodedWaypoint"
+        |+> [
+            "partial_match" =@ T<bool>
+            |> WithComment "Whether the geocoder did not return an exact match for the original waypoint, though it was able to match part of the requested address."
+
+            "place_id" =@ T<string>
+            |> WithComment "The place ID associated with the waypoint. Place IDs uniquely identify a place in the Google Places database and on Google Maps. Learn more about Place IDs in the Places API developer guide."
+
+            "types" =@ T<string[]>
+            |> WithComment "An array of strings denoting the type of the returned geocoded element. For a list of possible strings, refer to the Address Component Types section of the Developer's Guide."
         ]
 
     let DirectionsStatus =
@@ -1601,7 +2174,7 @@ module Specification =
             |> WithComment "The DirectionsRequest provided was invalid."
 
             "MAX_WAYPOINTS_EXCEEDED" =? TSelf
-            |> WithComment "Too many DirectionsWaypoints were provided in the DirectionsRequest. The total allowed waypoints is 8, plus the origin and destination. Maps API for Business customers are allowed 23 waypoints, plus the origin, and destination."
+            |> WithComment "Too many DirectionsWaypoints were provided in the DirectionsRequest. See the developer's guide for the maximum number of waypoints allowed."
 
             "NOT_FOUND" =? TSelf
             |> WithComment "At least one of the origin, destination, or waypoints could not be geocoded."
@@ -1648,11 +2221,11 @@ module Specification =
     let DirectionsWaypoint =
         Config "DirectionsWaypoint"
         |+> Instance [
-            "location" =@ Location
-            |> WithComment "Waypoint location. Can be an address string or LatLng. Optional."
+            "location" =@ T<string> + LatLng + LatLngLiteral + Place
+            |> WithComment "Waypoint location. Can be an address string, a LatLng, or a Place. Optional."
 
             "stopover" =@ T<bool>
-            |> WithComment "If true, indicates that this waypoint is a stop between the origin and destination. This has the effect of splitting the route into two. This value is true by default. Optional."
+            |> WithComment "If true, indicates that this waypoint is a stop between the origin and destination. This has the effect of splitting the route into two legs. If false, indicates that the route should be biased to go through this waypoint, but not split into two legs. This is useful if you want to create a route in response to the user dragging waypoints on a map."
         ]
 
     let UnitSystem =
@@ -1665,14 +2238,72 @@ module Specification =
             |> WithComment "Specifies that distances in the DirectionsResult should be expressed in metric units."
         ]
 
+    let TrafficModel =
+        Class "google.maps.TrafficModel"
+        |+> Static [
+            "BEST_GUESS" =? TSelf
+            |> WithComment "Use historical traffic data to best estimate the time spent in traffic."
+
+            "OPTIMISTIC" =? TSelf
+            |> WithComment "Use historical traffic data to make an optimistic estimate of what the duration in traffic will be."
+
+            "PESSIMISTIC" =? TSelf
+            |> WithComment "Use historical traffic data to make a pessimistic estimate of what the duration in traffic will be."
+        ]
+
+    let TransitMode =
+        Class "google.maps.TransitMode"
+        |+> Static [
+            "BUS" =? TSelf
+            |> WithComment "Specifies bus as a preferred mode of transit."
+
+            "RAIL" =? TSelf
+            |> WithComment "Specifies rail as a preferred mode of transit."
+
+            "SUBWAY" =? TSelf
+            |> WithComment "Specifies subway as a preferred mode of transit."
+
+            "TRAIN" =? TSelf
+            |> WithComment "Specifies train as a preferred mode of transit."
+
+            "TRAM" =? TSelf
+            |> WithComment "Specifies tram as a preferred mode of transit."
+        ]
+
+    let TransitRoutePreference =
+        Class "google.maps.TransitRoutePreference"
+        |+> Static [
+            "FEWER_TRANSFERS" =? TSelf
+            |> WithComment "Specifies that the calculated route should prefer a limited number of transfers."
+
+            "LESS_WALKING" =? TSelf
+            |> WithComment "Specifies that the calculated route should prefer limited amounts of walking."
+        ]
+
     let TransitOptions =
         Config "TransitOptions"
         |+> Instance [
-            "arrivalTime" =@ T<JavaScript.Date>
+            "arrivalTime" =@ Date
             |> WithComment "The desired arrival time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. If arrival time is specified, departure time is ignored."
 
-            "departureTime" =@ T<JavaScript.Date>
+            "departureTime" =@ Date
             |> WithComment "The desired departure time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. If neither departure time nor arrival time is specified, the time is assumed to be \"now\"."
+
+            "modes" =@ Type.ArrayOf TransitMode
+            |> WithComment "One or more preferred modes of transit, such as bus or train. If no preference is given, the API returns the default best route."
+
+            "routingPreference" =@ TransitRoutePreference
+            |> WithComment "A preference that can bias the choice of transit route, such as less walking. If no preference is given, the API returns the default best route."
+        ]
+
+    let DrivingOptions =
+        Interface "google.maps.DrivingOptions"
+        |+> [
+            "departureTime" =@ Date
+            |> WithComment "The desired departure time for the route, specified as a Date object. The Date object measures time in milliseconds since 1 January 1970. This must be specified for a DrivingOptions to be valid. The departure time must be set to the current time or some time in the future. It cannot be in the past."
+
+            "trafficModel" =@ TrafficModel
+            |> WithComment "The preferred assumption to use when predicting duration in traffic. The default is BEST_GUESS."
         ]
 
     let DirectionsRequest =
@@ -1686,22 +2317,28 @@ module Specification =
             |> WithInline "{origin:$Origin, destination:$Destination, travelMode:$TravelMode}"
         ]
         |+> Instance [
+            "avoidFerries" =@ T<bool>
+            |> WithComment "If true, instructs the Directions service to avoid ferries where possible. Optional."
+
             "avoidHighways" =@ T<bool>
             |> WithComment "If true, instructs the Directions service to avoid highways where possible. Optional."
 
             "avoidTolls" =@ T<bool>
             |> WithComment "If true, instructs the Directions service to avoid toll roads where possible. Optional."
 
-            "destination" =@ Location
-            |> WithComment "Location of destination. This can be specified as either a string to be geocoded or a LatLng. Required."
+            "destination" =@ T<string> + LatLng + Place + LatLngLiteral
+            |> WithComment "Location of destination. This can be specified as either a string to be geocoded, or a LatLng, or a Place. Required."
 
-            "durationInTraffic" =@ T<bool>
-            |> WithComment "Whether or not we should provide trip duration based on current traffic conditions. Only available to Maps API for Business customers."
+            "drivingOptions" =@ DrivingOptions
+            |> WithComment "Settings that apply only to requests where travelMode is DRIVING. This object will have no effect for other travel modes."
+
+            "language" =@ T<string>
+            |> WithComment "A language identifier for the language in which results should be returned, when possible. See the list of supported languages."
 
             "optimizeWaypoints" =@ T<bool>
             |> WithComment "If set to true, the DirectionService will attempt to re-order the supplied intermediate waypoints to minimize overall cost of the route. If waypoints are optimized, inspect DirectionsRoute.waypoint_order in the response to determine the new ordering."
 
-            "origin" =@ Location
+            "origin" =@ T<string> + LatLng + Place + LatLngLiteral
             |> WithComment "Location of origin. This can be specified as either a string to be geocoded or a LatLng. Required."
 
             "provideRouteAlternatives" =@ T<bool>
@@ -1723,6 +2360,21 @@ module Specification =
             |> WithComment "Array of intermediate waypoints. Directions will be calculated from the origin to the destination by way of each waypoint in this array. The maximum allowed waypoints is 8, plus the origin, and destination. Maps API for Business customers are allowed 23 waypoints, plus the origin, and destination. Waypoints are not supported for transit directions. Optional."
         ]
 
+    let DirectionsResult =
+        Class "google.maps.DirectionsResult"
+        |+> Instance [
+            "request" =? DirectionsRequest
+            |> WithComment "The DirectionsRequest that yielded this result."
+
+            "routes" =? Type.ArrayOf DirectionsRoute
+            |> WithComment "An array of DirectionsRoutes, each of which contains information about the legs and steps of which it is composed. There will only be one route unless the DirectionsRequest was made with provideRouteAlternatives set to true."
+
+            "available_travel_modes" =? Type.ArrayOf TravelMode
+            |> WithComment "Contains an array of available travel modes. This field is returned when a request specifies a travel mode and gets no results. The array contains the available travel modes in the countries of the given set of waypoints. This field is not returned if one or more of the waypoints are 'via waypoints'."
+
+            "geocoded_waypoints" =? Type.ArrayOf DirectionsGeocodedWaypoint
+            |> WithComment "An array of DirectionsGeocodedWaypoints, each of which contains information about the geocoding of origin, destination and waypoints."
+        ]
 
     let DirectionsRendererOptions =
         Config "DirectionsRendererOptions"
@@ -1734,7 +2386,7 @@ module Specification =
             |> WithComment "If true, allows the user to drag and modify the paths of routes rendered by this DirectionsRenderer."
 
             "hideRouteList" =@ T<bool>
-            |> WithComment "This property indicates whether the renderer should provide UI to select amongst alternative routes. By default, this flag is false and a user-selectable list of routes will be shown in the directions' associated panel. To hide that list, set hideRouteList to true."
+            |> WithComment "This property indicates whether the renderer should provide a user-selectable list of routes shown in the directions panel. Default: false."
 
             "infoWindow" =@ InfoWindow
             |> WithComment "The InfoWindow in which to render text information when a marker is clicked. Existing info window content will be overwritten and its position moved. If no info window is specified, the DirectionsRenderer will create and use its own info window. This property will be ignored if suppressInfoWindows is set to true."
@@ -1752,7 +2404,7 @@ module Specification =
             |> WithComment "Options for the polylines. All polylines rendered by the DirectionsRenderer will use these options."
 
             "preserveViewport" =@ T<bool>
-            |> WithComment "By default, the input map is centered and zoomed to the bounding box of this set of directions. If this option is set to true, the viewport is left unchanged, unless the map's center and zoom were never set."
+            |> WithComment "If this option is set to true or the map's center and zoom were never set, the input map is centered and zoomed to the bounding box of this set of directions. Default: false."
 
             "routeIndex" =@ T<int>
             |> WithComment "The index of the route within the DirectionsResult object. The default value is 0."
@@ -1804,24 +2456,24 @@ module Specification =
 
             "setRouteIndex" =>  T<unit> ^-> T<unit>
             |> WithComment "Set the (zero-based) index of the route in the DirectionsResult object to render. By default, the first route in the array will be rendered."
+
+            // EVENTS
+            "directions_changed" => T<obj> -* T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the rendered directions change, either when a new DirectionsResult is set or when the user finishes dragging a change to the directions path."
         ]
 
     let DirectionsService =
         Class "google.maps.DirectionsService"
         |+> Static [Constructor T<unit>]
         |+> Instance [
-            "route" => (DirectionsRequest * (DirectionsResult * DirectionsStatus ^-> T<unit>)) ^-> T<unit>
+            "route" => (DirectionsRequest * !? (DirectionsResult * DirectionsStatus ^-> T<unit>)) ^-> T<unit>
             |> WithComment "Issue a directions search request."
         ]
 
     let PathElevationRequest =
-        Config "PathElevationRequest"
-        |+> Static [
-            Constructor T<int>?Samples
-            |> WithInline "{samples:$Samples}"
-        ]
-        |+> Instance [
-            "path" =@ Type.ArrayOf LatLng
+        Interface "google.maps.PathElevationRequest"
+        |+> [
+            "path" =@ Type.ArrayOf (LatLng + LatLngLiteral)
             |> WithComment "The path along which to collect elevation values."
 
             "samples" =@ T<int>
@@ -1831,7 +2483,7 @@ module Specification =
     let LocationElevationRequest =
         Config "LocationElevationRequest"
         |+> Instance [
-            "locations" =@ Type.ArrayOf LatLng
+            "locations" =@ Type.ArrayOf (LatLng + LatLngLiteral)
             |> WithComment "The discrete locations for which to retrieve elevations."
         ]
 
@@ -1848,6 +2500,20 @@ module Specification =
             |> WithComment "The distance, in meters, between sample points from which the elevation was interpolated. This property will be missing if the resolution is not known. Note that elevation data becomes more coarse (larger resolution values) when multiple points are passed. To obtain the most accurate elevation value for a point, it should be queried independently."
         ]
 
+    let LocationElevationResponse =
+        Interface "google.maps.LocationElevationResponse"
+        |+> [
+            "results" =@ Type.ArrayOf ElevationResult
+            |> WithComment "The list of ElevationResults matching the locations of the LocationElevationRequest."
+        ]
+
+    let PathElevationResponse =
+        Interface "google.maps.PathElevationResponse"
+        |+> [
+            "iresults" =@ Type.ArrayOf ElevationResult
+            |> WithComment "The list of ElevationResults matching the samples of the PathElevationRequest."
+        ]
+
     let ElevationStatus =
         Class "google.maps.ElevationStatus"
         |+> Static [
@@ -1861,7 +2527,7 @@ module Specification =
             |> WithComment "The webpage has gone over the requests limit in too short a period of time."
 
             "REQUEST_DENIED" =? TSelf
-            |> WithComment "The webpage is not allowed to use the elevation service for some reason."
+            |> WithComment "The webpage is not allowed to use the elevation service."
 
             "UNKNOWN_ERROR" =? TSelf
             |> WithComment "A geocoding, directions or elevation request could not be successfully processed, yet the exact reason for the failure is not known."
@@ -1874,10 +2540,10 @@ module Specification =
             |> WithComment "Creates a new instance of a ElevationService that sends elevation queries to Google servers."
         ]
         |+> Instance [
-            "getElevationAlongPath" => (PathElevationRequest * (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> T<unit>
+            "getElevationAlongPath" => (PathElevationRequest * !? (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> Promise[PathElevationResponse]
             |> WithComment "Makes an elevation request along a path, where the elevation data are returned as distance-based samples along that path."
 
-            "getElevationForLocations" => (LocationElevationRequest * (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> T<unit>
+            "getElevationForLocations" => (LocationElevationRequest * !? (Type.ArrayOf ElevationResult ^-> ElevationStatus)) ^-> Promise[LocationElevationResponse]
             |> WithComment "Makes an elevation request for a list of discrete locations."
         ]
 
@@ -1885,7 +2551,7 @@ module Specification =
         Class "google.maps.MaxZoomStatus"
         |+> Static [
             "ERROR" =? TSelf
-            |> WithComment "There was a problem contacting the Google servers."
+            |> WithComment "An unknown error occurred."
 
             "OK" =? TSelf
             |> WithComment "The response contains a valid MaxZoomResult."
@@ -1895,7 +2561,7 @@ module Specification =
         Class "google.maps.MaxZoomResult"
         |+> Instance [
             "status" =? MaxZoomStatus
-            |> WithComment "Status of the request."
+            |> WithComment "Status of the request. This property is only defined when using callbacks with MaxZoomService.getMaxZoomAtLatLng (it is not defined when using Promises)."
 
             "zoom" =? T<int>
             |> WithComment "The maximum zoom level found at the given LatLng."
@@ -1908,38 +2574,40 @@ module Specification =
             |> WithComment "Creates a new instance of a MaxZoomService that can be used to send queries about the maximum zoom level available for satellite imagery."
         ]
         |+> Instance [
-            "getMaxZoomAtLatLng" => LatLng * (MaxZoomResult ^-> T<unit>) ^-> T<unit>
+            "getMaxZoomAtLatLng" => (LatLng + LatLngLiteral) * (MaxZoomResult ^-> T<unit>) ^-> T<unit>
             |> WithComment "Returns the maximum zoom level available at a particular LatLng for the Satellite map type. As this request is asynchronous, you must pass a callback function which will be executed upon completion of the request, being passed a MaxZoomResult."
         ]
 
     let DistanceMatrixRequest =
-        Class "google.maps.DistanceMatrixRequest"
-        |+> Static [
-            Ctor [
-                (Type.ArrayOf Location)?Origins
-                (Type.ArrayOf Location)?Destinations
-                TravelMode?TravelMode
-            ]
-            |> WithInline "{origins:$Origins, destinations:$Destinations, travelMode:$TravelMode}"
-        ]
-        |+> Instance [
+        Interface "google.maps.DistanceMatrixRequest"
+        |+> [
+            "avoidFerries" =@ T<bool>
+            |> WithComment "If true, instructs the Distance Matrix service to avoid ferries where possible. Optional."
+
             "avoidHighways" =@ T<bool>
             |> WithComment "If true, instructs the Distance Matrix service to avoid highways where possible. Optional."
 
             "avoidTolls" =@ T<bool>
             |> WithComment "If true, instructs the Distance Matrix service to avoid toll roads where possible. Optional."
 
-            "destinations" =@ Type.ArrayOf Location
-            |> WithComment "An array containing destination address strings and/or LatLngs, to which to calculate distance and time. Required."
+            "drivingOptions" =@ DrivingOptions
+            |> WithComment "Settings that apply only to requests where travelMode is DRIVING. This object will have no effect for other travel modes."
 
-            "durationInTraffic" =@ T<bool>
-            |> WithComment "Whether or not we should provide trip durations based on current traffic conditions. Only available to Maps API for Business customers."
+            "destinations" =@ Type.ArrayOf (T<string> + LatLng + LatLngLiteral + Place)
+            |> WithComment "An array containing destination address strings, or LatLng, or Place objects, to which to calculate distance and time. Required."
 
-            "origins" =@ Type.ArrayOf Location
-            |> WithComment "An array containing origin address strings and/or LatLngs, from which to calculate distance and time. Required."
+            "origins" =@ Type.ArrayOf (T<string> + LatLng + LatLngLiteral + Place)
+            |> WithComment "An array containing origin address strings, or LatLng, or Place objects, from which to calculate distance and time. Required."
+
+
+            "language" =@ T<string>
+            |> WithComment "A language identifier for the language in which results should be returned, when possible. See the list of supported languages."
 
             "region" =@ T<string>
-            |> WithComment "Region code used as a bias for geocoding requests. Optional."
+            |> WithComment "Region code used as a bias for geocoding requests. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
+
+            "transitOptions" =@ TransitOptions
+            |> WithComment "Settings that apply only to requests where travelMode is TRANSIT. This object will have no effect for other travel modes."
 
             "travelMode" =@ TravelMode
             |> WithComment "Type of routing requested. Required."
@@ -1977,7 +2645,7 @@ module Specification =
             |> WithComment "The response contains a valid result."
 
             "OVER_QUERY_LIMIT" =? TSelf
-            |> WithComment "Too many elements have been requested within the allowed time period. The request should succeed if you try again after a reasonable amount of time."
+            |> WithComment "Too many elements have been requested within the allowed time period. The request should succeed if you try again after some time."
 
             "REQUEST_DENIED" =? TSelf
             |> WithComment "The service denied use of the Distance Matrix service by your web page."
@@ -1994,6 +2662,12 @@ module Specification =
 
             "duration" =? Duration
             |> WithComment "The duration for this origin-destination pairing. This property may be undefined as the duration may be unknown."
+
+            "duration_in_traffic" =? Duration
+            |> WithComment "The duration for this origin-destination pairing, taking into account the traffic conditions indicated by the trafficModel property. This property may be undefined as the duration may be unknown. Only available to Premium Plan customers when drivingOptions is defined when making the request."
+
+            "fare" =? TransitFare
+            |> WithComment "The total fare for this origin-destination pairing. Only applicable to transit requests."
 
             "status" =? DistanceMatrixElementStatus
             |> WithComment "The status of this particular origin-destination pairing."
@@ -2033,12 +2707,20 @@ module Specification =
     let OverlayView =
         Class "google.maps.OverlayView"
         |=> Inherits MVC.MVCObject
-        |+> Static [Constructor T<unit>]
+        |+> Static [
+            Constructor T<unit>
+
+            "preventMapHitsAndGesturesFrom" => Element ^-> T<unit>
+            |> WithComment "Stops click, tap, drag, and wheel events on the element from bubbling up to the map. Use this to prevent map dragging and zooming, as well as map \"click\" events."
+
+            "preventMapHitsFrom" => Element ^-> T<unit>
+            |> WithComment "Stops click or tap on the element from bubbling up to the map. Use this to prevent the map from triggering \"click\" events."
+        ]
         |+> Instance [
             "draw" => T<unit -> unit>
-            |> WithComment "Implement this method to draw or update the overlay. This method is called after onAdd() and when the position from projection.fromLatLngToPixel() would return a new value for a given LatLng. This can happen on change of zoom, center, or map type. It is not necessarily called on drag or resize."
+            |> WithComment "Implement this method to draw or update the overlay. Use the position from projection.fromLatLngToDivPixel() to correctly position the overlay relative to the MapPanes. This method is called after onAdd(), and is called on change of zoom or center. It is not recommended to do computationally expensive work in this method."
 
-            "getMap" => M.Map
+            "getMap" => M.Map + StreetView.StreetViewPanorama
 
             "getPanes" => T<unit> ^-> MapPanes
             |> WithComment "Returns the panes in which this OverlayView can be rendered. The panes are not initialized until onAdd is called by the API."
@@ -2056,29 +2738,62 @@ module Specification =
             |> WithComment "Adds the overlay to the map or panorama."
         ]
 
-    let MapsEventListener = Events.MapsEventListener
+    let PinElementOptions =
+        Interface "google.maps.marker.PinElementOptions"
+        |+> [
+            "background" =@ T<string>
+            |> WithComment "The background color of the pin shape. Supports any CSS color value."
 
-    // TODO
-    let Event =
-        Class "google.maps.event"
+            "borderColor" =@ T<string>
+            |> WithComment "The border color of the pin shape. Supports any CSS color value."
+
+            "glyph" =@ T<string> + Element + URL
+            |> WithComment "The DOM element displayed in the pin."
+
+            "glyphColor" =@ T<string>
+            |> WithComment "The color of the glyph. Supports any CSS color value."
+
+            "scale" =@ T<int>
+            |> WithComment "The scale of the pin. Default: 1"
+        ]
+
+    let PinElement =
+        Class "google.maps.marker.PinElement"
+        |=> Inherits HTMLElement
+        |=> Implements [PinElementOptions]
         |+> Static [
-            // Cross browser event handler registration. This listener is removed by calling removeListener(handle) for the handle that is returned by this function.
-            "addDomListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
-            "addDomListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>) * T<bool>) ^-> MapsEventListener
-            // Wrapper around addDomListener that removes the listener after the first event.
-            "addDomListenerOnce" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
-            "addDomListenerOnce" => (T<obj> * T<string> * (T<obj> ^-> T<unit>) * T<bool>) ^-> MapsEventListener
-            // Adds the given listener function to the given event name for the given object instance. Returns an identifier for this listener that can be used with removeListener().
-            "addListener" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
-            // Like addListener, but the handler removes itself after handling the first event.
-            "addListenerOnce" => (T<obj> * T<string> * (T<obj> ^-> T<unit>)) ^-> MapsEventListener
-            // Removes all listeners for all events for the given instance.
-            "clearInstanceListeners" => (T<obj>) ^-> T<unit>
-            // Removes all listeners for the given event for the given instance.
-            "clearListeners" => (T<obj> * T<string>) ^-> T<unit>
-            // Removes the given listener, which should have been returned by addListener above.
-            "removeListener" => (MapsEventListener) ^-> T<unit>
-            // Triggers the given event. All arguments after eventName are passed as arguments to the listeners.
-            // FIXME: "trigger" => (T<obj> * T<string> * (!* T<obj>)) ^-> T<unit>
+            Ctor [
+                !? PinElementOptions?options
+            ]
+        ]
+        |+> Instance [
+            // "background" =@ T<string>
+            // |> WithComment "See PinElementOptions.background."
+
+            // "borderColor" =@ T<string>
+            // |> WithComment "See PinElementOptions.borderColor."
+
+            "element" =? HTMLElement
+            |> WithComment "This field is read-only. The DOM Element backing the view."
+
+            // "glyph" =@ T<string> + Element + URL
+            // |> WithComment "See PinElementOptions.glyph."
+
+            // "glyphColor" =@ T<string>
+            // |> WithComment "See PinElementOptions.glyphColor."
+
+            // "scale" =@ T<int>
+            // |> WithComment "See PinElementOptions.scale."
+
+            // METHODS
+            //TODO: where is EventListener?
+            // "addEventListener" => T<string> * (EventListener + EventListenerObject) * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
+            "addEventListener" => T<string> * T<obj->unit> * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
+            |> WithComment "This function is not yet available for usage."
+
+            //TODO: where is EventListener?
+            // "removeEventListener" => T<string> * (EventListener + EventListenerObject) * !?(T<bool> + EventListenerOptions) ^-> T<unit>
+            "removeEventListener" => T<string> * T<obj->unit> * !?(T<bool> + EventListenerOptions) ^-> T<unit>
+            |> WithComment "Removes an event listener previously registered with addEventListener from the target. See removeEventListener"
         ]
 

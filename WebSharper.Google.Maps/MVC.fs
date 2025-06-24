@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -40,9 +40,6 @@ module MVC =
                     T<bool>?noNotify
                 ]
             |> WithComment "Binds a View to a Model."
-
-            "changed" => T<string> ^-> T<unit>
-            |> WithComment "Generic handler for state changes. Override this in derived classes to handle arbitrary state changes."
 
             // Gets a value.
             "get" => T<string>?key ^-> T<obj>
@@ -101,7 +98,15 @@ module MVC =
                 "setAt" => T<int> * t ^-> T<unit>
                 |> WithComment "Sets an element at the specified index."
 
-                // TODO: "insert_at", "remove_at", "set_at" events
+                // EVENTS
+                "insert_at" => T<obj> -* T<int> ^-> T<unit>
+                |> WithComment "This event is fired when insertAt() is called. The event passes the index that was passed to insertAt()."
+
+                "remove_at" => T<obj> -* T<int> * T<bool> ^-> T<unit>
+                |> WithComment "This event is fired when removeAt() is called. The event passes the index that was passed to removeAt() and the element that was removed from the array."
+
+                "set_at" => T<obj> -* T<int> * t ^-> T<unit>
+                |> WithComment "This event is fired when setAt() is called. The event passes the index that was passed to setAt() and the element that was previously in the array at that index."
             ]
             |+> Static [
                     Constructor (!? (Type.ArrayOf t))

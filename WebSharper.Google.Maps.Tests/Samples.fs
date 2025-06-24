@@ -46,8 +46,19 @@ module SamplesInternals =
 
     open WebSharper.JavaScript
     open WebSharper.Google.Maps
+    // open WebSharper.Google.Maps.Geometry
     open WebSharper.UI.Html
     open WebSharper.UI.Client
+
+    // [<JavaScript>]
+    // let SphericalTest () =
+
+    //     let coords = [| new LatLng(37.4419, -122.1419)
+    //                     new LatLng(37.4519, -122.1519)
+    //                     new LatLng(37.4419, -122.1319)
+    //                     new LatLng(37.4419, -122.1419) |]
+    //     let area = Spherical.computeArea coords
+    //     sprintf "%f" area
 
     [<JavaScript>]
     let Sample buildMap =
@@ -62,7 +73,7 @@ module SamplesInternals =
 
     [<JavaScript>]
     let SimpleMap() =
-        Sample <| fun (map: Map) ->
+        Sample <| fun (map: Google.Maps.Map) ->
             let latLng = new LatLng(-34.397, 150.644)
             let options = new MapOptions(latLng, 8)
             map.SetOptions options
@@ -101,6 +112,94 @@ module SamplesInternals =
             Event.AddListener(map, "bounds_changed", As addMarkers) |> ignore
 
     [<JavaScript>]
+    let MarkersWithLabel() =
+        Sample <| fun map ->
+
+            let addMarkers (_:obj) =
+                // bounds is only available in the "bounds_changed" event.
+                let bounds = map.GetBounds()
+
+                let sw = bounds.GetSouthWest()
+                let ne = bounds.GetNorthEast()
+                let lngSpan = ne.Lng() - sw.Lng()
+                let latSpan = ne.Lat() - sw.Lat()
+                let rnd = Math.Random
+                for i in 1 .. 10 do
+                    let point = new LatLng(sw.Lat() + (latSpan * rnd()),
+                                           sw.Lng() + (lngSpan * rnd()))
+                    let markerOptions = new MarkerOptions(point)
+                    markerOptions.Map <- map
+                    let marker = new Marker(markerOptions)
+                    if i % 2 = 0 then
+                        marker.SetLabel (string i)
+                    else
+                        let markerLabel = MarkerLabel(Text = string i, Color = "#0000FF")
+                        markerLabel.FontSize <- "10px"
+                        marker.SetLabel markerLabel
+                    ()
+
+            Event.AddListener(map, "bounds_changed", As addMarkers) |> ignore
+
+    [<JavaScript>]
+    let MarkersWithSymbol() =
+        Sample <| fun map ->
+
+            let addMarkers (_:obj) =
+                // bounds is only available in the "bounds_changed" event.
+                let bounds = map.GetBounds()
+
+                let sw = bounds.GetSouthWest()
+                let ne = bounds.GetNorthEast()
+                let lngSpan = ne.Lng() - sw.Lng()
+                let latSpan = ne.Lat() - sw.Lat()
+                let rnd = Math.Random
+                for i in 1 .. 10 do
+                    let point = new LatLng(sw.Lat() + (latSpan * rnd()),
+                                           sw.Lng() + (lngSpan * rnd()))
+                    let markerOptions = new MarkerOptions(point)
+                    markerOptions.Map <- map
+                    let marker = new Marker(markerOptions)
+                    let newSymbol = new Symbol(SymbolPath.FORWARD_OPEN_ARROW)
+                    newSymbol.Scale <- 8.5
+                    newSymbol.FillColor <- "#F00"
+                    newSymbol.FillOpacity <- 0.4
+                    newSymbol.StrokeWeight <- 0.4
+                    marker.SetIcon newSymbol
+                    ()
+
+            Event.AddListener(map, "bounds_changed", As addMarkers) |> ignore
+
+    [<JavaScript>]
+    let MarkersWithIcon() =
+        Sample <| fun map ->
+
+            let addMarkers (_:obj) =
+                // bounds is only available in the "bounds_changed" event.
+                let bounds = map.GetBounds()
+
+                let sw = bounds.GetSouthWest()
+                let ne = bounds.GetNorthEast()
+                let lngSpan = ne.Lng() - sw.Lng()
+                let latSpan = ne.Lat() - sw.Lat()
+                let rnd = Math.Random
+                for i in 1 .. 10 do
+                    let point = new LatLng(sw.Lat() + (latSpan * rnd()),
+                                           sw.Lng() + (lngSpan * rnd()))
+                    let markerOptions = new MarkerOptions(point)
+                    markerOptions.Map <- map
+                    let marker = new Marker(markerOptions)
+                    let newIcon = 
+                        new Icon(
+                            Url = "websharper-icon.png"
+                        )
+                    newIcon.Size <- new Size(32., 32.)
+                    newIcon.ScaledSize <- new Size(32., 32.)
+                    marker.SetIcon newIcon
+                    ()
+
+            Event.AddListener(map, "bounds_changed", As addMarkers) |> ignore
+
+    [<JavaScript>]
     let InfoWindow() =
         Sample <| fun map ->
             let center = map.GetCenter()
@@ -116,11 +215,16 @@ module SamplesInternals =
         Sample <| fun map ->
             let center = new LatLng(37.4419, -122.1419)
             let options = new MapOptions(center, 8)
-            options.DisableDefaultUI <- true
-            let ncOptions = new NavigationControlOptions()
-            ncOptions.Style <- NavigationControlStyle.ZOOM_PAN
-//            options.NavigationControlOptions <- ncOptions
-//            options.NavigationControl <- true
+            // options.DisableDefaultUI <- true
+            let mcOptions = new MapTypeControlOptions()
+            mcOptions.Position <- ControlPosition.TOP_CENTER
+            mcOptions.Style <- MapTypeControlStyle.DROPDOWN_MENU
+            options.MapTypeControlOptions <- mcOptions
+            // let ncOptions = new NavigationControlOptions()
+            // ncOptions.Style <- NavigationControlStyle.ZOOM_PAN
+            // ncOptions.Position <- ControlPosition.BOTTOM_CENTER
+            // options.NavigationControlOptions <- ncOptions
+            // options.NavigationControl <- true
             map.SetOptions options
 
     [<JavaScript>]
@@ -180,8 +284,8 @@ module SamplesInternals =
             calcRoute ()
 
     [<JavaScriptAttribute>]
-    /// Since it's not available in v3. We make it using the ImageMapType
-    /// Taken from: http://code.google.com/p/gmaps-samples-v3/source/browse/trunk/planetary-maptypes/planetary-maptypes.html?r=206
+    // Since it's not available in v3. We make it using the ImageMapType
+    // Taken from: http://code.google.com/p/gmaps-samples-v3/source/browse/trunk/planetary-maptypes/planetary-maptypes.html?r=206
     let Moon() =
         Sample <| fun map ->
             //Normalizes the tile URL so that tiles repeat across the x axis (horizontally) like the
@@ -214,11 +318,12 @@ module SamplesInternals =
 
             let it = new ImageMapType(itOptions)
             let center = new LatLng(0., 0.)
-            let mapIds = [| box "Moon" |> unbox |]
+            // let mapIds = [| box "Moon" |> unbox |]
+            let mapIds = [| MapTypeId.SATELLITE |]
             let mapControlOptions =
                 let mco = new MapTypeControlOptions()
                 mco.Style <- MapTypeControlStyle.DROPDOWN_MENU
-                mco.MapTypeIds <- mapIds
+                mco.MapTypeIds <- (Array.map (fun m -> box m |> unbox) mapIds)
                 mco
 
             let options = new MapOptions(center, 0, MapTypeId = mapIds.[0])
@@ -232,11 +337,12 @@ module SamplesInternals =
     [<JavaScript>]
     let Weather() =
         Sample <| fun map ->
-            let images = [| "sun"; "rain"; "snow"; "storm" |]
+            // let images = [| "sun"; "rain"; "snow"; "storm" |]
+            let images = [| "beachflag" |]
             let getWeatherIcon () =
                 let i = int <| Math.Floor(float images.Length * Math.Random())
                 Google.Maps.Icon(
-                    Url = ("http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/examples/images/"
+                    Url = ("https://developers.google.com/maps/documentation/javascript/examples/full/images/"
                            + images.[i] + ".png"))
 
             let addMarkers (_:obj) =
@@ -288,6 +394,8 @@ module SamplesInternals =
                             new LatLng(37.4519, -122.1519)
                             new LatLng(37.4419, -122.1319)
                             new LatLng(37.4419, -122.1419) |]
+            let polygonOptions = new PolygonOptions(Paths = coords)
+            let paths = polygonOptions.Paths
             polygon.SetPath coords
             polygon.SetMap map
 
@@ -314,6 +422,7 @@ module SamplesInternals =
     [<JavaScript>]
     let SimplePolyline() =
         Sample <| fun map ->
+            map.SetZoom 12
             let coords = [| new LatLng(37.4419, -122.1419)
                             new LatLng(37.4519, -122.1519)|]
             let polylineOptions = new PolylineOptions()
@@ -330,6 +439,9 @@ module SamplesInternals =
             SimpleMap ()
             PanTo ()
             RandomMarkers ()
+            MarkersWithLabel()
+            MarkersWithSymbol()
+            MarkersWithIcon()
             InfoWindow ()
             Controls ()
             SimpleDirections ()
@@ -342,6 +454,7 @@ module SamplesInternals =
             SimplePolyline ()
             h1 [] [text "HeatMaps"]
             div [] [HeatMapSample.Sample()]
+            // div [] [ text (string SphericalTest ())]
         ]
 
 open WebSharper.Sitelets
@@ -350,12 +463,13 @@ type Action = | Index
 
 module Site =
 
+    open WebSharper.UI
     open WebSharper.UI.Html
 
     let HomePage ctx =
         Content.Page(
             Title = "WebSharper Google Maps Tests",
-            Body = [div [] [client <@ SamplesInternals.Samples () @>]]
+            Body = [div [] [ClientServer.client <@ SamplesInternals.Samples () @>]]
         )
 
     let Main = Sitelet.Content "/" Index HomePage

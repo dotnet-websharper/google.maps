@@ -3,28 +3,26 @@
 **Add interactive maps to your web applications! ...Without a single
 line of JavaScript.**
 
-The Google Map API enables you to create rich, interactive maps,
-street views, route planning, and much more.  Go and check out their
-[homepage][gmaps].
+The Google Map API, version 3.56, enables you to create rich,
+interactive maps, street views, route planning, and much more.  Go and
+check out their [homepage][gmaps].
 
 With this WebSharper Extension you can develop
 [WebSharper](http://websharper.com) applications that use the Google
 Maps API using nothing but F# code.
 
-[gmaps]: http://code.google.com/apis/maps/documentation/javascript
+[gmaps]: https://developers.google.com/maps/documentation/javascript
 
 ## Installation
 
 This extension is compatible with [WebSharper
-2.4](http://websharper.com).  To obtain the latest extension binaries,
+7](http://websharper.com).  To obtain the latest extension binaries,
 install the `WebSharper.Google.Maps` [NuGet](http://nuget.org)
 package, and use as you would a regular .NET library.
 
-The source code for the extension is available on both Bitbucket
-(Mercurial) or GitHub (Git):
+The source code for the extension is available on GitHub (Git):
 
-* [WebSharper.Google.Maps at Bitbucket](http://bitbucket.org/IntelliFactory/websharper.google.maps)
-* [WebSharper.Google.Maps at GitHub](http://github.com/intellifactory/Websharper.Google.Maps)
+* [WebSharper.Google.Maps at GitHub](https://github.com/dotnet-websharper/google.maps)
 
 ## Configuration
 
@@ -40,7 +38,7 @@ extension will generate code similar to the following for your pages:
     src="http://maps.google.com/maps/api/js?sensor=true">
 ```
 
-[terms]: http://code.google.com/apis/maps/terms.html
+[terms]: https://cloud.google.com/maps-platform/terms
 
 ## Overview
 
@@ -49,7 +47,7 @@ documented in the [Google Maps API v3][gmap-api].  When used in
 WebSharper projects, these stub classes delegate the work to the
 actual classes implemented in Google Maps API.
 
-[gmap-api]: http://code.google.com/apis/maps/documentation/javascript
+[gmap-api]: https://developers.google.com/maps/documentation/javascript/reference
 
 ## A Simple Map
 

@@ -3,7 +3,7 @@
 **Add interactive maps to your web applications! ...Without a single
 line of JavaScript.**
 
-The Google Map API, version 3.13, enables you to create rich,
+The Google Map API, version 3.56, enables you to create rich,
 interactive maps, street views, route planning, and much more.  Go and
 check out their [homepage][gmaps].
 
@@ -14,15 +14,13 @@ Maps API using nothing but F# code.
 ## Installation
 
 This extension is compatible with [WebSharper
-2.4](http://websharper.com).  To obtain the latest extension binaries,
+7](http://websharper.com).  To obtain the latest extension binaries,
 install the `WebSharper.Google.Maps` [NuGet](http://nuget.org)
 package, and use as you would a regular .NET library.
 
-The source code for the extension is available on both Bitbucket
-(Mercurial) or GitHub (Git):
+The source code for the extension is available on GitHub (Git):
 
-* [WebSharper.Google.Maps at Bitbucket](http://bitbucket.org/IntelliFactory/websharper.google.maps)
-* [WebSharper.Google.Maps at GitHub](http://github.com/intellifactory/Websharper.Google.Maps)
+* [WebSharper.Google.Maps at GitHub](https://github.com/dotnet-websharper/google.maps)
 
 ## Configuration
 
@@ -83,6 +81,6 @@ It is necessary to initialize the map using the `OnAfterRender` method
 to the DOM before initializing the map.  Doing the Map initialization
 after the widget rendering makes sure that this condition holds.
 
-[gmaps]: http://code.google.com/apis/maps/documentation/javascript
-[terms]: http://code.google.com/apis/maps/terms.html
-[gmap-api]: http://code.google.com/apis/maps/documentation/javascript
+[gmaps]: https://developers.google.com/maps/documentation/javascript
+[terms]: https://cloud.google.com/maps-platform/terms
+[gmap-api]: https://developers.google.com/maps/documentation/javascript/reference

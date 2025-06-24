@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -19,8 +19,6 @@
 // $end{copyright}
 // Definitions for the Map Types part of the API. See:
 // http://developers.google.com/maps/documentation/javascript/reference
-//
-// TODO: this needs to be upgraded to the latest API.
 namespace WebSharper.Google.Maps.Definition
 
     module MapTypes =
@@ -32,11 +30,11 @@ namespace WebSharper.Google.Maps.Definition
             Class "google.maps.Projection"
             |+> Static [Constructor T<unit>]
             |+> Instance [
-                "fromLatLngToPoint" =@ Base.LatLng * !? Base.Point ^-> Base.Point
-                |> WithComment "Translates from the LatLng cylinder to the Point plane. This interface specifies a function which implements translation from given LatLng values to world coordinates on the map projection. The Maps API calls this method when it needs to plot locations on screen. Projection objects must implement this method."
+                "fromLatLngToPoint" =@ (Base.LatLng + Base.LatLngLiteral) * !? Base.Point ^-> Base.Point
+                |> WithComment "Translates from the LatLng cylinder to the Point plane. This interface specifies a function which implements translation from given LatLng values to world coordinates on the map projection. The Maps API calls this method when it needs to plot locations on screen. Projection objects must implement this method, but may return null if the projection cannot calculate the Point."
 
                 "fromPointToLatLng" =@ Base.Point * !? T<bool> ^-> Base.LatLng
-                |> WithComment "This interface specifies a function which implements translation from world coordinates on a map projection to LatLng values. The Maps API calls this method when it needs to translate actions on screen to positions on the map. Projection objects must implement this method."
+                |> WithComment "This interface specifies a function which implements translation from world coordinates on a map projection to LatLng values. The Maps API calls this method when it needs to translate actions on screen to positions on the map. Projection objects must implement this method, but may return null if the projection cannot calculate the LatLng."
             ]
 
         let Visibility =
@@ -163,14 +161,14 @@ namespace WebSharper.Google.Maps.Definition
                 |> WithComment "The style rules to apply to the selectors. The rules are applied to the map's elements in the order they are listed in this array."
             ]
 
+        //TODO: probably must be converted to Interface, as ImageMapType implements it
         let MapType =
-            Class "google.maps.MapType"
-            |=> Inherits MVC.MVCObject
-            |+> Static [
-                Constructor T<unit>
-                |> WithInline "{}"
-            ]
-            |+> Instance [
+            Interface "google.maps.MapType"
+            // |+> Static [
+            //     Constructor T<unit>
+            //     |> WithInline "{}"
+            // ]
+            |+> [
 
                     "getTile" => Base.Point?tileCoord * T<int>?zoom * Document?ownerDocument ^-> Node
                     |> WithComment "Returns a tile for the given tile coordinate (x, y) and zoom level. This tile will be appended to the given ownerDocument. Not available for base map types."
@@ -202,16 +200,14 @@ namespace WebSharper.Google.Maps.Definition
 
         let StyledMapType =
             Class "google.maps.StyledMapType"
-            |=> Inherits MapType
+            |=> Inherits MVC.MVCObject
+            |=> Implements [MapType]
 
         let StyledMapTypeOptions =
-            Config "StyledMapTypeOptions"
+            Config "google.maps.StyledMapTypeOptions"
             |+> Instance [
                 "alt" =@ T<string>
                 |> WithComment "Text to display when this MapType's button is hovered over in the map type control."
-
-                "baseMapType" =@ StyledMapType.Type
-                |> WithComment "A StyledMapType whose style should be used as a base for defining a StyledMapType's style. The MapTypeStyle rules will be appended to the base's styles."
 
                 "maxZoom" =@ T<string>
                 |> WithComment "The maximum zoom level for the map when displaying this MapType. Optional."
@@ -228,6 +224,25 @@ namespace WebSharper.Google.Maps.Definition
             |+> Static [
                 Constructor (Type.ArrayOf MapTypeStyle * !? StyledMapTypeOptions)
                 |> WithComment "Creates a styled MapType with the specified options. The StyledMapType takes an array of MapTypeStyles, where each MapTypeStyle is applied to the map consecutively. A later MapTypeStyle that applies the same MapTypeStylers to the same selectors as an earlier MapTypeStyle will override the earlier MapTypeStyle."
+            ]
+            |+> Instance [
+                // "getTile" => Base.Point?tileCoord * T<int>?zoom * Document?ownerDocument ^-> Node
+
+                // "releaseTile" => Node ^-> T<unit>
+
+                // "alt" =@ T<string>
+
+                // "maxZoom" =@ T<int>
+
+                // "minZoom" =@ T<int>
+
+                // "name" =@ T<string>
+
+                // "projection" =@ Projection
+
+                // "radius" =@ T<float>
+
+                // "tileSize" =@ Base.Size
             ]
             |> ignore
 
@@ -271,12 +286,35 @@ namespace WebSharper.Google.Maps.Definition
         let ImageMapType =
             Class "google.maps.ImageMapType"
             |=> Inherits MVC.MVCObject
+            |=> Implements [MapType]
             |+> Instance [
                     "getOpacity" => T<unit> ^-> T<float>
                     |> WithComment "Returns the opacity level (0 (transparent) to 1.0) of the ImageMapType tiles."
 
+                    // "getTile" => Base.Point?tileCoord * T<int>?zoom * Document?ownerDocument ^-> Node
+
+                    // "releaseTile" => Node ^-> T<unit>
+
                     "setOpacity" => T<float> ^-> T<unit>
                     |> WithComment "Sets the opacity level (0 (transparent) to 1.0) of the ImageMapType tiles."
+
+                    // "alt" =@ T<string>
+
+                    // "maxZoom" =@ T<int>
+
+                    // "minZoom" =@ T<int>
+
+                    // "name" =@ T<string>
+
+                    // "projection" =@ Projection
+
+                    // "radius" =@ T<float>
+
+                    // "tileSize" =@ Base.Size
+
+                    // EVENTS
+                    "tilesloaded" => T<obj> -* T<unit> ^-> T<unit>
+                    |> WithComment "This event is fired when the visible tiles have finished loading."
                 ]
             |+> Static [Constructor ImageMapTypeOptions]
 

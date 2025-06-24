@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2024 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -24,6 +24,15 @@ module Forward =
 
     open WebSharper.InterfaceGenerator
 
+    let FeatureType =
+        Class "google.maps.FeatureType"
+
+    let FeatureLayer =
+        Interface "google.maps.FeatureLayer"
+
+    let Data =
+        Class "google.maps.Data"
+
     let Map = Class "google.maps.Map"
 
     let MapTypeId =
@@ -37,3 +46,6 @@ module Forward =
             // This map type displays maps with physical features such as terrain and vegetation.
             "TERRAIN", "google.maps.MapTypeId.TERRAIN"
         ]
+
+    let PlacePlusCode =
+        Notation.Config "google.maps.places.PlacePlusCode"
