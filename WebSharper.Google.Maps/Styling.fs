@@ -112,7 +112,7 @@ module Styling =
               |> WithComment "The style of Features in the FeatureLayer. The style is applied when style is set. If your style function updates, you must set the style property again. A FeatureStyleFunction must return consistent results when it is applied over the map tiles, and should be optimized for performance. Asynchronous functions are not supported. If you use a FeatureStyleOptions, all features of that layer will be styled with the same FeatureStyleOptions. Set the style to null to remove the previously set style. If this FeatureLayer is not available, setting style does nothing and logs an error."
 
               // METHODS
-              "addListener" => (T<string> * (T<obj> -* T<unit> ^-> T<unit>)) ^-> Events.MapsEventListener
+              "addListener" => (T<string> * Function) ^-> Events.MapsEventListener
               |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with event.removeListener."
 
               // EVENTS

@@ -11,7 +11,9 @@
     <Compile Include="Samples.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../WebSharper.Google.Maps\WebSharper.Google.Maps.fsproj" />
+    <Reference Include="WebSharper.Google.Maps">
+      <HintPath>..\WebSharper.Google.Maps\bin\Debug\netstandard2.0\WebSharper.Google.Maps.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets" Condition="Exists('..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets')" />
   <Import Project="..\.paket\Paket.Restore.targets" />

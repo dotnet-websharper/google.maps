@@ -29,15 +29,15 @@ module MVC =
     let MVCObject =
         Class "google.maps.MVCObject"
         |+> Instance [
-            "addListener" => (T<string>?eventName * T<obj->unit>) ^-> Events.MapsEventListener
+            "addListener" => (T<string>?eventName * Function) ^-> Events.MapsEventListener
             |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with google.maps.event.removeListener."
 
             "bindTo" =>
                 Fun T<unit> [
                     T<string>?key
                     TSelf?target
-                    T<string>?targetKey
-                    T<bool>?noNotify
+                    !?T<string>?targetKey
+                    !?T<bool>?noNotify
                 ]
             |> WithComment "Binds a View to a Model."
 
@@ -51,7 +51,7 @@ module MVC =
             "set" => Fun T<unit> [T<string>?key; T<obj>?value]
             |> WithComment "Sets a value."
 
-            "setValues" => T<obj>?values ^-> T<unit>
+            "setValues" => !?T<obj>?values ^-> T<unit>
             |> WithComment "Sets a collection of key-value pairs."
 
             "unbind" => T<string>?key ^-> T<unit>
@@ -99,13 +99,13 @@ module MVC =
                 |> WithComment "Sets an element at the specified index."
 
                 // EVENTS
-                "insert_at" => T<obj> -* T<int> ^-> T<unit>
+                "insert_at" => T<int> ^-> T<unit>
                 |> WithComment "This event is fired when insertAt() is called. The event passes the index that was passed to insertAt()."
 
-                "remove_at" => T<obj> -* T<int> * T<bool> ^-> T<unit>
+                "remove_at" => T<int> * t ^-> T<unit>
                 |> WithComment "This event is fired when removeAt() is called. The event passes the index that was passed to removeAt() and the element that was removed from the array."
 
-                "set_at" => T<obj> -* T<int> * t ^-> T<unit>
+                "set_at" => T<int> * t ^-> T<unit>
                 |> WithComment "This event is fired when setAt() is called. The event passes the index that was passed to setAt() and the element that was previously in the array at that index."
             ]
             |+> Static [

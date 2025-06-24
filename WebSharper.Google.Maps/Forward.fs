@@ -36,7 +36,7 @@ module Forward =
     let Map = Class "google.maps.Map"
 
     let MapTypeId =
-        Pattern.EnumInlines "MapTypeId" [
+        Pattern.EnumInlines "google.maps.MapTypeId" [
             // This map type displays a transparent layer of major streets on satellite images.
             "HYBRID", "google.maps.MapTypeId.HYBRID"
             // This map type displays a normal street map.
@@ -48,4 +48,10 @@ module Forward =
         ]
 
     let PlacePlusCode =
-        Notation.Config "google.maps.places.PlacePlusCode"
+        Notation.Config "google.maps.PlacePlusCode"
+            [
+                "global_code", T<string>
+            ]
+            [
+                "compound_code", T<string>
+            ]

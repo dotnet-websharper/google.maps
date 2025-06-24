@@ -48,44 +48,55 @@ module Drawing =
 
     let DrawingControlOptions =
         Config "google.maps.drawing.DrawingControlOptions"
-        |+> Instance [
-            "drawingModes" =@ Type.ArrayOf OverlayType
-            |> WithComment "The drawing modes to display in the drawing control, in the order in which they are to be displayed. The hand icon (which corresponds to the null drawing mode) is always available and is not to be specified in this array. Default: [OverlayType.MARKER, OverlayType.POLYLINE, OverlayType.RECTANGLE, OverlayType.CIRCLE, OverlayType.POLYGON]."
+            []
+            [
+                // The drawing modes to display in the drawing control, in the order in which they are to be displayed.
+                // The hand icon (which corresponds to the null drawing mode) is always available and is not to be specified in this array.
+                // Default: [OverlayType.MARKER, OverlayType.POLYLINE, OverlayType.RECTANGLE, OverlayType.CIRCLE, OverlayType.POLYGON].
+                "drawingModes", Type.ArrayOf OverlayType
 
-            "position" =@ Controls.ControlPosition
-            |> WithComment "Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT."
-        ]
+                // Position id. Used to specify the position of the control on the map. The default position is TOP_LEFT.
+                "position", Controls.ControlPosition.Type
+            ]
 
     let DrawingManagerOptions =
         Config "google.maps.drawing.DrawingManagerOptions"
-        |+> Instance [
-            "circleOptions" =@ CircleOptions
-            |> WithComment "Options to apply to any new circles created with this DrawingManager. The center and radius properties are ignored, and the map property of a new circle is always set to the DrawingManager's map."
+            []
+            [
+                // Options to apply to any new circles created with this DrawingManager.
+                // The center and radius properties are ignored, and the map property of a new circle is always set to the DrawingManager's map.
+                "circleOptions", CircleOptions.Type
 
-            "drawingControl" =@ T<bool>
-            |> WithComment "The enabled/disabled state of the drawing control. Defaults to true."
+                // The enabled/disabled state of the drawing control. Defaults to true.
+                "drawingControl", T<bool>
 
-            "drawingControlOptions" =@ DrawingControlOptions
-            |> WithComment "The display options for the drawing control."
+                // The display options for the drawing control.
+                "drawingControlOptions", DrawingControlOptions.Type
 
-            "drawingMode" =@ OverlayType
-            |> WithComment "The DrawingManager's drawing mode, which defines the type of overlay to be added on the map. Accepted values are 'marker', 'polygon', 'polyline', 'rectangle', 'circle', or null. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything."
+                // The DrawingManager's drawing mode, which defines the type of overlay to be added on the map.
+                // Accepted values are 'marker', 'polygon', 'polyline', 'rectangle', 'circle', or null.
+                // A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything.
+                "drawingMode", OverlayType.Type
 
-            "map" =@ Map.Map
-            |> WithComment "The Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed."
+                // The Map to which the DrawingManager is attached, which is the Map on which the overlays created will be placed.
+                "map", Map.Map.Type
 
-            "markerOptions" =@ MarkerOptions
-            |> WithComment "Options to apply to any new markers created with this DrawingManager. The position property is ignored, and the map property of a new marker is always set to the DrawingManager's map."
+                // Options to apply to any new markers created with this DrawingManager.
+                // The position property is ignored, and the map property of a new marker is always set to the DrawingManager's map.
+                "markerOptions", MarkerOptions.Type
 
-            "polygonOptions" =@ PolygonOptions
-            |> WithComment "Options to apply to any new polygons created with this DrawingManager. The paths property is ignored, and the map property of a new polygon is always set to the DrawingManager's map."
+                // Options to apply to any new polygons created with this DrawingManager.
+                // The paths property is ignored, and the map property of a new polygon is always set to the DrawingManager's map.
+                "polygonOptions", PolygonOptions.Type
 
-            "polylineOptions" =@ PolylineOptions
-            |> WithComment "Options to apply to any new polylines created with this DrawingManager. The path property is ignored, and the map property of a new polyline is always set to the DrawingManager's map."
+                // Options to apply to any new polylines created with this DrawingManager.
+                // The path property is ignored, and the map property of a new polyline is always set to the DrawingManager's map.
+                "polylineOptions", PolylineOptions.Type
 
-            "rectangleOptions" =@ RectangleOptions
-            |> WithComment "Options to apply to any new rectangles created with this DrawingManager. The bounds property is ignored, and the map property of a new rectangle is always set to the DrawingManager's map."
-        ]
+                // Options to apply to any new rectangles created with this DrawingManager.
+                // The bounds property is ignored, and the map property of a new rectangle is always set to the DrawingManager's map.
+                "rectangleOptions", RectangleOptions.Type
+            ]
 
     let OverlayCompleteEvent =
         Class "google.maps.drawing.OverlayCompleteEvent"

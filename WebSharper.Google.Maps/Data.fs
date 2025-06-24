@@ -33,15 +33,14 @@ module Data =
     open WebSharper.InterfaceGenerator
     open Notation
     open Specification
+    open Base
     module M = WebSharper.Google.Maps.Definition.Map
 
     let MouseEvent =
-        Interface "google.maps.Data.MouseEvent"
-        |=> Extends [M.MapMouseEvent]
-        |+> [
-            "feature" =@ DataForward.Feature
-            |> WithComment "The feature which generated the mouse event."
-        ]
+        Config "google.maps.MouseEvent"
+            []
+            (M.MapMouseEventProperties @ ["feature", DataForward.Feature.Type])
+
 
     let AddFeatureEvent =
         Interface "google.maps.Data.AddFeatureEvent"
@@ -155,15 +154,12 @@ module Data =
 
     let FeatureOptions =
         Config "google.maps.Data.FeatureOptions"
-        |+> Instance [
-            "geometry" =@ Geometry + Base.LatLng + Base.LatLngLiteral
-            |> WithComment "The feature geometry. If none is specified when a feature is constructed, the feature's geometry will be null. If a LatLng object or LatLngLiteral is given, this will be converted to a Data.Point geometry."
-            "id" =@ T<int64> + T<string>
-            |> WithComment "Feature ID is optional. If provided, it can be used to look up the feature in a Data object using the getFeatureById() method. Note that a feature's ID cannot be subsequently changed."
-
-            "properties" =@ Object
-            |> WithComment "The feature properties. This is an arbitrary mapping of property names to values."
-        ]
+            []
+            [
+                "geometry", LatLng + LatLngLiteral + Geometry
+                "id", T<string> + T<int>
+                "properties", T<obj>
+            ]
 
     let Feature =
         DataForward.Feature
@@ -211,93 +207,48 @@ module Data =
 
     let StyleOptions =
         Config "google.maps.Data.StyleOptions"
-        |+> Instance [
-            "animation" =@ Specification.Animation
-            |> WithComment "The animation to play when marker is added to a map. Only applies to point geometries."
+            []
+            [
+                "animation", Animation.Type
+                "clickable", T<bool>
+                "cursor", T<string>
+                "draggable", T<bool>
+                "editable", T<bool>
+                "fillColor", T<string>
+                "fillOpacity", T<float>
+                "icon", T<string> + Icon.Type + Symbol.Type
+                "icons", !| IconSequence
+                "label", T<string> + MarkerLabel.Type
+                "opacity", T<float>
+                "shape", MarkerShape.Type
+                "strokeColor", T<string>
+                "strokeOpacity", T<float>
+                "strokeWeight", T<int>
+                "title", T<string>
+                "visible", T<bool>
+                "zIndex", T<int>
+            ]
 
-            "clickable" =@ T<bool>
-            |> WithComment "If true, the marker receives mouse and touch events. Default: true."
-
-            "cursor" =@ T<bool>
-            |> WithComment "Mouse cursor to show on hover. Only applies to point geometries."
-
-            "draggable" =@ T<bool>
-            |> WithComment "If true, the object can be dragged across the map and the underlying feature will have its geometry updated. Default: false."
-
-            "editable" =@ T<bool>
-            |> WithComment "If true, the object can be edited by dragging control points and the underlying feature will have its geometry updated. Only applies to LineString and Polygon geometries. Default: false."
-
-            "fillColor" =@ T<string>
-            |> WithComment "The fill color. All CSS3 colors are supported except for extended named colors. Only applies to polygon geometries."
-
-            "fillOpacity" =@ T<float>
-            |> WithComment "The fill opacity between 0.0 and 1.0. Only applies to polygon geometries."
-
-            "icon" =@ T<string> + Icon + Symbol
-            |> WithComment "Icon for the foreground. If a string is provided, it is treated as though it were an Icon with the string as url. Only applies to point geometries."
-
-            "icons" =@ Type.ArrayOf IconSequence
-            |> WithComment "The icons to be rendered along a polyline. Only applies to line geometries."
-
-            "label" =@ T<string> + MarkerLabel
-            |> WithComment "Adds a label to the marker. The label can either be a string, or a MarkerLabel object. Only applies to point geometries."
-
-            "opacity" =@ T<float>
-            |> WithComment "The marker's opacity between 0.0 and 1.0. Only applies to point geometries."
-
-            "shape" =@ MarkerShape
-            |> WithComment "Defines the image map used for hit detection. Only applies to point geometries."
-
-            "strokeColor" =@ T<string>
-            |> WithComment "The stroke color. All CSS3 colors are supported except for extended named colors. Only applies to line and polygon geometries."
-
-            "strokeOpacity" =@ T<float>
-            |> WithComment "The stroke opacity between 0.0 and 1.0. Only applies to line and polygon geometries."
-
-            "strokeWeight" =@ T<int>
-            |> WithComment "The stroke width in pixels. Only applies to line and polygon geometries."
-
-            "title" =@ T<string>
-            |> WithComment "Rollover text. Only applies to point geometries."
-
-            "visible" =@ T<bool>
-            |> WithComment "Whether the feature is visible."
-
-            "zIndex" =@ T<int>
-            |> WithComment "All features are displayed on the map in order of their zIndex, with higher values displaying in front of features with lower values. Markers are always displayed in front of line-strings and polygons."
-        ]
-
-    //TODO how to add a namespace to a typeDef? "google.maps.Data.StylingFunction"
-    let StylingFunction = T<obj> -* Feature ^-> StyleOptions
+    let StylingFunction = Feature ^-> StyleOptions
 
     let DataOptions =
-        Config "google.maps.Data.DataOptions"
-        |+> Instance [
-            "map" =@ M.Map
-            |> WithComment "Map on which to display the features in the collection."
-
-            "controlPosition" =@ Controls.ControlPosition
-            |> WithComment "The position of the drawing controls on the map. Default: ControlPosition.TOP_LEFT."
-
-            "controls" =@ T<string[]>
-            |> WithComment "Describes which drawing modes are available for the user to select, in the order they are displayed. This should not include the null drawing mode, which is added by default. If null, drawing controls are disabled and not displayed. Possible drawing modes are \"Point\", \"LineString\" or \"Polygon\"."
-
-            "drawingMode" =@ T<string>
-            |> WithComment "The current drawing mode of the given Data layer. A drawing mode of null means that the user can interact with the map as normal, and clicks do not draw anything. Possible drawing modes are null, \"Point\", \"LineString\" or \"Polygon\"."
-
-            "featureFactory" =@ T<obj> -* Geometry ^-> Feature
-            |> WithComment "When drawing is enabled and a user draws a Geometry (a Point, Line String or Polygon), this function is called with that Geometry and should return a Feature that is to be added to the Data layer. If a featureFactory is not supplied, a Feature with no id and no properties will be created from that Geometry instead. Defaults to null."
-
-            "style" =@ StylingFunction + StyleOptions
-            |> WithComment "Style for all features in the collection. For more details, see the setStyle() method above."
-        ]
+        Config "google.maps.DataOptions"
+            []
+            [
+                "controlPosition", Controls.ControlPosition.Type
+                "controls", !| T<string>
+                "drawingMode", T<string>
+                "featureFactory", Geometry ^-> Feature
+                "map", Map.Map.Type
+                "style", StylingFunction + StyleOptions
+            ]
 
     let GeoJsonOptions =
         Config "google.maps.Data.GeoJsonOptions"
-        |+> Instance [
-            "idPropertyName" =@ T<string>
-            |> WithComment "The name of the Feature property to use as the feature ID. If not specified, the GeoJSON Feature id will be used."
-        ]
+            []
+            [
+                "idPropertyName", T<string>
+            ]    
 
     let Data =
         Forward.Data
@@ -309,6 +260,9 @@ module Data =
             |> WithComment "Creates an empty collection, with the given DataOptions."
         ]
         |+> Instance [
+            // export type StylingFunction
+            "StylingFunction" => StylingFunction
+
             "add" => !? (Feature + FeatureOptions)?feature ^-> Feature
             |> WithComment """Adds a feature to the collection, and returns the added feature.
 

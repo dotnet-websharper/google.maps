@@ -27,14 +27,17 @@ module Notation =
     open WebSharper.JavaScript.WebGL
     open WebSharper.InterfaceGenerator
 
+    let Text = T<Text>
     let Node = T<Node>
     let Document = T<Document>
     let Element = T<Element>
     let HTMLElement = T<HTMLElement>
+    let HTMLInputElement = T<HTMLInputElement>
     let SVGElement = T<SVGImageElement>
     let URL = T<URL>
     let Object = T<WebSharper.JavaScript.Object>
     let Error = T<Error>
+    let Function = T<Function>
     let Date = T<Date>
     let Promise = T<Promise<_>>
     let MouseEvent = T<MouseEvent>
@@ -42,11 +45,7 @@ module Notation =
     let JsEvent = T<Event>
     let AddEventListenerOptions = T<AddEventListenerOptions>
     let EventListenerOptions = T<EventListenerOptions>
-    // let EventListener = T<EventListener>
-    // let EventListenerObject = T<EventListenerObject>
     let Float32Array = T<Float32Array>
-    //TODO: confirm this one
-    // let WebGLRenderingContext = T<WebGLRenderingContext>
     let WebGLRenderingContext = T<RenderingContext>
 
     /// Defines a method type given the return type and parameter specifications.
@@ -64,6 +63,8 @@ module Notation =
         Constructor ps
 
     /// Defines a configuration object.
-    let Config name =
-        Class name
-        |+> Static [ Ctor [] |> WithInline "{}" ]
+    let Config (name: string) (requiredSeq: (string * Type.Type) seq) (optionalSeq: (string * Type.Type) seq): CodeModel.Class = 
+        Pattern.Config name {
+            Required = requiredSeq
+            Optional = optionalSeq
+        }

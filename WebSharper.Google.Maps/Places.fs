@@ -31,10 +31,10 @@ module Places =
     (** Places Autocomplete Services *)
     let ComponentRestrictions =
         Config "google.maps.places.ComponentRestrictions"
-        |+> Instance [
-            "country" =@ (T<string> + Type.ArrayOf T<string>)
-            |> WithComment "Restricts predictions to the specified country (ISO 3166-1 Alpha-2 country code, case insensitive). For example, 'us', 'br', or 'au'. You can provide a single one, or an array of up to five country code strings."
-        ]
+            []
+            [
+                "country", (T<string> + Type.ArrayOf T<string>)
+            ]
 
     let BusinessStatus =
         Class "google.maps.places.BusinessStatus"
@@ -66,22 +66,27 @@ module Places =
 
     let PlaceDetailsRequest =
         Config "google.maps.places.PlaceDetailsRequest"
-        |+> Instance [
-            "placeId" =@ T<string>
-            |> WithComment "The Place ID of the Place for which details are being requested."
+            []
+            [
+                // The Place ID of the Place for which details are being requested.
+                "placeId", T<string>
 
-            "fields" =@ T<string[]>
-            |> WithComment "Fields to be included in the details response, which will be billed for. If no fields are specified or ['ALL'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, \"geometry.location\")."
+                // Fields to be included in the details response, which will be billed for. 
+                // If no fields are specified or ['ALL'] is passed in, all available fields will be returned and billed for (not recommended for production). 
+                // For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (e.g., "geometry.location").
+                "fields", T<string[]> 
 
-            "language" =@ T<string>
-            |> WithComment "A language identifier for the language in which details should be returned. See the list of supported languages."
+                // A language identifier for the language in which details should be returned.
+                "language", T<string>
 
-            "region" =@ T<string>
-            |> WithComment "A region code of the user's region. This can affect which photos may be returned, and possibly other things. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
+                // A region code of the user's region. This can affect which photos may be returned, and possibly other things.
+                // Accepts a ccTLD ("top-level domain") two-character value. 
+                // For example, UK: "uk" (.co.uk) vs ISO 3166-1 code: "gb"
+                "region", T<string>
 
-            "sessionToken" =@ AutocompleteSessionToken
-            |> WithComment "Unique reference used to bundle the details request with an autocomplete session."
-        ]
+                // Unique reference used to bundle the details request with an autocomplete session.
+                "sessionToken", AutocompleteSessionToken.Type
+            ]
 
     let PlaceGeometry =
         Class "google.maps.places.PlaceGeometry"
@@ -95,32 +100,37 @@ module Places =
 
     let PlaceOpeningHoursTime =
         Config "google.maps.places.PlaceOpeningHoursTime"
-        |+> Instance [
-            "day" =@ T<int>
-            |> WithComment "The days of the week, as a number in the range [0, 6], starting on Sunday. For example, 2 means Tuesday."
+            []
+            [
+                // The days of the week, as a number in the range [0, 6], starting on Sunday. For example, 2 means Tuesday.
+                "day", T<int>
 
-            "hours" =@ T<int>
-            |> WithComment "The hours of the PlaceOpeningHoursTime.time as a number, in the range [0, 23]. This will be reported in the Place’s time zone."
+                // The hours of the PlaceOpeningHoursTime.time as a number, in the range [0, 23]. This will be reported in the Place’s time zone.
+                "hours", T<int>
 
-            "minutes" =@ T<int>
-            |> WithComment "The minutes of the PlaceOpeningHoursTime.time as a number, in the range [0, 59]. This will be reported in the Place’s time zone."
+                // The minutes of the PlaceOpeningHoursTime.time as a number, in the range [0, 59]. This will be reported in the Place’s time zone.
+                "minutes", T<int>
 
-            "time" =@ T<string>
-            |> WithComment "The time of day in 24-hour \"hhmm\" format. Values are in the range [\"0000\", \"2359\"]. The time will be reported in the Place’s time zone."
+                // The time of day in 24-hour "hhmm" format. Values are in the range ["0000", "2359"]. The time will be reported in the Place’s time zone.
+                "time", T<string>
 
-            "nextDate" =@ T<int64>
-            |> WithComment "The timestamp (as milliseconds since the epoch, suitable for use with new Date()) representing the next occurrence of this PlaceOpeningHoursTime. It is calculated from the PlaceOpeningHoursTime.day of week, the PlaceOpeningHoursTime.time, and the PlaceResult.utc_offset_minutes. If the PlaceResult.utc_offset_minutes is undefined, then nextDate will be undefined."
-        ]
+                // The timestamp (as milliseconds since the epoch, suitable for use with new Date()) representing the next occurrence of this PlaceOpeningHoursTime.
+                // It is calculated from the PlaceOpeningHoursTime.day of week, the PlaceOpeningHoursTime.time, and the PlaceResult.utc_offset_minutes.
+                // If the PlaceResult.utc_offset_minutes is undefined, then nextDate will be undefined.
+                "nextDate", T<int64>
+            ]
 
     let PlaceOpeningHoursPeriod =
         Config "google.maps.places.PlaceOpeningHoursPeriod"
-        |+> Instance [
-            "open" =@ PlaceOpeningHoursTime
-            |> WithComment "The opening time for the Place."
+            []
+            [
+                // The opening time for the Place.
+                "open", PlaceOpeningHoursTime.Type
 
-            "close" =@ PlaceOpeningHoursTime
-            |> WithComment "The closing time for the Place."
-        ]
+                // The closing time for the Place.
+                "close", PlaceOpeningHoursTime.Type
+            ]
+
 
     let PlaceOpeningHours =
         Class "google.maps.places.PlaceOpeningHours"
@@ -139,25 +149,16 @@ module Places =
             |> WithComment "Check whether the place is open now (when no date is passed), or at the given date. If this place does not have PlaceResult.utc_offset_minutes or PlaceOpeningHours.periods then undefined is returned (PlaceOpeningHours.periods is only available via PlacesService.getDetails). This method does not take exceptional hours, such as holiday hours, into consideration."
         ]
 
-    let PlacePlusCode =
-        Forward.PlacePlusCode
-        |+> Instance [
-            "global_code" =@ T<string>
-            |> WithComment "A plus code with a 1/8000th of a degree by 1/8000th of a degree area. For example, \"8FVC9G8F+5W\"."
-
-            "compound_code" =@ T<string>
-            |> WithComment "A plus code with a 1/8000th of a degree by 1/8000th of a degree area where the first four characters (the area code) are dropped and replaced with a locality description. For example, \"9G8F+5W Zurich, Switzerland\". If no suitable locality that can be found to shorten the code then this field is omitted."
-        ]
-
     let PhotoOptions =
         Config "google.maps.places.PhotoOptions"
-        |+> Instance [
-            "maxHeight" =@ T<int>
-            |> WithComment "The maximum height in pixels of the returned image."
+            []
+            [
+                // The maximum height in pixels of the returned image.
+                "maxHeight", T<int>
 
-            "maxWidth" =@ T<int>
-            |> WithComment "The maximum width in pixels of the returned image."
-        ]
+                // The maximum width in pixels of the returned image.
+                "maxWidth", T<int>
+            ]
 
     let PlacePhoto =
         Class "google.maps.places.PlacePhoto"
@@ -228,80 +229,105 @@ module Places =
         ]
 
     let LocationBias =
-        LatLng + LatLngLiteral + LatLngBounds + LatLngBoundsLiteral + Circle + CircleLiteral
+        LatLng + LatLngLiteral + LatLngBounds + LatLngBoundsLiteral + Circle + CircleLiteral + T<string>
 
     let LocationRestriction =
         LatLngBounds + LatLngBoundsLiteral
 
     let FindPlaceFromPhoneNumberRequest =
         Config "google.maps.places.FindPlaceFromPhoneNumberRequest"
-        |+> Instance [
-            "fields" =@ T<string[]>
-            |> WithComment "Fields to be included in the response, which will be billed for. If ['ALL'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, \"geometry.location\")."
+            []
+            [
+                // Fields to be included in the response, which will be billed for.
+                // If ['ALL'] is passed in, all available fields will be returned and billed for
+                // (this is not recommended for production deployments).
+                // For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (e.g., "geometry.location").
+                "fields", T<string[]>
 
-            "phoneNumber" =@ T<string>
-            |> WithComment "The phone number of the place to look up. Format must be E.164."
+                // The phone number of the place to look up. Format must be E.164.
+                "phoneNumber", T<string>
 
-            "language" =@ T<string>
-            |> WithComment "A language identifier for the language in which names and addresses should be returned, when possible. See the list of supported languages."
+                // A language identifier for the language in which names and addresses should be returned, when possible.
+                // See the list of supported languages.
+                "language", T<string>
 
-            "locationBias" =@ LocationBias
-            |> WithComment "The bias used when searching for Place. The result will be biased towards, but not restricted to, the given LocationBias."
-        ]
+                // The bias used when searching for Place. The result will be biased towards,
+                // but not restricted to, the given LocationBias.
+                "locationBias", LocationBias
+            ]
 
     let FindPlaceFromQueryRequest =
         Config "google.maps.places.FindPlaceFromQueryRequest"
-        |+> Instance [
-            "fields" =@ T<string[]>
-            |> WithComment "Fields to be included in the response, which will be billed for. If ['ALL'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, \"geometry.location\")."
+            []
+            [
+                // Fields to be included in the response, which will be billed for.
+                // If ['ALL'] is passed in, all available fields will be returned and billed for
+                // (this is not recommended for production deployments).
+                // For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (e.g., "geometry.location").
+                "fields", T<string[]>
 
-            "phoneNumber" =@ T<string>
-            |> WithComment "The request's query. For example, the name or address of a place."
+                // The request's query. For example, the name or address of a place.
+                "phoneNumber", T<string>
 
-            "language" =@ T<string>
-            |> WithComment "A language identifier for the language in which names and addresses should be returned, when possible. See the list of supported languages."
+                // A language identifier for the language in which names and addresses should be returned, when possible.
+                // See the list of supported languages.
+                "language", T<string>
 
-            "locationBias" =@ LocationBias
-            |> WithComment "The bias used when searching for Place. The result will be biased towards, but not restricted to, the given LocationBias."
-        ]
+                // The bias used when searching for Place. The result will be biased towards,
+                // but not restricted to, the given LocationBias.
+                "locationBias", LocationBias
+            ]
 
     let PlaceSearchRequest =
         Config "google.maps.places.PlaceSearchRequest"
-        |+> Instance [
-            "bounds" =@ LatLngBounds + LatLngBoundsLiteral
-            |> WithComment "The bounds within which to search for Places. Both location and radius will be ignored if bounds is set."
+            []
+            [
+                // The bounds within which to search for Places.
+                // Both location and radius will be ignored if bounds is set.
+                "bounds", LatLngBounds + LatLngBoundsLiteral
 
-            "keyword" =@ T<string>
-            |> WithComment "A term to be matched against all available fields, including but not limited to name, type, and address, as well as customer reviews and other third-party content."
+                // A term to be matched against all available fields, including but not limited to name,
+                // type, and address, as well as customer reviews and other third-party content.
+                "keyword", T<string>
 
-            "language" =@ T<string>
-            |> WithComment "A language identifier for the language in which names and addresses should be returned, when possible. See the list of supported languages."
+                // A language identifier for the language in which names and addresses should be returned, when possible.
+                // See the list of supported languages.
+                "language", T<string>
 
-            "location" =@ LatLng + LatLngLiteral
-            |> WithComment "The location around which to search for Places."
+                // The location around which to search for Places.
+                "location", LatLng + LatLngLiteral
 
-            "maxPriceLevel" =@ T<int>
-            |> WithComment "Restricts results to only those places at the specified price level or lower. Valid values are in the range from 0 (most affordable) to 4 (most expensive), inclusive. Must be greater than or equal to minPrice , if specified."
+                // Restricts results to only those places at the specified price level or lower.
+                // Valid values: 0 (most affordable) to 4 (most expensive). Must be >= minPrice if specified.
+                "maxPriceLevel", T<int>
 
-            "minPriceLevel" =@ T<int>
-            |> WithComment "Restricts results to only those places at the specified price level or higher. Valid values are in the range from 0 (most affordable) to 4 (most expensive), inclusive. Must be less than or equal to maxPrice, if specified."
+                // Restricts results to only those places at the specified price level or higher.
+                // Valid values: 0 (most affordable) to 4 (most expensive). Must be <= maxPrice if specified.
+                "minPriceLevel", T<int>
 
-            "name" =@ T<string>
-            |> WithComment "Equivalent to keyword. Values in this field are combined with values in the keyword field and passed as part of the same search string."
-            |> ObsoleteWithMessage "Deprecated: Use keyword instead."
+                // Equivalent to keyword. Values in this field are combined with values in the keyword field
+                // and passed as part of the same search string.
+                // Deprecated: Use keyword instead.
+                "name", T<string>
 
-            "openNow" =@ T<bool>
-            |> WithComment "Restricts results to only those places that are open right now."
+                // Restricts results to only those places that are open right now.
+                "openNow", T<bool>
 
-            "radius" =@ T<float>
-            |> WithComment "The distance from the given location within which to search for Places, in meters. The maximum allowed value is 50000."
+                // The distance from the given location within which to search for Places, in meters.
+                // Maximum allowed value is 50000.
+                "radius", T<float>
 
-            "rankBy" =@ RankBy
-            |> WithComment "Specifies the ranking method to use when returning results. Note that when rankBy is set to DISTANCE, you must specify a location but you cannot specify a radius or bounds. Default: RankBy.PROMINENCE"
+                // Specifies the ranking method to use when returning results.
+                // Note: If rankBy is DISTANCE, you must specify location, and cannot specify radius or bounds.
+                // Default: RankBy.PROMINENCE
+                "rankBy", RankBy.Type
 
-            "type" =@ T<string>
-            |> WithComment "Searches for places of the given type. The type is translated to the local language of the request's target location and used as a query string. If a query is also provided, it is concatenated to the localized type string. Results of a different type are dropped from the response. Use this field to perform language and region independent categorical searches."
-        ]
+                // Searches for places of the given type. The type is translated to the local language
+                // of the request's target location and used as a query string. Results of a different type are dropped.
+                "type", T<string>
+            ]
+
+    let PlacePlusCode = Forward.PlacePlusCode
 
     let PlaceResult =
         Class "google.maps.places.PlaceResult"
@@ -363,11 +389,11 @@ module Places =
 
             "price_level" =? T<int>
             |> WithComment "The price level of the Place, on a scale of 0 to 4. Price levels are interpreted as follows:
-    0:	Free
-    1:	Inexpensive
-    2:	Moderate
-    3:	Expensive
-    4:	Very Expensive"
+                0:	Free
+                1:	Inexpensive
+                2:	Moderate
+                3:	Expensive
+                4:	Very Expensive"
 
             "rating" =? T<float>
             |> WithComment "A rating, between 1.0 to 5.0, based on user reviews of this Place."
@@ -425,36 +451,39 @@ module Places =
 
     let PredictionSubstring =
         Config "google.maps.places.PredictionSubstring"
-        |+> Instance [
-            "length" =? T<int>
-            |> WithComment "The length of the substring."
+            []
+            [
+                // The length of the substring.
+                "length", T<int>
 
-            "offset" =? T<int>
-            |> WithComment "The offset to the substring's start within the description string."
-        ]
+                // The offset to the substring's start within the description string.
+                "offset", T<int>
+            ]
 
     let PredictionTerm =
         Config "google.maps.places.PredictionTerm"
-        |+> Instance [
-            "offset" =? T<int>
-            |> WithComment "The offset, in unicode characters, of the start of this term in the description of the place."
+            []
+            [
+                // The offset, in unicode characters, of the start of this term in the description of the place.
+                "offset", T<int>
 
-            "value" =? T<string>
-            |> WithComment "The value of this term, e.g. \"Taco Bell\"."
-        ]
+                // The value of this term, e.g. "Taco Bell".
+                "value", T<string>
+            ]
 
     let StructuredFormatting =
         Config "google.maps.places.StructuredFormatting"
-        |+> Instance [
-            "main_text" =? T<string>
-            |> WithComment "This is the main text part of the unformatted description of the place suggested by the Places service. Usually the name of the place."
+            []
+            [
+                // This is the main text part of the unformatted description of the place suggested by the Places service. Usually the name of the place.
+                "main_text", T<string>
 
-            "main_text_matched_substrings" =? Type.ArrayOf PredictionSubstring
-            |> WithComment "A set of substrings in the main text that match elements in the user's input, suitable for use in highlighting those substrings. Each substring is identified by an offset and a length, expressed in unicode characters."
+                // A set of substrings in the main text that match elements in the user's input, suitable for use in highlighting those substrings. Each substring is identified by an offset and a length, expressed in unicode characters.
+                "main_text_matched_substrings", Type.ArrayOf PredictionSubstring
 
-            "secondary_text" =? T<string>
-            |> WithComment "This is the secondary text part of the unformatted description of the place suggested by the Places service. Usually the location of the place."
-        ]
+                // This is the secondary text part of the unformatted description of the place suggested by the Places service. Usually the location of the place.
+                "secondary_text", T<string>
+            ]
 
     let QueryAutocompletePrediction =
         Class "google.maps.places.QueryAutocompletePrediction"
@@ -474,69 +503,49 @@ module Places =
 
     let QueryAutocompletionRequest =
         Config "google.maps.places.QueryAutocompletionRequest"
-        |+> Instance [
-            "bounds" =@ (LatLngBounds + LatLngBoundsLiteral)
-            |> WithComment "Bounds for prediction biasing. Predictions will be biased towards, but not restricted to, the given bounds. Both location and radius will be ignored if bounds is set."
+            []
+            [
+                // Bounds for prediction biasing. Predictions will be biased towards, but not restricted to, the given bounds. Both location and radius will be ignored if bounds is set.
+                "bounds", LatLngBounds + LatLngBoundsLiteral
 
-            "input" =@ T<string>
-            |> WithComment "The user entered input string."
+                // The user entered input string.
+                "input", T<string>
 
-            "location" =@ LatLng
-            |> WithComment "Location for prediction biasing. Predictions will be biased towards the given location and radius. Alternatively, bounds can be used."
+                // Location for prediction biasing. Predictions will be biased towards the given location and radius. Alternatively, bounds can be used.
+                "location", LatLng.Type
 
-            "offset" =@ T<int>
-            |> WithComment "The character position in the input term at which the service uses text for predictions (the position of the cursor in the input field)."
+                // The character position in the input term at which the service uses text for predictions (the position of the cursor in the input field).
+                "offset", T<int>
 
-            "radius" =@ T<float>
-            |> WithComment "The radius of the area used for prediction biasing. The radius is specified in meters, and must always be accompanied by a location property. Alternatively, bounds can be used."
-        ]
-
-    // let RadarSearchRequest =
-    //     Config "google.maps.places.RadarSearchRequest"
-    //     |+> Instance [
-    //         "bounds" =@ LatLngBounds
-    //         |> WithComment "Bounds used to bias results when searching for Places (optional). Both location and radius will be ignored if bounds is set. Results will not be restricted to those inside these bounds; but, results inside it will rank higher."
-
-    //         "keyword" =@ T<string>
-    //         |> WithComment "A term to be matched against all available fields, including but not limited to name, type, and address, as well as customer reviews and other third-party content."
-
-    //         "location" =@ LatLng
-    //         |> WithComment "The center of the area used to bias results when searching for Places."
-
-    //         "name" =@ T<string>
-    //         |> WithComment "Restricts results to Places that include this text in the name."
-
-    //         "radius" =@ T<float>
-    //         |> WithComment "The radius of the area used to bias results when searching for Places, in meters."
-
-    //         "types" =@ T<string[]>
-    //         |> WithComment "Restricts the Place search results to Places with a type matching at least one of the specified types in this array. Valid types are given here."
-    //     ]
+                // The radius of the area used for prediction biasing. The radius is specified in meters, and must always be accompanied by a location property. Alternatively, bounds can be used.
+                "radius", T<float>
+            ]
 
     let TextSearchRequest =
         Config "google.maps.places.TextSearchRequest"
-        |+> Instance [
-            "bounds" =@ LatLngBounds + LatLngBoundsLiteral
-            |> WithComment "Bounds used to bias results when searching for Places (optional). Both location and radius will be ignored if bounds is set. Results will not be restricted to those inside these bounds; but, results inside it will rank higher."
+            []
+            [
+                // Bounds used to bias results when searching for Places (optional). Both location and radius will be ignored if bounds is set. Results will not be restricted to those inside these bounds; but, results inside it will rank higher.
+                "bounds", LatLngBounds + LatLngBoundsLiteral
 
-            "language" =@ T<string>
-            |> WithComment "A language identifier for the language in which names and addresses should be returned, when possible. See the list of supported languages."
+                // A language identifier for the language in which names and addresses should be returned, when possible. See the list of supported languages.
+                "language", T<string>
 
-            "location" =@ LatLng + LatLngLiteral
-            |> WithComment "The center of the area used to bias results when searching for Places."
+                // The center of the area used to bias results when searching for Places.
+                "location", LatLng + LatLngLiteral
 
-            "query" =@ T<string>
-            |> WithComment "The request's query term. e.g. the name of a place ('Eiffel Tower'), a category followed by the name of a location ('pizza in New York'), or the name of a place followed by a location disambiguator ('Starbucks in Sydney')."
+                // The request's query term. e.g. the name of a place ('Eiffel Tower'), a category followed by the name of a location ('pizza in New York'), or the name of a place followed by a location disambiguator ('Starbucks in Sydney').
+                "query", T<string>
 
-            "radius" =@ T<float>
-            |> WithComment "The radius of the area used to bias results when searching for Places, in meters."
+                // The radius of the area used to bias results when searching for Places, in meters.
+                "radius", T<float>
 
-            "region" =@ T<string>
-            |> WithComment "A region code to bias results towards. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
+                // A region code to bias results towards. The region code accepts a ccTLD ("top-level domain") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is "uk" (.co.uk) while its ISO 3166-1 code is "gb" (technically for the entity of "The United Kingdom of Great Britain and Northern Ireland").
+                "region", T<string>
 
-            "type" =@ T<string>
-            |> WithComment "Searches for places of the given type. The type is translated to the local language of the request's target location and used as a query string. If a query is also provided, it is concatenated to the localized type string. Results of a different type are dropped from the response. Use this field to perform language and region independent categorical searches."
-        ]
+                // Searches for places of the given type. The type is translated to the local language of the request's target location and used as a query string. If a query is also provided, it is concatenated to the localized type string. Results of a different type are dropped from the response. Use this field to perform language and region independent categorical searches.
+                "type", T<string>
+            ]
 
     let PlacesService =
         Class "google.maps.places.PlacesService"
@@ -560,10 +569,11 @@ module Places =
 
     let SearchBoxOptions =
         Config "google.maps.places.SearchBoxOptions"
-        |+> Instance [
-            "bounds" =@ (LatLngBounds + LatLngBoundsLiteral)
-            |> WithComment "The area towards which to bias query predictions. Predictions are biased towards, but not restricted to, queries targeting these bounds."
-        ]
+            []
+            [
+                // The area towards which to bias query predictions. Predictions are biased towards, but not restricted to, queries targeting these bounds.
+                "bounds", LatLngBounds + LatLngBoundsLiteral
+            ]
 
     let SearchBox =
         Class "google.maps.places.SearchBox"
@@ -584,55 +594,63 @@ module Places =
 
     let AutocompleteOptions =
         Config "google.maps.places.AutocompleteOptions"
-        |+> Instance [
-            "bounds" =@ (LatLngBounds + LatLngBoundsLiteral)
-            |> WithComment "The area in which to search for places."
+            []
+            [
+                // The area in which to search for places.
+                "bounds", LatLngBounds + LatLngBoundsLiteral
 
-            "componentRestrictions" =@ ComponentRestrictions
-            |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. E.g., the country."
+                // The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. E.g., the country.
+                "componentRestrictions", ComponentRestrictions.Type
 
-            "fields" =@ T<string[]>
-            |> WithComment "Fields to be included for the Place in the details response when the details are successfully retrieved, which will be billed for. If ['ALL'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, \"geometry.location\"). The default is ['ALL']."
+                // Fields to be included for the Place in the details response when the details are successfully retrieved, which will be billed for.
+                // If ['ALL'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments).
+                // For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, "geometry.location"). The default is ['ALL'].
+                "fields", T<string[]>
 
-            "placeIdOnly" =@ T<bool>
-            |> WithComment "Whether to retrieve only Place IDs. The PlaceResult made available when the place_changed event is fired will only have the place_id, types and name fields, with the place_id, types and description returned by the Autocomplete service. Disabled by default."
-            |> ObsoleteWithMessage "Deprecated: placeIdOnly is deprecated as of January 15, 2019, and will be turned off on January 15, 2020. Use AutocompleteOptions.fields instead: fields: ['place_id', 'name', 'types']."
+                // Whether to retrieve only Place IDs. The PlaceResult made available when the place_changed event is fired will only have the place_id, types and name fields, with the place_id, types and description returned by the Autocomplete service.
+                "placeIdOnly", T<bool>
 
-            "strictBounds" =@ T<bool>
-            |> WithComment "A boolean value, indicating that the Autocomplete widget should only return those places that are inside the bounds of the Autocomplete widget at the time the query is sent. Setting strictBounds to false (which is the default) will make the results biased towards, but not restricted to, places contained within the bounds."
+                // A boolean value, indicating that the Autocomplete widget should only return those places that are inside the bounds of the Autocomplete widget at the time the query is sent.
+                // Setting strictBounds to false (which is the default) will make the results biased towards, but not restricted to, places contained within the bounds.
+                "strictBounds", T<bool>
 
-            "types" =@ T<string[]>
-            |> WithComment "The types of predictions to be returned. Four types are supported: 'establishment' for businesses, 'geocode' for addresses, '(regions)' for administrative regions and '(cities)' for localities. If nothing is specified, all types are returned."
-        ]
+                // The types of predictions to be returned. Four types are supported: 'establishment' for businesses, 'geocode' for addresses,
+                // '(regions)' for administrative regions and '(cities)' for localities. If nothing is specified, all types are returned.
+                "types", T<string[]>
+            ]
 
     let AutocompletePrediction =
         Config "google.maps.places.AutocompletePrediction"
-        |+> Instance [
-            "description" =? T<string>
-            |> WithComment "This is the unformatted version of the query suggested by the Places service."
+            []
+            [
+                // This is the unformatted version of the query suggested by the Places service.
+                "description", T<string>
 
-            "matched_substring" =? Type.ArrayOf PredictionSubstring
-            |> WithComment "A set of substrings in the place's description that match elements in the user's input, suitable for use in highlighting those substrings. Each substring is identified by an offset and a length, expressed in unicode characters."
+                // A set of substrings in the place's description that match elements in the user's input, suitable for use in highlighting those substrings.
+                // Each substring is identified by an offset and a length, expressed in unicode characters.
+                "matched_substring", Type.ArrayOf PredictionSubstring
 
-            "place_id" =? T<string>
-            |> WithComment "A place ID that can be used to retrieve details about this place using the place details service (see PlacesService.getDetails)."
-            "structured_formatting" =? StructuredFormatting
-            |> WithComment "Structured information about the place's description, divided into a main text and a secondary text, including an array of matched substrings from the autocomplete input, identified by an offset and a length, expressed in unicode characters."
+                // A place ID that can be used to retrieve details about this place using the place details service (see PlacesService.getDetails).
+                "place_id", T<string>
 
-            "terms" =? Type.ArrayOf PredictionTerm
-            |> WithComment "Information about individual terms in the above description, from most to least specific. For example, \"Taco Bell\", \"Willitis\", and \"CA\"."
+                // Structured information about the place's description, divided into a main text and a secondary text,
+                // including an array of matched substrings from the autocomplete input, identified by an offset and a length, expressed in unicode characters.
+                "structured_formatting", StructuredFormatting.Type
 
-            "types" =? T<string[]>
-            |> WithComment "An array of types that the prediction belongs to, for example 'establishment' or 'geocode'."
+                // Information about individual terms in the above description, from most to least specific. For example, "Taco Bell", "Willitis", and "CA".
+                "terms", Type.ArrayOf PredictionTerm
 
-            "distance_meters" =@ T<float>
-            |> WithComment "The distance in meters of the place from the AutocompletionRequest.origin."
-        ]
+                // An array of types that the prediction belongs to, for example 'establishment' or 'geocode'.
+                "types", T<string[]>
+
+                // The distance in meters of the place from the AutocompletionRequest.origin.
+                "distance_meters", T<float>
+            ]
 
     let Autocomplete =
         Class "google.maps.places.Autocomplete"
         |=> Inherits MVC.MVCObject
-        |+> Static [Constructor (Element?InputField * !?AutocompleteOptions)]
+        |+> Static [Constructor (HTMLInputElement?InputField * !?AutocompleteOptions)]
         |+> Instance [
             "getBounds" => T<unit> ^-> LatLngBounds
             |> WithComment "Returns the bounds to which predictions are biased."
@@ -664,56 +682,57 @@ If the user enters the name of a Place that was not suggested by the control and
 
     let AutocompletionRequest =
         Config "google.maps.places.AutocompletionRequest"
-        |+> Instance [
-            "bounds" =@ (LatLngBounds + LatLngBoundsLiteral)
-            |> WithComment "Bounds for prediction biasing. Predictions will be biased towards, but not restricted to, the given bounds. Both location and radius will be ignored if bounds is set."
-            |> ObsoleteWithMessage "Deprecated: bounds is deprecated as of May 2023. Use AutocompletionRequest.locationBias and AutocompletionRequest.locationRestriction instead."
+            []
+            [
+                // Bounds for prediction biasing. Predictions will be biased towards, but not restricted to, the given bounds. Both location and radius will be ignored if bounds is set.
+                "bounds", LatLngBounds + LatLngBoundsLiteral
 
-            "componentRestrictions" =@ ComponentRestrictions
-            |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. E.g., the country."
+                // The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. E.g., the country.
+                "componentRestrictions", ComponentRestrictions.Type
 
-            "input" =@ T<string>
-            |> WithComment "The user entered input string."
+                // The user entered input string.
+                "input", T<string>
 
-            "language" =@ T<string>
-            |> WithComment "A language identifier for the language in which the results should be returned, if possible. Results in the selected language may be given a higher ranking, but suggestions are not restricted to this language."
+                // A language identifier for the language in which the results should be returned, if possible. Results in the selected language may be given a higher ranking, but suggestions are not restricted to this language.
+                "language", T<string>
 
-            "location" =@ LatLng
-            |> WithComment "Location for prediction biasing. Predictions will be biased towards the given location and radius. Alternatively, bounds can be used."
-            |> ObsoleteWithMessage "Deprecated: location is deprecated as of May 2023. Use AutocompletionRequest.locationBias and AutocompletionRequest.locationRestriction instead."
+                // Location for prediction biasing. Predictions will be biased towards the given location and radius. Alternatively, bounds can be used.
+                "location", LatLng.Type
 
-            "locationBias" =@ LocationBias
-            |> WithComment "A soft boundary or hint to use when searching for places."
+                // A soft boundary or hint to use when searching for places.
+                "locationBias", LocationBias
 
-            "locationRestriction" =@ LocationRestriction
-            |> WithComment "Bounds to constrain search results."
+                // Bounds to constrain search results.
+                "locationRestriction", LocationRestriction
 
-            "offset" =@ T<int>
-            |> WithComment "The character position in the input term at which the service uses text for predictions (the position of the cursor in the input field)."
+                // The character position in the input term at which the service uses text for predictions (the position of the cursor in the input field).
+                "offset", T<int>
 
-            "origin" =@ (LatLng + LatLngLiteral)
-            |> WithComment "The location where AutocompletePrediction.distance_meters is calculated from."
+                // The location where AutocompletePrediction.distance_meters is calculated from.
+                "origin", LatLng + LatLngLiteral
 
-            "radius" =@ T<float>
-            |> WithComment "The radius of the area used for prediction biasing. The radius is specified in meters, and must always be accompanied by a location property. Alternatively, bounds can be used."
-            |> ObsoleteWithMessage "Deprecated: radius is deprecated as of May 2023. Use AutocompletionRequest.locationBias and AutocompletionRequest.locationRestriction instead."
+                // The radius of the area used for prediction biasing. The radius is specified in meters, and must always be accompanied by a location property. Alternatively, bounds can be used.
+                "radius", T<float>
 
-            "region" =@ T<string>
-            |> WithComment "A region code which is used for result formatting and for result filtering. It does not restrict the suggestions to this country. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
+                // A region code which is used for result formatting and for result filtering. It does not restrict the suggestions to this country.
+                // The region code accepts a ccTLD ("top-level domain") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions.
+                // For example, the United Kingdom's ccTLD is "uk" (.co.uk) while its ISO 3166-1 code is "gb" (technically for the entity of "The United Kingdom of Great Britain and Northern Ireland").
+                "region", T<string>
 
-            "sessionToken" =@ AutocompleteSessionToken
-            |> WithComment "Unique reference used to bundle individual requests into sessions."
+                // Unique reference used to bundle individual requests into sessions.
+                "sessionToken", AutocompleteSessionToken.Type
 
-            "types" =@ T<string[]>
-            |> WithComment "The types of predictions to be returned. For supported types, see the developer's guide. If no types are specified, all types will be returned."
-        ]
+                // The types of predictions to be returned. For supported types, see the developer's guide. If no types are specified, all types will be returned.
+                "types", T<string[]>
+            ]
 
     let AutocompleteResponse =
         Config "google.maps.places.AutocompleteResponse"
-        |+> Instance [
-            "predictions" =@ Type.ArrayOf AutocompletePrediction
-            |> WithComment "The list of AutocompletePredictions."
-        ]
+            []
+            [
+                // The list of AutocompletePredictions.
+                "predictions", Type.ArrayOf AutocompletePrediction
+            ]
 
     let AutocompleteService =
         Class "google.maps.places.AutocompleteService"
@@ -756,70 +775,66 @@ If the user enters the name of a Place that was not suggested by the control and
             "types" =@ T<string[]>
         ]
 
-    //TODO: confirm the interface implementation and move comments to it
     let PlaceAutocompleteElement =
         Class "google.maps.places.PlaceAutocompleteElement"
-        |=> Implements [PlaceAutocompleteElementOptions]
+        |=> Inherits HTMLElement
         |+> Static [Constructor PlaceAutocompleteElementOptions]
         |+> Instance [
-            // "componentRestrictions" =@ ComponentRestrictions
-            // |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. For example, the country."
+            "componentRestrictions" =@ ComponentRestrictions
+            |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. For example, the country."
 
-            // "locationBias" =@ LocationBias
-            // |> WithComment "A soft boundary or hint to use when searching for places."
+            "locationBias" =@ LocationBias
+            |> WithComment "A soft boundary or hint to use when searching for places."
 
-            // "locationRestriction" =@ LocationRestriction
-            // |> WithComment "Bounds to constrain search results."
+            "locationRestriction" =@ LocationRestriction
+            |> WithComment "Bounds to constrain search results."
 
             "name" =@ T<string>
             |> WithComment "The name to be used for the input element. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#name for details. Follows the same behavior as the name attribute for inputs. Note that this is the name that will be used when a form is submitted. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form for details."
 
-            // "requestedLanguage" =@ T<string>
-            // |> WithComment "A language identifier for the language in which the results should be returned, if possible. Results in the selected language may be given a higher ranking, but suggestions are not restricted to this language. See the list of supported languages."
+            "requestedLanguage" =@ T<string>
+            |> WithComment "A language identifier for the language in which the results should be returned, if possible. Results in the selected language may be given a higher ranking, but suggestions are not restricted to this language. See the list of supported languages."
 
-            // "requestedRegion" =@ T<string>
-            // |> WithComment "A region code which is used for result formatting and for result filtering. It does not restrict the suggestions to this country. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
+            "requestedRegion" =@ T<string>
+            |> WithComment "A region code which is used for result formatting and for result filtering. It does not restrict the suggestions to this country. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
 
-            // "types" =@ T<string[]>
-            // |> WithComment "The types of predictions to be returned. For supported types, see the developer's guide. If no types are specified, all types will be returned."
-
-            "addEventListener" => (T<string> * ((T<obj> ^-> T<unit>) + EventListenerOptions) + (T<bool> + AddEventListenerOptions)) ^-> T<unit>
-            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target."
-
-            "removerEventListener" => (T<string> * ((T<obj> ^-> T<unit>) + EventListenerOptions) + (T<bool> + AddEventListenerOptions)) ^-> T<unit>
-            |> WithComment "Removes an event listener previously registered with addEventListener from the target."
+            "types" =@ T<string[]>
+            |> WithComment "The types of predictions to be returned. For supported types, see the developer's guide. If no types are specified, all types will be returned."
         ]
-
 
     (** Place **)
     let PlaceOptions =
         Config "google.maps.places.PlaceOptions"
-        |+> Instance [
-            "id" =@ T<string>
-            |> WithComment "The unique place id."
+            []
+            [
+                // The unique place id.
+                "id", T<string>
 
-            "requestedLanguage" =@ T<string>
-            |> WithComment "A language identifier for the language in which details should be returned."
+                // A language identifier for the language in which details should be returned.
+                "requestedLanguage", T<string>
 
-            "requestedRegion" =@ T<string>
-            |> WithComment "A region code of the user's region. This can affect which photos may be returned, and possibly other things. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
-        ]
+                // A region code of the user's region. This can affect which photos may be returned, and possibly other things.
+                // The region code accepts a ccTLD ("top-level domain") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes,
+                // with some notable exceptions. For example, the United Kingdom's ccTLD is "uk" (.co.uk) while its ISO 3166-1 code is "gb" (technically for the entity of "The United Kingdom of Great Britain and Northern Ireland").
+                "requestedRegion", T<string>
+            ]
 
     let AccessibilityOptions =
         Config "google.maps.places.AccessibilityOptions"
-        |+> Instance [
-            "hasWheelchairAccessibleEntrance" =@ T<bool>
-            |> WithComment "Whether a place has a wheelchair accessible entrance. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+            []
+            [
+                // Whether a place has a wheelchair accessible entrance. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasWheelchairAccessibleEntrance", T<bool>
 
-            "hasWheelchairAccessibleParking" =@ T<bool>
-            |> WithComment "Whether a place has wheelchair accessible parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place has wheelchair accessible parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasWheelchairAccessibleParking", T<bool>
 
-            "hasWheelchairAccessibleRestroom" =@ T<bool>
-            |> WithComment "Whether a place has a wheelchair accessible restroom. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place has a wheelchair accessible restroom. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasWheelchairAccessibleRestroom", T<bool>
 
-            "hasWheelchairAccessibleSeating" =@ T<bool>
-            |> WithComment "Whether a place offers wheelchair accessible seating. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
-        ]
+                // Whether a place offers wheelchair accessible seating. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasWheelchairAccessibleSeating", T<bool>
+            ]
 
     let AddressComponent =
         Class "google.maps.places.AddressComponent"
@@ -885,44 +900,46 @@ If the user enters the name of a Place that was not suggested by the control and
 
     let ParkingOptions =
         Config "google.maps.places.ParkingOptions"
-        |+> Instance [
-            "hasFreeGarageParking" =@ T<bool>
-            |> WithComment "Whether a place offers free garage parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+            []
+            [
+                // Whether a place offers free garage parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasFreeGarageParking", T<bool>
 
-            "hasFreeParkingLot" =@ T<bool>
-            |> WithComment "Whether a place offers free parking lots. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place offers free parking lots. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasFreeParkingLot", T<bool>
 
-            "hasFreeStreetParking" =@ T<bool>
-            |> WithComment "Whether a place offers free street parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place offers free street parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasFreeStreetParking", T<bool>
 
-            "hasPaidGarageParking" =@ T<bool>
-            |> WithComment "Whether a place offers paid garage parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place offers paid garage parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasPaidGarageParking", T<bool>
 
-            "hasPaidParkingLot" =@ T<bool>
-            |> WithComment "Whether a place offers paid parking lots. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place offers paid parking lots. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasPaidParkingLot", T<bool>
 
-            "hasPaidStreetParking" =@ T<bool>
-            |> WithComment "Whether a place offers paid street parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place offers paid street parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasPaidStreetParking", T<bool>
 
-            "hasValetParking" =@ T<bool>
-            |> WithComment "Whether a place offers valet parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
-        ]
+                // Whether a place offers valet parking. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "hasValetParking", T<bool>
+            ]
 
     let PaymentOptions =
         Config "google.maps.places.PaymentOptions"
-        |+> Instance [
-            "acceptsCashOnly" =@ T<bool>
-            |> WithComment "Whether a place only accepts payment via cash. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+            []
+            [
+                // Whether a place only accepts payment via cash. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "acceptsCashOnly", T<bool>
 
-            "acceptsCreditCards" =@ T<bool>
-            |> WithComment "Whether a place accepts payment via credit card. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place accepts payment via credit card. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "acceptsCreditCards", T<bool>
 
-            "acceptsDebitCards" =@ T<bool>
-            |> WithComment "Whether a place accepts payment via debit card. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
+                // Whether a place accepts payment via debit card. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "acceptsDebitCards", T<bool>
 
-            "acceptsNFC" =@ T<bool>
-            |> WithComment "Whether a place accepts payment via NFC. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown."
-        ]
+                // Whether a place accepts payment via NFC. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown.
+                "acceptsNFC", T<bool>
+            ]
 
     let AuthorAttribution =
         Class "google.maps.places.AuthorAttribution"
@@ -992,59 +1009,59 @@ If the user enters the name of a Place that was not suggested by the control and
 
     let SearchByTextRequest =
         Config "google.maps.places.SearchByTextRequest"
-        |+> Instance [
-            "fields" =@ T<string[]>
-            |> WithComment "Fields to be included in the response, which will be billed for. If ['*'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, \"geometry.location\")."
+            []
+            [
+                // Fields to be included in the response, which will be billed for. If ['*'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, "geometry.location").
+                "fields", T<string[]>
 
-            "includedType" =@ T<string>
-            |> WithComment "The requested place type. Full list of types supported: https://developers.google.com/maps/documentation/places/web-service/place-types. Only one included type is supported. See SearchByTextRequest.useStrictTypeFiltering"
+                // The requested place type. Full list of types supported: https://developers.google.com/maps/documentation/places/web-service/place-types. Only one included type is supported. See SearchByTextRequest.useStrictTypeFiltering
+                "includedType", T<string>
 
-            "isOpenNow" =@ T<bool>
-            |> WithComment "Used to restrict the search to places that are currently open."
+                // Used to restrict the search to places that are currently open.
+                "isOpenNow", T<bool>
 
-            "language" =@ T<string>
-            |> WithComment "Place details will be displayed with the preferred language if available. Will default to the browser's language preference. Current list of supported languages: https://developers.google.com/maps/faq#languagesupport."
+                // Place details will be displayed with the preferred language if available. Will default to the browser's language preference. Current list of supported languages: https://developers.google.com/maps/faq#languagesupport.
+                "language", T<string>
 
-            "locationBias" =@ LatLng + LatLngLiteral + LatLngBounds + LatLngBoundsLiteral + CircleLiteral + Circle
-            |> WithComment "The region to search. This location serves as a bias which means results around given location might be returned. Cannot be set along with locationRestriction."
+                // The region to search. This location serves as a bias which means results around given location might be returned. Cannot be set along with locationRestriction.
+                "locationBias", LatLng + LatLngLiteral + LatLngBounds + LatLngBoundsLiteral + CircleLiteral + Circle
 
-            "locationRestriction" =@ LatLngBounds + LatLngBoundsLiteral
-            |> WithComment "The region to search. This location serves as a restriction which means results outside given location will not be returned. Cannot be set along with locationBias."
+                // The region to search. This location serves as a restriction which means results outside given location will not be returned. Cannot be set along with locationBias.
+                "locationRestriction", LatLngBounds + LatLngBoundsLiteral
 
-            "maxResultCount" =@ T<float>
-            |> WithComment "Maximum number of results to return. It must be between 1 and 20, inclusively."
+                // Maximum number of results to return. It must be between 1 and 20, inclusively.
+                "maxResultCount", T<float>
 
-            "minRating" =@ T<float>
-            |> WithComment "Filter out results whose average user rating is strictly less than this limit. A valid value must be an float between 0 and 5 (inclusively) at a 0.5 cadence i.e. [0, 0.5, 1.0, ... , 5.0] inclusively. The input rating will be rounded up to the nearest 0.5(ceiling). For instance, a rating of 0.6 will eliminate all results with a less than 1.0 rating."
+                // Filter out results whose average user rating is strictly less than this limit. A valid value must be an float between 0 and 5 (inclusively) at a 0.5 cadence i.e. [0, 0.5, 1.0, ... , 5.0] inclusively. The input rating will be rounded up to the nearest 0.5(ceiling). For instance, a rating of 0.6 will eliminate all results with a less than 1.0 rating.
+                "minRating", T<float>
 
-            "priceLevels" =@ Type.ArrayOf PriceLevel
-            |> WithComment "Used to restrict the search to places that are marked as certain price levels. Any combinations of price levels can be chosen. Defaults to all price levels."
+                // Used to restrict the search to places that are marked as certain price levels. Any combinations of price levels can be chosen. Defaults to all price levels.
+                "priceLevels", Type.ArrayOf PriceLevel
 
-            "query" =@ T<string>
-            |> ObsoleteWithMessage "Deprecated: Please use textQuery instead"
+                // Deprecated: Please use textQuery instead
+                "query", T<string>
 
-            "rankBy" =@ SearchByTextRankPreference
-            |> ObsoleteWithMessage "Deprecated: Please use rankPreference instead."
+                // Deprecated: Please use rankPreference instead.
+                "rankBy", SearchByTextRankPreference.Type
 
-            "rankPreference" =@ SearchByTextRankPreference
-            |> WithComment "How results will be ranked in the response. Default: SearchByTextRankPreference.DISTANCE"
+                // How results will be ranked in the response. Default: SearchByTextRankPreference.DISTANCE
+                "rankPreference", SearchByTextRankPreference.Type
 
-            "region" =@ T<string>
-            |> WithComment "The Unicode country/region code (CLDR) of the location where the request is coming from. This parameter is used to display the place details, like region-specific place name, if available. The parameter can affect results based on applicable law. For more information, see https://www.unicode.org/cldr/charts/latest/supplemental/territory_language_information.html. Note that 3-digit region codes are not currently supported."
+                // The Unicode country/region code (CLDR) of the location where the request is coming from. This parameter is used to display the place details, like region-specific place name, if available. The parameter can affect results based on applicable law. For more information, see https://www.unicode.org/cldr/charts/latest/supplemental/territory_language_information.html. Note that 3-digit region codes are not currently supported.
+                "region", T<string>
 
-            "textQuery" =@ T<string>
-            |> WithComment "Required. The text query for textual search."
+                // Required. The text query for textual search.
+                "textQuery", T<string>
 
-            "useStrictTypeFiltering" =@ T<bool>
-            |> WithComment "Default: false. Used to set strict type filtering for SearchByTextRequest.includedType. If set to true, only results of the same type will be returned."
-        ]
+                // Default: false. Used to set strict type filtering for SearchByTextRequest.includedType. If set to true, only results of the same type will be returned.
+                "useStrictTypeFiltering", T<bool>
+            ]
 
     let Place =
         Class "google.maps.places.Place"
         |+> Static [
             Constructor PlaceOptions
 
-            // "searchByText" => SearchByTextRequest ^-> T<WebSharper.JavaScript.Promise<string[]>>
             "searchByText" => SearchByTextRequest ^-> Promise[T<string[]>]
             |> WithComment "Text query based place search."
         ]
