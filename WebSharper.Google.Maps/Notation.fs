@@ -35,7 +35,6 @@ module Notation =
     let HTMLInputElement = T<HTMLInputElement>
     let SVGElement = T<SVGImageElement>
     let URL = T<URL>
-    let Object = T<WebSharper.JavaScript.Object>
     let Error = T<Error>
     let Function = T<Function>
     let Date = T<Date>
@@ -46,6 +45,7 @@ module Notation =
     let AddEventListenerOptions = T<AddEventListenerOptions>
     let EventListenerOptions = T<EventListenerOptions>
     let Float32Array = T<Float32Array>
+    let Float64Array = T<Float64Array>
     let WebGLRenderingContext = T<RenderingContext>
 
     /// Defines a method type given the return type and parameter specifications.

@@ -86,7 +86,7 @@ module Styling =
         ]
 
     let FeatureStyleFunction =
-        T<obj> -* FeatureStyleFunctionOptions ^-> FeatureStyleOptions
+        FeatureStyleFunctionOptions ^-> FeatureStyleOptions
 
     let FeatureMouseEvent =
         Class "google.maps.FeatureMouseEvent"
@@ -116,10 +116,10 @@ module Styling =
               |> WithComment "Adds the given listener function to the given event name. Returns an identifier for this listener that can be used with event.removeListener."
 
               // EVENTS
-              "click" =@ T<obj> -* FeatureMouseEvent ^-> T<unit>
+              "click" =@ FeatureMouseEvent ^-> T<unit>
               |> WithComment "This event is fired when the FeatureLayer is clicked."
 
-              "mousemove"=@ T<obj> -* FeatureMouseEvent ^-> T<unit>
+              "mousemove"=@ FeatureMouseEvent ^-> T<unit>
               |> WithComment "This event is fired when the user's mouse moves over the FeatureLayer."
         ]
 

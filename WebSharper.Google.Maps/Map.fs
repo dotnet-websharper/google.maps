@@ -39,12 +39,29 @@ module Map =
             |> WithComment "Bounds can be made more restrictive by setting the strictBounds flag to true. This reduces how far a user can zoom out, ensuring that everything outside of the restricted bounds stays hidden. The default is false, meaning that a user can zoom out until the entire bounded area is in view, possibly including areas outside the bounded area."
         ]
 
+    let RenderingType =
+        Pattern.EnumStrings "google.maps.RenderingType" [
+            "RASTER"
+            "UNINITIALIZED"
+            "VECTOR"
+        ]
+
+    let ColorScheme =
+        Pattern.EnumStrings "google.maps.ColorScheme" [
+            "DARK"
+            "FOLLOW_SYSTEM"
+            "LIGHT"
+        ]
+
     let MapOptions =
         Config "google.maps.MapOptions" []
             [
                 "backgroundColor", T<string>
+                "cameraControl", T<bool>
+                "cameraControlOptions", Controls.CameraControlOptions.Type
                 "center", LatLng + LatLngLiteral
                 "clickableIcons", T<bool>
+                "colorScheme", ColorScheme + T<string>
                 "controlSize", T<int>
                 "disableDefaultUI", T<bool>
                 "disableDoubleClickZoom", T<bool>
@@ -52,34 +69,39 @@ module Map =
                 "draggableCursor", T<string>
                 "draggingCursor", T<string>
                 "fullscreenControl", T<bool>
-                "fullscreenControlOptions", T<obj>
+                "fullscreenControlOptions", Controls.FullscreenControlOptions.Type
                 "gestureHandling", T<string>
                 "heading", T<int>
+                "headingInteractionEnabled", T<bool>
+                "internalUsageAttributionIds", Type.ArrayOf T<string>
                 "isFractionalZoomEnabled", T<bool>
                 "keyboardShortcuts", T<bool>
                 "mapId", T<string>
                 "mapTypeControl", T<bool>
-                "mapTypeControlOptions", T<obj>
-                "mapTypeId", T<string>
+                "mapTypeControlOptions", Controls.MapTypeControlOptions.Type
+                "mapTypeId", MapTypeId + T<string>
                 "maxZoom", T<int>
                 "minZoom", T<int>
                 "noClear", T<bool>
                 "panControl", T<bool>
-                "panControlOptions", T<obj>
-                "restriction", T<obj>
+                "panControlOptions", Controls.PanControlOptions.Type
+                "renderingType", RenderingType.Type
+                "restriction", MapRestriction.Type
                 "rotateControl", T<bool>
-                "rotateControlOptions", T<obj>
+                "rotateControlOptions", Controls.RotateControlOptions.Type
                 "scaleControl", T<bool>
-                "scaleControlOptions", T<obj>
+                "scaleControlOptions", Controls.ScaleControlOptions.Type
                 "scrollwheel", T<bool>
-                "streetView", T<obj>
+                "streetView", StreetView.StreetViewPanorama.Type
                 "streetViewControl", T<bool>
-                "streetViewControlOptions", T<obj>
-                "styles", !|T<obj>
+                "streetViewControlOptions", Controls.StreetViewControlOptions.Type
+                "styles", Type.ArrayOf MapTypes.MapTypeStyle
                 "tilt", T<int>
+                "tiltInteractionEnabled", T<bool>
                 "zoom", T<int>
                 "zoomControl", T<bool>
-                "zoomControlOptions", T<obj>
+                "zoomControlOptions", Controls.ZoomControlOptions.Type
+                "vector", T<bool>
             ]
 
     let CameraOptions =
@@ -92,19 +114,13 @@ module Map =
                 "zoom", T<float>
             ]
 
-    let RenderingType =
-        Pattern.EnumStrings "google.maps.RenderingType" [
-            "RASTER"
-            "UNINITIALIZED"
-            "VECTOR"
-        ]
-
     let MapCapabilities =
         Config "google.maps.MapCapabilities"
             []
             [
                 "isAdvancedMarkersAvailable", T<bool>
                 "isDataDrivenStylingAvailable", T<bool>
+                "isWebGLOverlayViewAvailable", T<bool>
             ]
 
     let MapMouseEventProperties = 
@@ -114,6 +130,7 @@ module Map =
             "stop", T<unit> ^-> T<unit>
         ]
 
+    // TODO: might be interface
     let MapMouseEvent =
         Config "google.maps.MapMouseEvent"
             []
@@ -165,10 +182,16 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "getHeading" => T<unit> ^-> T<float>
                 |> WithComment "Returns the compass heading of the map. The heading value is measured in degrees (clockwise) from cardinal direction North. If the map is not yet initialized then the result is undefined."
 
+                "getHeadingInteractionEnabled" => T<unit> ^-> !| T<bool>
+                |> WithComment "Returns whether heading interactions are enabled. This option is only in effect when the map is a vector map. If not set in code, then the cloud configuration for the map ID will be used (if available)."
+
+                "getInternalUsageAttributionIds" => T<unit> ^-> !| T<string>
+                |> WithComment "Returns the list of usage attribution IDs, which help Google understand which libraries and samples are helpful to developers, such as usage of a marker clustering library."
+
                 "getMapCapabilities" => T<unit> ^-> MapCapabilities
                 |> WithComment "Informs the caller of the current capabilities available to the map based on the Map ID that was provided."
 
-                "getMapTypeId" => T<unit> ^-> T<string>
+                "getMapTypeId" => T<unit> ^-> T<string> + MapTypeId
 
                 "getProjection" => T<unit> ^-> MapTypes.Projection
                 |> WithComment "Returns the current Projection. If the map is not yet initialized then the result is undefined. Listen to the projection_changed event and check its value to ensure it is not undefined."
@@ -181,6 +204,9 @@ Note: When the map is set to display: none, the fitBounds function reads the map
 
                 "getTilt" => T<unit> ^-> T<float>
                 |> WithComment "Returns the current angle of incidence of the map, in degrees from the viewport plane to the map plane. For raster maps, the result will be 0 for imagery taken directly overhead or 45 for 45° imagery. This method does not return the value set by setTilt. See setTilt for details."
+
+                "getTiltInteractionEnabled" => T<unit> ^-> T<bool>
+                |> WithComment "Returns whether tilt interactions are enabled. This option is only in effect when the map is a vector map. If not set in code, then the cloud configuration for the map ID will be used (if available)."
 
                 "getZoom" => T<unit> ^-> T<int>
                 |> WithComment "Returns the zoom of the map. If the zoom has not been set then the result is undefined."
@@ -205,15 +231,24 @@ Note: When the map is set to display: none, the fitBounds function reads the map
                 "setHeading" => T<float> ^-> T<unit>
                 |> WithComment "Sets the compass heading for map measured in degrees from cardinal direction North. For raster maps, this method only applies to aerial imagery."
 
-                "setMapTypeId" => (T<string>) ^-> T<unit>
+                "setHeadingInteractionEnabled" => T<bool> ^-> T<unit>
+                |> WithComment "Sets whether heading interactions are enabled. This option is only in effect when the map is a vector map. If not set in code, then the cloud configuration for the map ID will be used (if available)."
+
+                "setMapTypeId" => (T<string> + MapTypeId) ^-> T<unit>
 
                 "setOptions" => MapOptions ^-> T<unit>
+
+                "setRenderingType" => RenderingType.Type ^-> T<unit>
+                |> WithComment "Sets the current RenderingType of the map."
 
                 "setStreetView" => StreetView.StreetViewPanorama ^-> T<unit>
                 |> WithComment "Binds a StreetViewPanorama to the map. This panorama overrides the default StreetViewPanorama, allowing the map to bind to an external panorama outside of the map. Setting the panorama to null binds the default embedded panorama back to the map."
 
                 "setTilt" => T<float> ^-> T<unit>
                 |> WithComment "For vector maps, sets the angle of incidence of the map. The allowed values are restricted depending on the zoom level of the map. For raster maps, controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. setTilt(0) causes the map to always use a 0° overhead view regardless of the zoom level and viewport. setTilt(45) causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for satellite and hybrid map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value set by setTilt. Because getTilt and setTilt refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects."
+
+                "setTiltInteractionEnabled" => T<bool> ^-> T<unit>
+                |> WithComment "Sets whether tilt interactions are enabled. This option is only in effect when the map is a vector map. If not set in code, then the cloud configuration for the map ID will be used (if available)."
 
                 "setZoom" => T<int> ^-> T<unit>
                 |> WithComment "Sets the zoom of the map."
@@ -303,10 +338,28 @@ Note: When the map is set to display: none, the fitBounds function reads the map
         Config "google.maps.MapElementOptions"
             []
             [
-                "center", T<obj>
+                // The center latitude/longitude of the map.
+                "center", Base.LatLng + Base.LatLngLiteral
+
+                // Whether the map should allow user control of the camera heading.
+                "headingInteractionDisabled", T<bool>
+
+                // Adds a usage attribution ID to the initializer.
+                "internalUsageAttributionIds", Type.ArrayOf T<string>
+
+                // The map ID of the map.
                 "mapId", T<string>
+
+                // Whether the map should be a raster or vector map.
+                "renderingType", RenderingType.Type
+
+                // Whether the map should allow user control of the camera tilt.
+                "tiltInteractionDisabled", T<bool>
+
+                // The zoom level of the map.
                 "zoom", T<int>
             ]
+
 
     let ZoomChangeEvent =
         Class "google.maps.ZoomChangeEvent"
@@ -325,20 +378,32 @@ Note: When the map is set to display: none, the fitBounds function reads the map
             "center" =@ (Base.LatLng + Base.LatLngLiteral)
             |> WithComment "The center latitude/longitude of the map."
 
+            "headingInteractionDisabled" =@ T<bool>
+            |> WithComment "Whether the map should allow user control of the camera heading (rotation). This option is only in effect when the map is a vector map."
+
             "innerMap" =@ Map
             |> WithComment "A reference to the Map that the MapElement uses internally."
 
+            "internalUsageAttributionIds" =@ !| T<string>
+            |> WithComment "Adds a usage attribution ID to the initializer. To opt out, delete or use empty string."
+
             "mapId" =@ T<string>
-            |> WithComment "The Map ID of the map. See the Map ID documentation for more information."
+            |> WithComment "The map ID of the map. Cannot be set or changed after instantiation."
+
+            "renderingType" =@ RenderingType
+            |> WithComment "Whether the map should be a raster or vector map."
+
+            "tiltInteractionDisabled" =@ T<bool>
+            |> WithComment "Whether the map should allow user control of the camera tilt."
 
             "zoom" =@ T<int>
             |> WithComment "The zoom level of the map."
 
             "addEventListener" => T<string> * T<obj->unit> * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
-            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target. See addEventListener"
+            |> WithComment "Sets up a function that will be called whenever the specified event is delivered."
 
             "removeEventListener" => T<string> * T<obj->unit> * !?(T<bool> + EventListenerOptions) ^-> T<unit>
-            |> WithComment "Removes an event listener previously registered with addEventListener from the target. See removeEventListener"
+            |> WithComment "Removes an event listener previously registered with addEventListener."
 
             // EVENTS
             "gmp-zoomchange" => ZoomChangeEvent ^-> T<unit>

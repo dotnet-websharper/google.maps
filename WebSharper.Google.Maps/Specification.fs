@@ -92,15 +92,13 @@ module Specification =
                 "zIndex", T<int>
             ]
 
-    let CircleOptionsProperties = [
-        "center", LatLng + LatLngLiteral
+    let CircleOptionsProperties = [        
         "clickable", T<bool>
         "draggable", T<bool>
         "editable", T<bool>
         "fillColor", T<string>
         "fillOpacity", T<float>
-        "map", M.Map.Type
-        "radius", T<float>
+        "map", M.Map.Type        
         "strokeColor", T<string>
         "strokeOpacity", T<float>
         "strokePosition", StrokePosition.Type
@@ -111,7 +109,10 @@ module Specification =
 
     let CircleOptions =
         Config "google.maps.CircleOptions"
-            []
+            [
+                "radius", T<float>
+                "center", LatLng + LatLngLiteral
+            ]
             CircleOptionsProperties
 
     let CircleLiteral =
@@ -815,7 +816,7 @@ module Specification =
             "getPath" => T<unit> ^-> MVC.MVCArray.[LatLng]
             |> WithComment "Retrieves the first path."
 
-            "getVisible" => T<bool -> unit>
+            "getVisible" => T<unit -> bool>
             |> WithComment "Returns whether this poly is visible on the map."
 
             "setDraggable" => T<bool -> unit>
@@ -1004,7 +1005,7 @@ Note: AdvancedMarkerElement does not clone the passed-in DOM element. Once the D
             "gmpDraggable" =@ T<bool>
             |> WithComment "If true, the AdvancedMarkerElement can be dragged. Note: AdvancedMarkerElement with altitude is not draggable. Default: false"
 
-            "map" =@ M.Map.Type
+            "map" =@ M.Map
             |> WithComment "Map on which to display the AdvancedMarkerElement. The map is required to display the AdvancedMarkerElement and can be provided by setting AdvancedMarkerElement.map if not provided at the construction."
 
             "position" =@ (LatLng + LatLngLiteral + LatLngAltitude + LatLngAltitudeLiteral)
@@ -1029,31 +1030,35 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
             ]
         ]
         |+> Instance [
-            "element" =? HTMLElement
-            |> WithComment "This field is read-only. The DOM Element backing the view."
+            "element" =@ HTMLElement
+            |> WithComment "The DOM Element backing the marker."
+            |> ObsoleteWithMessage "Deprecated: Use the AdvancedMarkerElement directly."
 
-            // METHODS
-            "addEventListener" => T<string> * T<obj -> unit> * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
-            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target. See addEventListener"
+            // Methods
+            "addEventListener" => T<string> * (T<obj -> unit>) * !?(T<bool> + AddEventListenerOptions) ^-> T<unit>
+            |> WithComment "Adds a DOM event listener."
 
-            "removeEventListener" => T<string> * T<obj -> unit> * !?(T<bool> + EventListenerOptions) ^-> T<unit>
-            |> WithComment "Removes an event listener previously registered with addEventListener from the target. See removeEventListener"
+            "addListener" => T<string> * (T<obj -> unit>) ^-> Events.MapsEventListener
+            |> WithComment "Adds a Maps event listener."
 
-            // EVENTS
+            "removeEventListener" => T<string> * (T<obj -> unit>) * !?(T<bool> + EventListenerOptions) ^-> T<unit>
+            |> WithComment "Removes a DOM event listener."
+
+            // Events
             "click" => M.MapMouseEvent ^-> T<unit>
-            |> WithComment "This event is fired when the AdvancedMarkerElement element is clicked. Not available with addEventListener() (use gmp-click instead)."
+            |> WithComment "Fired when the marker is clicked."
 
             "drag" => M.MapMouseEvent ^-> T<unit>
-            |> WithComment "This event is repeatedly fired while the user drags the AdvancedMarkerElement. Not available with addEventListener()."
+            |> WithComment "Fired while dragging the marker."
 
             "dragend" => M.MapMouseEvent ^-> T<unit>
-            |> WithComment "This event is fired when the user stops dragging the AdvancedMarkerElement. Not available with addEventListener()."
+            |> WithComment "Fired when dragging ends."
 
             "dragstart" => M.MapMouseEvent ^-> T<unit>
-            |> WithComment "This event is fired when the user starts dragging the AdvancedMarkerElement. Not available with addEventListener()."
+            |> WithComment "Fired when dragging starts."
 
             "gmp-click" => AdvancedMarkerClickEvent ^-> T<unit>
-            |> WithComment "This event is fired when the AdvancedMarkerElement element is clicked. Best used with addEventListener() (instead of addListener())."
+            |> WithComment "Fired on gmp-click event."
         ]
 
     let InfoWindowOptions =
@@ -1063,6 +1068,8 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
                 "ariaLabel", T<string>
                 "content", T<string> + Element + Text
                 "disableAutoPan", T<bool>
+                "headerContent", T<string> + Element + Text
+                "headerDisabled", T<bool>
                 "maxWidth", T<int>
                 "minWidth", T<int>
                 "pixelOffset", Size.Type
@@ -1088,6 +1095,9 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
         ]
         |+> Instance [
 
+            "isOpen" =@ T<bool>
+            |> WithComment "Checks if the InfoWindow is open."
+
             "close" => T<unit> ^-> T<unit>
             |> WithComment "Closes this InfoWindow by removing it from the DOM structure."
 
@@ -1100,6 +1110,12 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
 
             "getZIndex" => T<unit> ^-> T<int>
 
+            "getHeaderContent" => T<unit> ^-> (T<string> + Element + Text)
+            |> WithComment "Returns the header content of this InfoWindow."
+
+            "getHeaderDisabled" => T<unit> ^-> T<bool>
+            |> WithComment "Whether the whole header row is disabled."
+
             "open" => (!?(InfoWindowOpenOptions + M.Map + StreetView.StreetViewPanorama) * !? (AdvancedMarkerElement + MVC.MVCObject)) ^-> T<unit>
             |> WithComment "Opens this InfoWindow on the given map. Optionally, an InfoWindow can be associated with an anchor. In the core API, the only anchor is the Marker class. However, an anchor can be any MVCObject that exposes a LatLng position property and optionally a Point anchorPoint property for calculating the pixelOffset (see InfoWindowOptions). The anchorPoint is the offset from the anchor's position to the tip of the InfoWindow. It is recommended to use the InfoWindowOpenOptions interface as the single argument for this method. To prevent changing browser focus on open, set InfoWindowOpenOptions.shouldFocus to false."
 
@@ -1111,6 +1127,12 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
 
             "setZIndex" => T<int> ^-> T<unit>
 
+            "setHeaderContent" => (T<string> + Node) ^-> T<unit>
+            |> WithComment "Sets the header content to be displayed by this InfoWindow."
+
+            "setHeaderDisabled" => T<bool> ^-> T<unit>
+            |> WithComment "Specifies whether to disable the whole header row."
+
             // EVENTS
             "closeclick" => T<unit> ^-> T<unit>
             |> WithComment "This event is fired when the close button was clicked."
@@ -1121,6 +1143,12 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
             "domready" => T<unit> ^-> T<unit>
             |> WithComment "This event is fired when the <div> containing the InfoWindow's content is attached to the DOM. You may wish to monitor this event if you are building out your info window content dynamically."
 
+            "headercontent_changed" => T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the headerContent property changes."
+
+            "headerdisabled_changed" => T<unit> ^-> T<unit>
+            |> WithComment "This event is fired when the headerDisabled property changes."
+
             "position_changed" => T<unit> ^-> T<unit>
             |> WithComment "This event is fired when the position property changes."
 
@@ -1128,7 +1156,7 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
             |> WithComment "This event is fired when the InfoWindow is fully visible. This event is not fired when InfoWindow is panned off and then back on screen."
 
             "zindex_changed" => T<unit> ^-> T<unit>
-            |> WithComment "This event is fired when the InfoWindow's zIndex changes."
+            |> WithComment "This event is fired when the InfoWindow's zIndex changes."            
         ]
 
     let Place =
@@ -1151,6 +1179,9 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
                 "route", T<string>
             ]
 
+    let ExtraGeocodeComputation = 
+        Pattern.EnumStrings "google.maps.ExtraGeocodeComputation" ["ADDRESS_DESCRIPTORS"]
+
     let GeocoderRequest =
         Config "google.maps.GeocoderRequest"
             []
@@ -1158,6 +1189,8 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
                 "address", T<string>
                 "bounds", LatLngBounds + LatLngBoundsLiteral
                 "componentRestrictions", GeocoderComponentRestrictions.Type
+                "extraComputations", !| ExtraGeocodeComputation
+                "fulfillOnZeroResults", T<bool>
                 "language", T<string>
                 "location", LatLng + LatLngLiteral
                 "placeId", T<string>
@@ -1204,6 +1237,56 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
                 "viewport", LatLngBounds.Type
             ]
 
+    let Containment =
+        Pattern.EnumStrings "google.maps.Containment" [
+            "NEAR"
+            "OUTSKIRTS"
+            "WITHIN"
+        ]
+
+    let SpatialRelationship =
+        Pattern.EnumStrings "google.maps.SpatialRelationship" [
+            "ACROSS_THE_ROAD"
+            "AROUND_THE_CORNER"
+            "BEHIND"
+            "BESIDE"
+            "DOWN_THE_ROAD"
+            "NEAR"
+            "WITHIN"
+        ]
+
+    let Landmark =
+        Config "google.maps.Landmark"
+            []
+            [
+                "display_name", T<string>
+                "display_name_language_code", T<string>
+                "place_id", T<string>
+                "spatial_relationship", SpatialRelationship.Type
+                "straight_line_distance_meters", T<float>
+                "types", !| T<string>
+                "travel_distance_meters", T<float>
+            ]
+
+    let Area =
+        Config "google.maps.Area"
+            []
+            [
+                "containment", Containment.Type
+                "display_name", T<string>
+                "display_name_language_code", T<string>
+                "place_id", T<string>
+            ]
+
+
+    let AddressDescriptor =
+        Config "google.maps.AddressDescriptor"
+            []
+            [
+                "areas", !| Area.Type
+                "landmarks", !| Landmark.Type
+            ]
+
     let GeocoderResult =
         Config "google.maps.GeocoderResult"
             []
@@ -1211,11 +1294,12 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
                 "address_components", !| GeocoderAddressComponent
                 "formatted_address", T<string>
                 "geometry", GeocoderGeometry.Type
-                "partial_match", T<bool>
                 "place_id", T<string>
+                "types", !| T<string>
+                "address_descriptor", AddressDescriptor.Type
+                "partial_match", T<bool>
                 "plus_code", Forward.PlacePlusCode.Type
                 "postcode_localities", !| T<string>
-                "types", !| T<string>
             ]
 
     let GeocoderResponse =
@@ -1223,6 +1307,8 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
             []
             [
                 "results", !| GeocoderResult
+                "address_descriptor", AddressDescriptor.Type
+                "plus_code", Forward.PlacePlusCode.Type
             ]
 
     let Geocoder =
@@ -1440,6 +1526,9 @@ Note: AdvancedMarkerElement with altitude is only supported on vector maps."""
         |+> [
             "currency" =@ T<string>
             |> WithComment "An ISO 4217 currency code indicating the currency in which the fare is expressed."
+
+            "text" =@ T<string>
+            |> WithComment "The value of the fare, expressed in the given currency, as a string."
 
             "value" =@ T<float>
             |> WithComment "The numerical value of the fare, expressed in the given currency."
@@ -2184,3 +2273,12 @@ If any of the input waypoints has stopover set to false, this field will be empt
             |> WithComment "Removes an event listener previously registered with addEventListener from the target. See removeEventListener"
         ]
 
+    let Settings = 
+        Class "google.maps.Settings"
+        |+> Static [
+            "getInstance" => T<unit> ^-> TSelf 
+        ]
+        |+> Instance [
+            "experienceIds" =@ T<string>
+            "fetchAppCheckToken" =@ Promise[T<obj>]
+        ]

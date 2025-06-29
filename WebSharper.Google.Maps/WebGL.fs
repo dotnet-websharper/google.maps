@@ -41,7 +41,7 @@ module WebGL =
     let CoordinateTransformer =
         Class "google.maps.CoordinateTransformer"
         |+> Instance [
-            "fromLatLngAltitude" => (Base.LatLngAltitude + Base.LatLngAltitudeLiteral) * !?Float32Array * !?Float32Array ^-> T<unit>
+            "fromLatLngAltitude" => (Base.LatLngAltitude + Base.LatLngAltitudeLiteral) * !?Float32Array * !?Float32Array ^-> Float64Array
 
             "getCameraParams" => T<unit> ^-> CameraParams
         ]

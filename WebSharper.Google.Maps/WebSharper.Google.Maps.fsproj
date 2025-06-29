@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <WebSharperProject>binding</WebSharperProject>
@@ -21,10 +21,12 @@
     <Compile Include="Geometry.fs" />
     <Compile Include="Data.fs" />
     <Compile Include="Places.fs" />
+    <Compile Include="AddressValidation.fs" />
     <Compile Include="Styling.fs" />
     <Compile Include="Drawing.fs" />
     <Compile Include="JourneySharing.fs" />
     <Compile Include="LocalContext.fs" />
+    <Compile Include="Errors.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <Import Project="..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets" Condition="Exists('..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets')" />
