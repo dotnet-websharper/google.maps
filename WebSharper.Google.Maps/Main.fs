@@ -27,7 +27,8 @@ module Main =
     module Res =
         let Js =
             //Resource "Js" "https://maps.googleapis.com/maps/api/js?key=AIzaSyBclwK3qO1qtBU_OgZzlZ_oVv1bkyUXaF0&sensor=true"
-            Resource "Js" "https://maps.googleapis.com/maps/api/js?key=AIzaSyBclwK3qO1qtBU_OgZzlZ_oVv1bkyUXaF0&libraries=visualization&sensor=true"
+            //https://maps.googleapis.com/maps/api/js?v=${version}&key=${apiKey}
+            Resource "Js" "https://maps.googleapis.com/maps/api/js?v=3.61&key=AIzaSyBclwK3qO1qtBU_OgZzlZ_oVv1bkyUXaF0&libraries=places,geometry,drawing,visualization,journeySharing,routes,elevation"
 
     let Assembly =
         Assembly [
@@ -54,6 +55,10 @@ module Main =
                 Base.Padding
                 Base.Point
                 Base.Size
+                Base.Vector3D
+                Base.Vector3DLiteral
+                Base.Orientation3D
+                Base.Orientation3DLiteral
 
                 Controls.ControlPosition
                 Controls.FullscreenControlOptions
@@ -66,6 +71,7 @@ module Main =
                 Controls.ScaleControlStyle
                 Controls.StreetViewControlOptions
                 Controls.ZoomControlOptions
+                Controls.CameraControlOptions
 
                 Drawing.OverlayType
                 Drawing.OverlayCompleteEvent
@@ -100,8 +106,6 @@ module Main =
                 Styling.FeatureType
                 Styling.PlaceFeature
 
-                LocalContext.LocalContextMapView
-                LocalContext.LocalContextMapViewOptions
                 LocalContext.MapDirectionsOptions
                 LocalContext.MapDirectionsOptionsLiteral
                 LocalContext.PinOptions
@@ -141,6 +145,7 @@ module Main =
                 Map.RenderingType
                 Map.VisibleRegion
                 Map.ZoomChangeEvent
+                Map.ColorScheme
 
                 WebGL.CameraParams
                 WebGL.CoordinateTransformer
@@ -156,6 +161,13 @@ module Main =
                 Geometry.Poly
                 Geometry.Spherical
 
+                Errors.MapsServerError
+                Errors.MapsRequestError
+                Errors.MapsNetworkError
+                Errors.RPCStatus
+                Errors.MapsNetworkErrorEndpoint
+
+                Settings
                 AdvancedMarkerClickEvent
                 AdvancedMarkerElement
                 AdvancedMarkerElementOptions
@@ -258,6 +270,12 @@ module Main =
                 TravelMode
                 UnitSystem
                 VehicleType
+                AddressDescriptor
+                Area
+                Landmark
+                SpatialRelationship
+                Containment
+                ExtraGeocodeComputation
             ]
             Namespace "WebSharper.Google.Maps.JournalSharing" [
                 JourneySharing.AuthToken
@@ -387,6 +405,39 @@ module Main =
                 Places.SearchByTextRequest
                 Places.StructuredFormatting
                 Places.TextSearchRequest
+                Places.FuelOptions
+                Places.FuelPrice
+                Places.FuelType
+                Places.PriceRange
+                Places.Money
+                Places.EVChargeOptions
+                Places.ConnectorAggregation
+                Places.EVConnectorType
+                Places.SearchNearbyRequest
+                Places.SearchNearbyRankPreference
+                Places.PlacePredictionSelectEvent
+                Places.PlacePrediction
+                Places.AddressValidationRequest
+                Places.PostalAddress
+                Places.PostalAddressLiteral
+                Places.FormattableText
+                Places.StringRange
+                Places.PlaceDetailsElement
+                Places.PlaceDetailsCompactElement
+                Places.PlaceDetailsCompactElementOptions
+                Places.PlaceDetailsOrientation
+            ]
+            Namespace "WebSharper.Google.Maps.AddressValidation" [
+                AddressValidation.Verdict
+                AddressValidation.USPSData
+                AddressValidation.USPSAddress
+                AddressValidation.Granularity
+                AddressValidation.Geocode
+                AddressValidation.AddressMetadata
+                AddressValidation.Address
+                AddressValidation.AddressComponent
+                AddressValidation.ConfirmationLevel
+                AddressValidation.AddressValidation
             ]
             Namespace "WebSharper.Google.Maps.Data" [
                 Data.AddFeatureEvent

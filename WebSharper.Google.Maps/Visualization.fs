@@ -79,3 +79,4 @@ module Visualization =
         |+> Static [
                 Ctor [!? HeatmapLayerOptions?options]
             ]
+        |> ObsoleteWithMessage "Deprecated: The Heatmap Layer functionality in the Maps JavaScript API is no longer supported. This API was deprecated in May 2025 and will be made unavailable in a later version of the Maps JavaScript API, releasing in May 2026. For more info, see https://developers.google.com/maps/deprecations)."

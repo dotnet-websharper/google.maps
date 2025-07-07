@@ -142,18 +142,19 @@ module Base =
                     !? T<bool>?noClampNoWrap
                 ]
             ]
-        |+> Instance [
-            "equals" => !?TSelf?other ^-> T<bool>
-            |> WithComment "Comparison function."
+        |+> Instance [           
 
             "altitude" =@ T<float>
             |> WithComment "Returns the altitude."
 
-            "lat" => T<unit> ^-> T<float>
+            "lat" =@ T<float>
             |> WithComment "Returns the latitude."
 
-            "lng" => T<unit> ^-> T<float>
+            "lng" =@ T<float>
             |> WithComment "Returns the longitude."
+
+            "equals" => !?TSelf?other ^-> T<bool>
+            |> WithComment "Comparison function."
 
             "toJSON" => T<unit> ^-> LatLngAltitudeLiteral
         ]
@@ -215,4 +216,60 @@ module Base =
                 "right", T<int>
                 "top", T<int>
             ]
-        
+
+    let Orientation3DLiteral =
+        Config "google.maps.Orientation3DLiteral"
+            []
+            [
+                "heading", T<float>
+                "roll", T<float>
+                "tilt", T<float>
+            ]
+
+    let Orientation3D =
+        Class "google.maps.Orientation3D"
+        |+> Static [
+            Ctor [
+                !? (TSelf + Orientation3DLiteral)
+            ]
+        ]
+        |+> Instance [
+            "heading" =@ T<float>
+            |> WithComment "Rotation about the z-axis. [0, 360) degrees."
+
+            "roll" =@ T<float>
+            |> WithComment "Rotation about the y-axis. [0, 360) degrees."
+
+            "tilt" =@ T<float>
+            |> WithComment "Rotation about the x-axis. [0, 360) degrees."
+
+            "equals" => !? (TSelf + Orientation3DLiteral) ^-> T<bool>
+            |> WithComment "Returns true if the two objects are equal."
+
+            "toJSON" => T<unit> ^-> Orientation3DLiteral
+            |> WithComment "Converts to JSON representation."
+        ]
+
+    let Vector3DLiteral =
+        Config "google.maps.Vector3DLiteral"
+            []
+            [
+                "x", T<float>
+                "y", T<float>
+                "z", T<float>
+            ]
+
+    let Vector3D =
+        Class "google.maps.Vector3D"
+        |+> Static [
+            Ctor [
+                !? (TSelf + Vector3DLiteral)
+            ]
+        ]
+        |+> Instance [
+            "x" =@ T<float>
+            "y" =@ T<float>
+            "z" =@ T<float>
+            "equals" => !? (TSelf + Vector3DLiteral) ^-> T<bool>
+            "toJSON" => T<unit> ^-> Vector3DLiteral
+        ]

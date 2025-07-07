@@ -132,3 +132,10 @@ module Controls =
                 "position", ControlPosition.Type
             ]
 
+    let CameraControlOptions =
+        Config "google.maps.CameraControlOptions"
+            []
+            [
+                "position", ControlPosition.Type
+            ]
+

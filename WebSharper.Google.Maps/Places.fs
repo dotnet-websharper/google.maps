@@ -591,6 +591,7 @@ module Places =
             "places_changed" =@ (T<unit> ^-> T<unit>)
             |> WithComment "This event is fired when the user selects a query, getPlaces should be used to get new places."
         ]
+        |> ObsoleteWithMessage "Deprecated: As of March 1st, 2025, google.maps.places.SearchBox is not available to new customers. At this time, google.maps.places.SearchBox is not scheduled to be discontinued and will continue to receive bug fixes for any major regressions. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details."
 
     let AutocompleteOptions =
         Config "google.maps.places.AutocompleteOptions"
@@ -679,6 +680,7 @@ module Places =
             |> WithComment "This event is fired when a PlaceResult is made available for a Place the user has selected.
 If the user enters the name of a Place that was not suggested by the control and presses the Enter key, or if a Place Details request fails, the PlaceResult contains the user input in the name property, with no other properties defined."
         ]
+        |> ObsoleteWithMessage "Deprecated: As of March 1st, 2025, google.maps.places.Autocomplete is not available to new customers. Please use PlaceAutocompleteElement instead. At this time, google.maps.places.Autocomplete is not scheduled to be discontinued, but PlaceAutocompleteElement is recommended over google.maps.places.Autocomplete. While google.maps.places.Autocomplete will continue to receive bug fixes for any major regressions, existing bugs in google.maps.places.Autocomplete will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/places-migration-overview for the migration guide."
 
     let AutocompletionRequest =
         Config "google.maps.places.AutocompletionRequest"
@@ -747,12 +749,83 @@ If the user enters the name of a Place that was not suggested by the control and
 
 
     (** Place Widgets **)
+    let StringRange =
+        Class "google.maps.places.StringRange"
+        |+> Instance [
+            "endOffset" =@ T<int>
+            |> WithComment "Zero-based offset of the last Unicode character of the substring (exclusive)."
+
+            "startOffset" =@ T<int>
+            |> WithComment "Zero-based offset of the first Unicode character of the substring (inclusive)."
+        ]
+
+    let FormattableText =
+        Class "google.maps.places.FormattableText"
+        |+> Instance [
+            "matches" =@ !| StringRange
+            |> WithComment "A list of string ranges identifying where the input request matched in FormattableText.text. The ranges can be used to format specific parts of text."
+
+            "text" =@ T<string>
+            |> WithComment "Text that may be used as is or formatted with FormattableText.matches."
+        ]
+
+    let PostalAddressLiteral =
+        Config "google.maps.places.PostalAddressLiteral"
+            [ "regionCode", T<string> ]
+            [
+                "addressLines", !| T<string>
+                "administrativeArea", T<string>
+                "languageCode", T<string>
+                "locality", T<string>
+                "organization", T<string>
+                "postalCode", T<string>
+                "recipients", !| T<string>
+                "sortingCode", T<string>
+                "sublocality", T<string>
+            ]
+
+    let AddressValidationRequest =
+        Config "google.maps.addressValidation.AddressValidationRequest"
+            [ "address", PostalAddressLiteral.Type ]
+            [ 
+                "previousResponseId", T<string>
+                "uspsCASSEnabled", T<bool> 
+            ]
+
+    let PlacePrediction =
+        Class "google.maps.places.PlacePrediction"
+        |+> Instance [
+            "distanceMeters" =@ T<float>
+            |> WithComment "The length of the geodesic in meters from origin if origin is specified."
+
+            "mainText" =@ FormattableText
+            |> WithComment "Represents the name of the Place."
+
+            "placeId" =@ T<string>
+            |> WithComment "The unique identifier of the suggested Place. This identifier can be used in other APIs that accept Place IDs."
+
+            "secondaryText" =@ FormattableText
+            |> WithComment "Represents additional disambiguating features (such as a city or region) to further identify the Place."
+
+            "text" =@ FormattableText
+            |> WithComment "Contains the human-readable name for the returned result."
+
+            "types" =@ !| T<string>
+            |> WithComment "List of types that apply to this Place from Table A or Table B in the Places API documentation."
+
+            "fetchAddressValidation" => AddressValidationRequest ^-> Promise[Forward.AddressValidation]
+            |> WithComment "Sends an Address Validation request associated with this autocomplete session."
+
+            "toPlace" => T<unit> ^-> Forward.Place
+            |> WithComment "Returns a Place representation of this PlacePrediction."
+        ]
+
     let PlaceAutocompletePlaceSelectEvent =
         Class "google.maps.places.PlaceAutocompletePlaceSelectEvent"
         |=> Inherits Events.Event
         |+> Instance [
-            "place" =? Place
-            |> WithComment "A KmlFeatureData object, containing information about the clicked feature."
+            "placePrediction" =? PlacePrediction
+            |> WithComment "Convert this to a Place by calling PlacePrediction.toPlace."
         ]
 
     let PlaceAutocompleteRequestErrorEvent =
@@ -762,17 +835,55 @@ If the user enters the name of a Place that was not suggested by the control and
     let PlaceAutocompleteElementOptions =
         Interface "google.maps.places.PlaceAutocompleteElementOptions"
         |+> [
-            "componentRestrictions" =@ ComponentRestrictions
-
             "locationBias" =@ LocationBias
 
             "locationRestriction" =@ LocationRestriction
 
             "requestedLanguage" =@ T<string>
 
-            "requestedRegion" =@ T<string>
+            "name" =@ T<string>
+        ]
+    
+    let PostalAddress =
+        Class "google.maps.places.PostalAddress"
+        |+> Instance [
+            "addressLines" =@ !| T<string>
+            |> WithComment "Unstructured address lines describing the lower levels of an address."
 
-            "types" =@ T<string[]>
+            "administrativeArea" =@ T<string>
+            |> WithComment "The highest administrative subdivision which is used for postal addresses of a country or region."
+
+            "languageCode" =@ T<string>
+            |> WithComment "BCP-47 language code of the contents of this address. Examples: 'zh-Hant', 'ja', 'ja-Latn', 'en'."
+
+            "locality" =@ T<string>
+            |> WithComment "Generally refers to the city/town portion of the address."
+
+            "organization" =@ T<string>
+            |> WithComment "The name of the organization at the address."
+
+            "postalCode" =@ T<string>
+            |> WithComment "Postal code of the address."
+
+            "recipients" =@ !| T<string>
+            |> WithComment "The recipient at the address."
+
+            "regionCode" =@ T<string>
+            |> WithComment "CLDR region code of the country/region of the address. Example: 'CH' for Switzerland."
+
+            "sortingCode" =@ T<string>
+            |> WithComment "Sorting code of the address."
+
+            "sublocality" =@ T<string>
+            |> WithComment "Sublocality of the address such as neighborhoods, boroughs, or districts."
+        ]
+
+    let PlacePredictionSelectEvent =
+        Class "google.maps.places.PlacePredictionSelectEvent"
+        |=> Inherits JsEvent
+        |+> Instance [
+            "placePrediction" =@ PlacePrediction
+            |> WithComment "Convert this to a Place by calling PlacePrediction.toPlace."
         ]
 
     let PlaceAutocompleteElement =
@@ -780,26 +891,47 @@ If the user enters the name of a Place that was not suggested by the control and
         |=> Inherits HTMLElement
         |+> Static [Constructor PlaceAutocompleteElementOptions]
         |+> Instance [
-            "componentRestrictions" =@ ComponentRestrictions
-            |> WithComment "The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. For example, the country."
+            "includedPrimaryTypes" =@ !| T<string>
+            |> WithComment "Included primary Place type (for example, 'restaurant' or 'gas_station'). A Place is only returned if its primary type is included in this list. Up to 5 values can be specified. If no types are specified, all Place types are returned."
 
-            "locationBias" =@ LocationBias
+            "includedRegionCodes" =@ !| T<string>
+            |> WithComment "Only include results in the specified regions, specified as up to 15 CLDR two-character region codes. An empty set will not restrict the results. If both locationRestriction and includedRegionCodes are set, the results will be located in the area of intersection."
+
+            "locationBias" =@ LocationBias 
             |> WithComment "A soft boundary or hint to use when searching for places."
 
-            "locationRestriction" =@ LocationRestriction
+            "locationRestriction" =@ LocationRestriction 
             |> WithComment "Bounds to constrain search results."
 
-            "name" =@ T<string>
+            "name" =@ T<string> 
             |> WithComment "The name to be used for the input element. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#name for details. Follows the same behavior as the name attribute for inputs. Note that this is the name that will be used when a form is submitted. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form for details."
 
-            "requestedLanguage" =@ T<string>
+            "origin" =@ (LatLng + LatLngLiteral + LatLngAltitude + LatLngAltitudeLiteral) 
+            |> WithComment "The origin from which to calculate distance. If not specified, distance is not calculated. The altitude, if given, is not used in the calculation."
+
+            "requestedLanguage" =@ T<string> 
             |> WithComment "A language identifier for the language in which the results should be returned, if possible. Results in the selected language may be given a higher ranking, but suggestions are not restricted to this language. See the list of supported languages."
 
-            "requestedRegion" =@ T<string>
-            |> WithComment "A region code which is used for result formatting and for result filtering. It does not restrict the suggestions to this country. The region code accepts a ccTLD (\"top-level domain\") two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is \"uk\" (.co.uk) while its ISO 3166-1 code is \"gb\" (technically for the entity of \"The United Kingdom of Great Britain and Northern Ireland\")."
+            "requestedRegion" =@ T<string> 
+            |> WithComment "A region code which is used for result formatting and for result filtering. It does not restrict the suggestions to this country. The region code accepts a ccTLD ('top-level domain') two-character value. Most ccTLD codes are identical to ISO 3166-1 codes, with some notable exceptions. For example, the United Kingdom's ccTLD is 'uk' (.co.uk) while its ISO 3166-1 code is 'gb'."
 
-            "types" =@ T<string[]>
-            |> WithComment "The types of predictions to be returned. For supported types, see the developer's guide. If no types are specified, all types will be returned."
+            "unitSystem" =@ UnitSystem 
+            |> WithComment "The unit system used to display distances. If not specified, the unit system is determined by requestedRegion."
+
+            // Methods
+            "addEventListener" => T<string> * Function * (T<bool> + AddEventListenerOptions) ^-> T<unit>
+            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target."
+
+            "removeEventListener" => T<string> * Function * (T<bool> + EventListenerOptions) ^-> T<unit>
+            |> WithComment "Removes an event listener previously registered with addEventListener from the target."
+
+            // Events
+            "gmp-error" => JsEvent ^-> T<unit>
+            |> WithComment "This event is fired when a request to the backend was denied (e.g. incorrect API key). This event does not bubble."
+
+            "gmp-select" => PlacePredictionSelectEvent ^-> T<unit>
+            |> WithComment "This event is fired when a user selects a place prediction. Contains a PlacePrediction object which can be converted to a Place object."
+    
         ]
 
     (** Place **)
@@ -1057,13 +1189,150 @@ If the user enters the name of a Place that was not suggested by the control and
                 "useStrictTypeFiltering", T<bool>
             ]
 
+    let SearchNearbyRankPreference =
+        Pattern.EnumStrings "google.maps.places.SearchNearbyRankPreference" ["DISTANCE"; "POPULARITY" ]
+
+    let SearchNearbyRequest =
+        Config "google.maps.places.SearchNearbyRequest"
+            [
+                "locationRestriction", Circle + CircleLiteral
+            ]
+            [
+                "excludedPrimaryTypes", !| T<string>
+                "excludedTypes", !| T<string>
+                "fields", !| T<string>
+                "includedPrimaryTypes", !| T<string>
+                "includedTypes", !| T<string>
+                "language", T<string>
+                "maxResultCount", T<int>
+                "rankPreference", SearchNearbyRankPreference.Type
+                "region", T<string>
+            ]
+
+    let EVConnectorType =
+        Pattern.EnumStrings "google.maps.places.EVConnectorType" [
+            "CCS_COMBO_1"
+            "CCS_COMBO_2"
+            "CHADEMO"
+            "J1772"
+            "NACS"
+            "OTHER"
+            "TESLA"
+            "TYPE_2"
+            "UNSPECIFIED_GB_T"
+            "UNSPECIFIED_WALL_OUTLET"
+        ]
+
+    let ConnectorAggregation =
+        Class "google.maps.places.ConnectorAggregation"
+        |+> Instance [
+            "availabilityLastUpdateTime" =@ Date
+            |> WithComment "The time when the connector availability information in this aggregation was last updated."
+
+            "availableCount" =@ T<int>
+            |> WithComment "Number of connectors in this aggregation that are currently available."
+
+            "count" =@ T<int>
+            |> WithComment "Number of connectors in this aggregation."
+
+            "maxChargeRateKw" =@ T<float>
+            |> WithComment "The static max charging rate in kw of each connector of the aggregation."
+
+            "outOfServiceCount" =@ T<int>
+            |> WithComment "Number of connectors in this aggregation that are currently out of service."
+
+            "type" =@ EVConnectorType
+            |> WithComment "The connector type of this aggregation."
+        ]
+
+    let EVChargeOptions =
+        Config "google.maps.places.EVChargeOptions"
+            []
+            [
+                "connectorAggregations", !| ConnectorAggregation
+                "connectorCount", T<int>
+            ]
+
+    let Money =
+        Class "google.maps.places.Money"
+        |+> Instance [
+            "currencyCode" =@ T<string>
+            |> WithComment "The three-letter currency code, defined in ISO 4217."
+
+            "nanos" =@ T<int>
+            |> WithComment "Number of nano (10^-9) units of the amount."
+
+            "units" =@ T<int>
+            |> WithComment "The whole units of the amount. For example, if Money.currencyCode is 'USD', then 1 unit is 1 US dollar."
+
+            "toString" => T<unit> ^-> T<string>
+            |> WithComment "Returns a human-readable representation of the amount of money with its currency symbol."
+        ]
+
+    let PriceRange =
+        Class "google.maps.places.PriceRange"
+        |+> Instance [
+            "endPrice" =@ Money
+            |> WithComment "The upper end of the price range (inclusive). Price should be lower than this amount."
+
+            "startPrice" =@ Money
+            |> WithComment "The low end of the price range (inclusive). Price should be at or above this amount."
+        ]
+
+    let FuelType =
+        Pattern.EnumStrings "google.maps.places.FuelType" [
+            "BIO_DIESEL"
+            "DIESEL"
+            "DIESEL_PLUS"
+            "E100"
+            "E80"
+            "E85"
+            "LPG"
+            "METHANE"
+            "MIDGRADE"
+            "PREMIUM"
+            "REGULAR_UNLEADED"
+            "SP100"
+            "SP91"
+            "SP91_E10"
+            "SP92"
+            "SP95"
+            "SP95_E10"
+            "SP98"
+            "SP99"
+            "TRUCK_DIESEL"
+        ]
+
+    let FuelPrice =
+        Class "google.maps.places.FuelPrice"
+        |+> Instance [
+            "price" =@ Money
+            |> WithComment "The price of the fuel."
+
+            "type" =@ FuelType
+            |> WithComment "The type of fuel."
+
+            "updateTime" =@ Date
+            |> WithComment "The time the fuel price was last updated."
+        ]
+
+    let FuelOptions =
+        Class "google.maps.places.FuelOptions"
+        |+> Instance [
+            "fuelPrices" =@ Type.ArrayOf FuelPrice
+            |> WithComment "A list of fuel prices for each type of fuel this station has, one entry per fuel type."
+        ]    
+
     let Place =
-        Class "google.maps.places.Place"
+        Forward.Place
         |+> Static [
             Constructor PlaceOptions
 
-            "searchByText" => SearchByTextRequest ^-> Promise[T<string[]>]
+            "searchByText" => SearchByTextRequest ^-> Promise[!| TSelf]
             |> WithComment "Text query based place search."
+
+            "searchNearby" => SearchNearbyRequest ^-> Promise[!| TSelf]
+            |> WithComment "Search for nearby places."
         ]
         |+> Instance [
             "accessibilityOptions" =@ AccessibilityOptions
@@ -1086,14 +1355,23 @@ If the user enters the name of a Place that was not suggested by the control and
             "displayName" =@ T<string>
             |> WithComment "The location's display name. null if there is no name. undefined if the name data has not been loaded from the server."
 
+            "displayNameLanguageCode" =@ T<string>
+            |> WithComment "The language of the location's display name. null if there is no name. undefined if the name data has not been loaded from the server."
+
             "editorialSummary" =@ T<string>
             |> WithComment "The editorial summary for this place. null if there is no editorial summary. undefined if this field has not yet been requested."
 
             "editorialSummaryLanguageCode" =@ T<string>
             |> WithComment "The language of the editorial summary for this place. null if there is no editorial summary. undefined if this field has not yet been requested."
 
+            "evChargeOptions" =@ EVChargeOptions
+            |> WithComment "EV Charge options provided by the place. undefined if the EV charge options have not been called for from the server."
+
             "formattedAddress" =@ T<string>
             |> WithComment "The locations’s full address."
+
+            "fuelOptions" =@ FuelOptions
+            |> WithComment "Fuel options provided by the place. undefined if the fuel options have not been called for from the server."
 
             "googleMapsURI" =@ T<string>
             |> WithComment "URL of the official Google page for this place. This is the Google-owned page that contains the best available information about the Place."
@@ -1119,6 +1397,7 @@ If the user enters the name of a Place that was not suggested by the control and
             |> WithComment "Whether a place has takeout. Returns 'true' or 'false' if the value is known. Returns 'null' if the value is unknown. Returns 'undefined' if this field has not yet been requested."
 
             "hasWiFi" =@ T<bool>
+            |> ObsoleteWithMessage "This field was accidentally documented, but has never actually been populated."
 
             "iconBackgroundColor" =@ T<string>
             |> WithComment "The default HEX color code for the place's category."
@@ -1155,13 +1434,22 @@ If the user enters the name of a Place that was not suggested by the control and
 
             "plusCode" =@ PlusCode
 
+            "postalAddress" =@ PostalAddress
+
             "priceLevel" =@ PriceLevel
-            |> WithComment "The price level of the Place. This property can return any of the following values
-    Free
-    Inexpensive
-    Moderate
-    Expensive
-    Very Expensive"
+            |> WithComment "The price level of the Place. This property can return Free, Inexpensive, Moderate, Expensive, Very Expensive."
+
+            "priceRange" =@ PriceRange
+            |> WithComment "The price range for this Place. The endPrice may be unset, which indicates a range without upper bound (e.g. 'More than $100')."
+
+            "primaryType" =@ T<string>
+            |> WithComment "The location's primary type. null if there is no type. undefined if the type data has not been loaded from the server."
+
+            "primaryTypeDisplayName" =@ T<string>
+            |> WithComment "The location's primary type display name. null if there is no type. undefined if the type data has not been loaded from the server."
+
+            "primaryTypeDisplayNameLanguageCode" =@ T<string>
+            |> WithComment "The language of the location's primary type display name. null if there is no type. undefined if the type data has not been loaded from the server."
 
             "rating" =@ T<float>
             |> WithComment "A rating, between 1.0 to 5.0, based on user reviews of this Place."
@@ -1230,8 +1518,71 @@ If the user enters the name of a Place that was not suggested by the control and
             "getNextOpeningTime" => !?Date ^-> Promise[Date]
             |> WithComment "Calculates the Date representing the next OpeningHoursTime. Returns undefined if the data is insufficient to calculate the result, or this place is not operational."
 
-            "isOpen" => !?Date ^-> T<WebSharper.JavaScript.Promise<bool>>
+            "isOpen" => !?Date ^-> Promise[T<bool>]
             |> WithComment "Check if the place is open at the given datetime. Resolves with undefined if the known data for the location is insufficient to calculate this, e.g. if the opening hours are unregistered."
 
             "toJSON" => T<unit> ^-> T<obj>
+        ]
+
+    let PlaceDetailsOrientation =
+        Pattern.EnumStrings "google.maps.places.PlaceDetailsOrientation" ["HORIZONTAL"; "VERTICAL"; ]
+
+    let PlaceDetailsCompactElementOptions =
+        Config "google.maps.places.PlaceDetailsCompactElementOptions"
+            []
+            [
+                "orientation", PlaceDetailsOrientation.Type
+                "truncationPreferred", T<bool>
+            ]
+
+    let PlaceDetailsCompactElement =
+        Class "google.maps.places.PlaceDetailsCompactElement"
+        |=> Inherits HTMLElement
+        |+> Static [
+            Constructor (!? PlaceDetailsCompactElementOptions)
+        ]
+        |+> Instance [
+            "orientation" =@ PlaceDetailsOrientation
+            |> WithComment "The orientation variant (vertical or horizontal) of the element."
+
+            "place" =@ Forward.Place
+            |> WithComment "Place object containing the ID, location, and viewport of the currently rendered place."
+
+            "truncationPreferred" =@ T<bool>
+            |> WithComment "If true, truncates the place name and address to fit on one line instead of wrapping."
+
+            "addEventListener" => T<string> * Function * (T<bool> + AddEventListenerOptions) ^-> T<unit>
+            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target."
+
+            "removeEventListener" => T<string> * Function * (T<bool> + EventListenerOptions) ^-> T<unit>
+            |> WithComment "Removes an event listener previously registered with addEventListener from the target."
+
+            "gmp-error" => JsEvent ^-> T<unit>
+            |> WithComment "This event is fired when a request to the backend was denied (e.g. incorrect API key). This event does not bubble."
+
+            "gmp-load" => JsEvent ^-> T<unit>
+            |> WithComment "This event is fired when the element loads and renders its content. This event does not bubble."
+        ]
+
+    let PlaceDetailsElement =
+        Class "google.maps.places.PlaceDetailsElement"
+        |=> Inherits HTMLElement
+        |+> Static [
+            Constructor T<unit>
+        ]
+        |+> Instance [
+            "place" =@ Forward.Place
+            |> WithComment "Place object containing the ID, location, and viewport of the currently rendered place."
+
+            "addEventListener" => T<string> * Function * (T<bool> + AddEventListenerOptions) ^-> T<unit>
+            |> WithComment "Sets up a function that will be called whenever the specified event is delivered to the target."
+
+            "removeEventListener" => T<string> * Function * (T<bool> + EventListenerOptions) ^-> T<unit>
+            |> WithComment "Removes an event listener previously registered with addEventListener from the target."
+
+            "gmp-error" => JsEvent ^-> T<unit>
+            |> WithComment "This event is fired when a request to the backend was denied (e.g. incorrect API key). This event does not bubble."
+
+            "gmp-load" => JsEvent ^-> T<unit>
+            |> WithComment "This event is fired when the element loads and renders its content. This event does not bubble."
         ]

@@ -35,6 +35,11 @@ module Forward =
 
     let Map = Class "google.maps.Map"
 
+    let AddressValidation = Class "google.maps.addressValidation.AddressValidation"
+
+    let Place =
+        Class "google.maps.places.Place"
+
     let MapTypeId =
         Pattern.EnumInlines "google.maps.MapTypeId" [
             // This map type displays a transparent layer of major streets on satellite images.

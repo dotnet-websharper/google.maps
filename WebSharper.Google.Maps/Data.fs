@@ -232,7 +232,7 @@ module Data =
     let StylingFunction = Feature ^-> StyleOptions
 
     let DataOptions =
-        Config "google.maps.DataOptions"
+        Config "google.maps.Data.DataOptions"
             []
             [
                 "controlPosition", Controls.ControlPosition.Type
@@ -270,7 +270,7 @@ If the feature has an ID, it will replace any existing feature in the collection
 
 Note that the IDs 1234 and '1234' are equivalent. Adding a feature with ID 1234 will replace a feature with ID '1234', and vice versa."""
 
-            "addGeoJson" => Object * !? GeoJsonOptions ^-> Type.ArrayOf Feature
+            "addGeoJson" => T<obj> * !? GeoJsonOptions ^-> Type.ArrayOf Feature
             |> WithComment "Adds GeoJSON features to the collection. Give this method a parsed JSON. The imported features are returned. Throws an exception if the GeoJSON could not be imported."
 
             "contains" => Feature ^-> T<bool>
@@ -329,7 +329,7 @@ If no feature is given, all features have their style reverted."""
 
 Pass either an object with the desired style options, or a function that computes the style for each feature. The function will be called every time a feature's properties are updated."""
 
-            "toGeoJson" => (Object ^-> T<unit>) ^-> T<unit>
+            "toGeoJson" => (T<obj> ^-> T<unit>) ^-> T<unit>
             |> WithComment "Exports the features in the collection to a GeoJSON object."
 
             // EVENTS
